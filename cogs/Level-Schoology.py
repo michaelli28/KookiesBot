@@ -16,7 +16,6 @@ from pymongo import MongoClient
 import random
 import re
 import time
-import pyprog
 import asyncio
 from discord.ext import tasks
 from operator import itemgetter

@@ -15,7 +15,7 @@ import discord
 import youtube_dl
 from discord.ext import commands
 import math
-import pyprog
+#import pyprog
 from time import sleep
 #TODO choose channel to send song is playing messages
 #TODO skipto command to skip to a certain song
