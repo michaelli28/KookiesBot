@@ -7,7 +7,6 @@ urllib
 re
 time
 typing
-random
 git+https://github.com/Rapptz/discord-ext-menus
 asyncio
 functools
