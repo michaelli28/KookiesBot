@@ -2,7 +2,6 @@ discord
 youtube_dl
 asyncio
 git+https://github.com/Rapptz/discord-ext-menus
-functools
 itertools
 async_timeout
 httpx
