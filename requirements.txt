@@ -1,7 +1,6 @@
 discord
 youtube_dl
 asyncio
-urllib
 re
 time
 typing
