@@ -9,6 +9,4 @@ oauth2
 schoolopy
 pymongo
 pymongo[src]
-operator
-yaml
 json
