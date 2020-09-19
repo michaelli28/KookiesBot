@@ -10,3 +10,4 @@ schoolopy
 pymongo
 pymongo[src]
 dnspython
+googleapiclient
