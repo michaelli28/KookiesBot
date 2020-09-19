@@ -6,7 +6,7 @@ from discord import Embed
 from typing import Optional
 import oauth2
 import schoolopy
-import yaml
+
 import json
 import discord
 from discord.ext import commands

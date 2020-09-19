@@ -238,9 +238,9 @@ async def botstop(ctx):
 
 bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.H8jmotH113mVSyRdNnU76aZ1P74')
 
-'''
 
-@bot.command()
+
+'''@bot.command()
 async def join(ctx):
     global voice
     try:
