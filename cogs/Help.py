@@ -70,9 +70,10 @@ class Help(Cog):
                description=syntax(command),
                     color=random.randint(0, 0xffffff))
 		embed.add_field(name="Command description", value=command.brief)
-		if param(command)=='':
+		if param(command)=='``':
 			embed.add_field(name='Usage:', value='**'+PREFIX+str(command)+'**')
 		else:
+			print(param(command))
 			embed.add_field(name='Usage:', value='**'+PREFIX+str(command)+'** '+ str(param(command)))
 		embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
 		await ctx.send(embed=embed)
