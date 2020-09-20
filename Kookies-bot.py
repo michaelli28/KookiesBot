@@ -215,8 +215,10 @@ async def on_raw_reaction_add(payload):
     message = await channel.fetch_message(payload.message_id)
     if payload.emoji.name == '❌':
         if (not payload.member.bot):
-            await message.delete()
-
+            try:
+                await message.delete()
+            except:
+                pass
 
 @bot.command(brief='Kicks people, admin only')
 @commands.cooldown(1, 5, commands.BucketType.user)

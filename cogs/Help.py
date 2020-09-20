@@ -17,7 +17,7 @@ def syntax(command):
 
 	params = " ".join(params)
 
-	return f"`<!{cmd_and_aliases}> {params}`"
+	return f"`<;{cmd_and_aliases}> {params}`"
 
 
 def param(command):
