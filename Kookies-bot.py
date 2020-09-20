@@ -133,7 +133,7 @@ async def id(ctx):
 async def _8ball(ctx, *, question=None):
     if (question) == None:
         return await ctx.send("Ask a question sir or ma\'am")
-    responses = ['Maybe', 'Hmm, try again later', 'Yes sir', 'No sir', 'Yes ma\'am', 'No ma\'am', 'You can count on it!', 'Guaranteed','How did you know?', 'Of course', 'I believe so', 'Nope', 'Definitely NOT', 'Very much so', 'The answer is NO', 'No (u)', 'Does money grow on trees?', 'Is magic better than Kookies? (NOOOO)']
+    responses = ['Maybe', 'Hmm, try again later', 'Yes sir/ma\'am', 'No sir/ma\'am', 'You can count on it!', 'Guaranteed','How did you know?', 'Of course', 'I believe so', 'Nope', 'Definitely NOT', 'Very much so', 'The answer is NO', 'No (u)', 'Does money grow on trees?', 'Is magic better than Kookies? (NOOOO)']
     e = discord.Embed(
         title='8ball response',
         color = random.randint(0, 0xffffff)
