@@ -69,7 +69,7 @@ class Help(Cog):
 		embed = Embed(title=f"Help with `{command}`",
                description=syntax(command),
                     color=random.randint(0, 0xffffff))
-		embed.add_field(name="Command description", value=command.brief)
+		embed.add_field(name="Command description:", value=command.brief)
 		if param(command)=='``':
 			embed.add_field(name='Usage:', value='**'+PREFIX+str(command)+'**')
 		else:

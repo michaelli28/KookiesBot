@@ -30,7 +30,7 @@ async def on_ready():
     #bot.load_extension('cogs.Music2')
     bot.load_extension('cogs.CommandErrorHandler')
     bot.load_extension('cogs.Leaderboard')
-    #bot.load_extension('cogs.MusicPlayer')
+    bot.load_extension('cogs.MusicPlayer')
     bot.load_extension('cogs.Level-Schoology')
 
     print('Logged in as:\n{0.user.name}'.format(bot))
