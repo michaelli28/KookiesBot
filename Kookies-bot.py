@@ -151,6 +151,8 @@ async def removerole(ctx, user: discord.Member, *, role):
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def roleclaim(ctx, *roles):
     await ctx.message.delete()
+    if len(roles) == 0: 
+        await ctx.send('You need to input roles')
     global rolesR
     rolesR = list(roles)
     if 1 > len(roles) > 10:
@@ -183,20 +185,20 @@ async def roleclaim(ctx, *roles):
 @bot.event
 async def on_raw_reaction_add(payload):
     channel = discord.utils.get(bot.get_all_channels(), id=payload.channel_id)
-    message = await channel.fetch_message(payload.message_id)
-
+    user = payload.member
     if payload.emoji.name == '❌':
-        # if message.content.startswith('React with :one: to receive'):
-        #     user = payload.member
-        #     return await user.send('I can\'t delete that')
-        try:
-            if (not payload.member.bot):
-                try:
-                    await message.delete()
-                except:
-                    pass
-        except:
-            pass
+        message = await channel.fetch_message(payload.message_id)
+        if message.content.startswith('React with 1️⃣ to receive the '):
+            return await user.send('I can\'t delete that')
+        else:
+            try:
+                if (not payload.member.bot):
+                    try:
+                        await message.delete()
+                    except:
+                        pass
+            except:
+                pass
     elif payload.emoji.name == '1️⃣':
         if (not payload.member.bot):
             user = payload.member
