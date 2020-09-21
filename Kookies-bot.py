@@ -171,7 +171,7 @@ async def roleclaim(ctx, *roles):
         role = get(ctx.author.guild.roles, name=r)
         if role == None:
             await ctx.send(await ctx.send(f'`{r}` is not a valid role'))
-        message += f'React with {reactions[index]} to recieve the `{role}` role!\n'
+        message += f'React with {reactions[index]} to receive the `{role}` role!\n'
         index += 1
 
     messagesent = await ctx.send(message)
