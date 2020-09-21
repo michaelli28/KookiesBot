@@ -70,7 +70,7 @@ class Leaderboard(Cog):
         collection.update_one({'_id': item['_id']}, {"$set":{"rank": rank}}) 
         rank+=1
       menu = MenuPages(source=HelpMenu(ctx, sort), delete_message_after=True)
-      await menu.start(ctx)
+      return await menu.start(ctx)
 
 def setup(bot):
 	bot.add_cog(Leaderboard(bot))

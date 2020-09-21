@@ -123,8 +123,8 @@ async def mute(ctx, user: discord.Member):
         Muted = await ctx.guild.create_role(name="Muted", reason="To use for muting")
         for channel in ctx.guild.channels:  # removes permission to view and send in the channels
             await channel.set_permissions(Muted, send_messages=False,
-                                        read_message_history=False,
-                                        read_messages=False)
+                                          read_message_history=False,
+                                          read_messages=False)
         role = get(user.guild.roles, name='Muted')
         await user.add_roles(role)
         await ctx.send(f'`{user.name}` has been muted from chat')
@@ -156,18 +156,19 @@ async def roleclaim(ctx, *roles):
     if 1 > len(roles) > 10:
         return await ctx.send('List of roles must be between 1 and 10')
     index = 0
-    reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣','5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+    reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣',
+                 '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
     message = ''
     rindex = 0
     for r in rolesR:
         for char in r:
             try:
                 r.find('_')
-                rindex+=1
+                rindex += 1
             except:
                 pass
         r = r.replace('_', " ", rindex)
-        rolesR[index]=r
+        rolesR[index] = r
         role = get(ctx.author.guild.roles, name=r)
         if role == None:
             await ctx.send(await ctx.send(f'`{r}` is not a valid role'))
@@ -182,11 +183,12 @@ async def roleclaim(ctx, *roles):
 @bot.event
 async def on_raw_reaction_add(payload):
     channel = discord.utils.get(bot.get_all_channels(), id=payload.channel_id)
-    try:
-        message = await channel.fetch_message(payload.message_id)
-    except:
-        pass
+    message = await channel.fetch_message(payload.message_id)
+
     if payload.emoji.name == '❌':
+        # if message.content.startswith('React with :one: to receive'):
+        #     user = payload.member
+        #     return await user.send('I can\'t delete that')
         try:
             if (not payload.member.bot):
                 try:

@@ -178,7 +178,7 @@ class Schoology(commands.Cog):
 
       embed.add_field(name='Xp', value = printProgressBar(result['Xp'], 100000, prefix = '**'+str(result['Xp'])+"**", suffix = '**100,000**', length = 20))
       
-      await ctx.send(embed=embed)
+      return await ctx.send(embed=embed)
 
   @commands.Cog.listener()
   async def on_message(self, ctx):
