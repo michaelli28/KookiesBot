@@ -29,9 +29,9 @@ bot = commands.Bot(command_prefix=PREFIX, caseInsensitive=True,
 async def on_ready():
     bot.load_extension('cogs.Help')
     # bot.load_extension('cogs.Music2')
-    bot.load_extension('cogs.CommandErrorHandler')
+    #bot.load_extension('cogs.CommandErrorHandler')
     bot.load_extension('cogs.Leaderboard')
-    # bot.load_extension('cogs.MusicPlayer')
+    #bot.load_extension('cogs.MusicPlayer')
     bot.load_extension('cogs.Level-Schoology')
 
     print('Logged in as:\n{0.user.name}'.format(bot))
@@ -145,6 +145,19 @@ async def removerole(ctx, user: discord.Member, *, role):
     except discord.Forbidden:
         return await ctx.send('I\'m not allowed to do that')
 
+@bot.command(aliases=['cr'], brief='Creates a role')
+@commands.cooldown(1, 5, commands.BucketType.user)
+@commands.has_permissions(manage_roles=True)
+async def createrole(ctx, *name):
+    newname = ''
+    for part in name:
+        newname += part+' '
+    newname = newname[0:-1]
+    try:
+        await ctx.guild.create_role(name=newname, reason='Why not')
+        return await ctx.send(f'Created the role `{newname}`')
+    except discord.Forbidden:
+        return await ctx.send('I don\'t have the permissions to do that')
 
 @bot.command(aliases=['rc'], brief='Adds a role claim message, use like this: ;rc toxic pro_player noob with spaces as underscores')
 @commands.has_permissions(manage_roles=True)
@@ -187,9 +200,15 @@ async def on_raw_reaction_add(payload):
     channel = discord.utils.get(bot.get_all_channels(), id=payload.channel_id)
     user = payload.member
     if payload.emoji.name == '❌':
-        message = await channel.fetch_message(payload.message_id)
+        try:
+            message = await channel.fetch_message(payload.message_id)
+        except:
+            pass
         if message.content.startswith('React with 1️⃣ to receive the '):
-            return await user.send('I can\'t delete that')
+            try:
+                return await user.send('I can\'t delete that')
+            except:
+                pass
         else:
             try:
                 if (not payload.member.bot):
