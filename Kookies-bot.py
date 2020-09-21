@@ -77,8 +77,7 @@ async def on_member_join(member):
 
 @bot.event
 async def on_member_remove(member):
-    embed = discord.Embed(color=random.randint(0, 0xffffff))
-    embed.set_author(name=str(member.name)+' has left '+str(member.guild.name))
+    embed = discord.Embed(title=str(member.name)+' has left '+str(member.guild.name), color=random.randint(0, 0xffffff))
     embed.set_author(name=member.name, icon_url=member.avatar_url)
     with open("guild.json", "r") as f:
         guildInfo = json.load(f)
