@@ -38,7 +38,7 @@ class Schoology(commands.Cog):
     day_of_the_week = now.strftime("%A")
     if day_of_the_week==('Monday' or 'Tuesday' or 'Wednesday' or 'Thursday' or 'Friday'): 
       if current_time == '07:55':
-        await channel.send("@)hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
+        await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
         await channel2.send("@everyone Class starts in 5 minutes!")
 
       elif current_time == '09:55':
@@ -48,8 +48,8 @@ class Schoology(commands.Cog):
       elif current_time == '11:55':
         await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
         await channel2.send("@everyone Class starts in 5 minutes!")
-
-
+      else:
+        pass
   @commands.command(brief='Gets NotThatBot#3360\'s Schoology events, only for him')
   @commands.cooldown(1, 5, commands.BucketType.user)
   @commands.is_owner()
