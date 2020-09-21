@@ -2,7 +2,7 @@ import discord
 import traceback
 import sys
 from discord.ext import commands
-
+import random
 
 class CommandErrorHandler(commands.Cog):
 
@@ -60,7 +60,7 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send('{}, That command is on cooldown! Try again in {:.2f}s!'.format(ctx.author.mention, error.retry_after))
         elif isinstance(error, commands.MissingPermissions):
             await ctx.message.delete()
-            await ctx.send(embed=discord.Embed(color=self.bot.color).set_footer(text=f"Seems like you don't have the permissions to do that", icon_url=ctx.author.avatar_url))
+            await ctx.send(embed=discord.Embed(color=random.randint(0, 0xffffff)).set_footer(text=f"Seems like you don't have the permissions to do that", icon_url=ctx.author.avatar_url))
         elif isinstance(error, commands.NotOwner):
             await ctx.message.delete()
             await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))

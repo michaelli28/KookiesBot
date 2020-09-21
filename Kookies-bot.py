@@ -4,6 +4,7 @@ import youtube_dl
 from discord.ext import commands
 from discord import Member
 from discord.ext.commands import has_permissions, MissingPermissions, CommandNotFound
+from discord.ext.commands.errors import BadArgument
 import shutil
 import os
 from discord.utils import get
@@ -19,25 +20,24 @@ from discord import Embed, File, DMChannel
 import time
 from time import time
 global PREFIX
-PREFIX=';'
-bot = commands.Bot(command_prefix=PREFIX, caseInsensitive=True, description='Kookies FOR THE WIN')
-
+PREFIX = ';'
+bot = commands.Bot(command_prefix=PREFIX, caseInsensitive=True,
+                   description='Kookies FOR THE WIN')
 
 
 @bot.event
 async def on_ready():
     bot.load_extension('cogs.Help')
-    #bot.load_extension('cogs.Music2')
+    # bot.load_extension('cogs.Music2')
     bot.load_extension('cogs.CommandErrorHandler')
     bot.load_extension('cogs.Leaderboard')
-    #bot.load_extension('cogs.MusicPlayer')
+    # bot.load_extension('cogs.MusicPlayer')
     bot.load_extension('cogs.Level-Schoology')
 
     print('Logged in as:\n{0.user.name}'.format(bot))
 
 
-
-#allows server members to set channel for welcome messages to send to
+# allows server members to set channel for welcome messages to send to
 @bot.command(brief='Sets the channel for welcome messages')
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.is_owner()
@@ -45,21 +45,23 @@ async def welcome(ctx):
     with open("guild.json", "r") as f:
         guildInfo = json.load(f)
 # sets channel to send message to as the channel the command was sent to
-    guildInfo[ctx.message.guild.id]=ctx.message.channel.id
+    guildInfo[ctx.message.guild.id] = ctx.message.channel.id
 
-    with open("guild.json", "w") as f:  
+    with open("guild.json", "w") as f:
         try:
             json.dump(guildInfo, f)
         except:
             pass
     await ctx.send('Channel set to: '+str(ctx.message.channel.id))
 
+
 @bot.event
 async def on_member_join(member):
     # role = discord.utils.get(member.server.roles, name='Member')
     # await client.add_roles(member, role)
 
-    embed = discord.Embed(title='Welcome to '+ str(member.guild.name), color=random.randint(0, 0xffffff))
+    embed = discord.Embed(
+        title='Welcome to ' + str(member.guild.name), color=random.randint(0, 0xffffff))
 
     embed.set_author(name=member.name, icon_url=member.avatar_url)
     with open("guild.json", "r") as f:
@@ -77,7 +79,8 @@ async def on_member_join(member):
 
 @bot.event
 async def on_member_remove(member):
-    embed = discord.Embed(title=str(member.name)+' has left '+str(member.guild.name), color=random.randint(0, 0xffffff))
+    embed = discord.Embed(title=str(member.name)+' has left ' +
+                          str(member.guild.name), color=random.randint(0, 0xffffff))
     embed.set_author(name=member.name, icon_url=member.avatar_url)
     with open("guild.json", "r") as f:
         guildInfo = json.load(f)
@@ -86,61 +89,256 @@ async def on_member_remove(member):
     channel = bot.get_channel(channel)
     await channel.send(embed=embed)
 
+
 @bot.command(aliases=['ar'], brief='Gives someone a role, need manage roles')
 # This must be exactly the name of the appropriate role
 @commands.has_permissions(manage_roles=True)
+@commands.cooldown(1, 5, commands.BucketType.user)
 async def addrole(ctx, user: discord.Member, *, role):
     try:
-        await user.add_roles(get(user.guild.roles, name=role))
-        await ctx.send(f'Gave {user.role} the ' + role)
-    except:
-        return await ctx.send('That is not a valid role or user')
-    
+        role = get(user.guild.roles, name=role)
+        await user.add_roles(role)
+        await ctx.send(f'`{role}` role was given to `{user.name}`')
+    except AttributeError:
+        return await ctx.send('That is not a valid role')
+    except BadArgument:
+        return await ctx.send(f'`{user}` user not found')
+    except discord.Forbidden:
+        return await ctx.send('I\'m not allowed to do that')
 
-@bot.command(aliases=['m'],brief='Mutes someone, need manage roles')
+
+@bot.command(aliases=['m'], brief='Mutes someone, need manage roles')
+@commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
 async def mute(ctx, user: discord.Member):
     try:
         role = get(user.guild.roles, name='Muted')
         await user.add_roles(role)
         await ctx.send(f'{user.name} has been muted from chat')
-    except:
-        return await ctx.send('That is not a valid user')
+    except BadArgument:
+        return await ctx.send(f'`{user}` user not found')
+    except discord.Forbidden:
+        return await ctx.send('I\'m not allowed to do that')
+    except AttributeError:
+        Muted = await ctx.guild.create_role(name="Muted", reason="To use for muting")
+        for channel in ctx.guild.channels:  # removes permission to view and send in the channels
+            await channel.set_permissions(Muted, send_messages=False,
+                                        read_message_history=False,
+                                        read_messages=False)
+        role = get(user.guild.roles, name='Muted')
+        await user.add_roles(role)
+        await ctx.send(f'`{user.name}` has been muted from chat')
+
 
 @bot.command(aliases=['rr'], brief='Removes a role, need manage roles')
+@commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
 async def removerole(ctx, user: discord.Member, *, role):
     try:
         role = get(user.guild.roles, name=role)
         await user.remove_roles(role)
-        await ctx.send(f'{role} role was removed from {user.name}')
+        await ctx.send(f'`{role}` role was removed from `{user.name}`')
+    except AttributeError:
+        return await ctx.send('That is not a valid role')
+    except BadArgument:
+        return await ctx.send(f'`{user}` user not found')
+    except discord.Forbidden:
+        return await ctx.send('I\'m not allowed to do that')
+
+
+@bot.command(aliases=['rc'], brief='Adds a role claim message, use like this: ;rc toxic pro_player noob with spaces as underscores')
+@commands.has_permissions(manage_roles=True)
+@commands.cooldown(1, 5, commands.BucketType.user)
+async def roleclaim(ctx, *roles):
+    await ctx.message.delete()
+    global rolesR
+    rolesR = list(roles)
+    if 1 > len(roles) > 10:
+        return await ctx.send('List of roles must be between 1 and 10')
+    index = 0
+    reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣','5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+    message = ''
+    rindex = 0
+    for r in rolesR:
+        for char in r:
+            try:
+                r.find('_')
+                rindex+=1
+            except:
+                pass
+        r = r.replace('_', " ", rindex)
+        rolesR[index]=r
+        role = get(ctx.author.guild.roles, name=r)
+        if role == None:
+            await ctx.send(await ctx.send(f'`{r}` is not a valid role'))
+        message += f'React with {reactions[index]} to recieve the `{role}` role!\n'
+        index += 1
+
+    messagesent = await ctx.send(message)
+    for i in range(len(roles)):
+        await messagesent.add_reaction(reactions[i])
+
+
+@bot.event
+async def on_raw_reaction_add(payload):
+    channel = discord.utils.get(bot.get_all_channels(), id=payload.channel_id)
+    try:
+        message = await channel.fetch_message(payload.message_id)
     except:
-        return await ctx.send('That is not a valid role or user')
-        
+        pass
+    if payload.emoji.name == '❌':
+        try:
+            if (not payload.member.bot):
+                try:
+                    await message.delete()
+                except:
+                    pass
+        except:
+            pass
+    elif payload.emoji.name == '1️⃣':
+        if (not payload.member.bot):
+            user = payload.member
+            role = get(user.guild.roles, name=rolesR[0])
+            await user.add_roles(role)
+            await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '2️⃣':
+        if (not payload.member.bot):
+            user = payload.member
+            role = get(user.guild.roles, name=rolesR[0])
+            await user.add_roles(role)
+            await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '3️⃣':
+        if (not payload.member.bot):
+            user = payload.member
+            role = get(user.guild.roles, name=rolesR[0])
+            await user.add_roles(role)
+            await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '4️⃣':
+        if (not payload.member.bot):
+            user = payload.member
+            role = get(user.guild.roles, name=rolesR[0])
+            await user.add_roles(role)
+            await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '5️⃣':
+        if (not payload.member.bot):
+            user = payload.member
+            role = get(user.guild.roles, name=rolesR[0])
+            await user.add_roles(role)
+            await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '6️⃣':
+        if (not payload.member.bot):
+            user = payload.member
+            role = get(user.guild.roles, name=rolesR[0])
+            await user.add_roles(role)
+            await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '7️⃣':
+        if (not payload.member.bot):
+            user = payload.member
+            role = get(user.guild.roles, name=rolesR[0])
+            await user.add_roles(role)
+            await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '8️⃣':
+        if (not payload.member.bot):
+            user = payload.member
+            role = get(user.guild.roles, name=rolesR[0])
+            await user.add_roles(role)
+            await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '9️⃣':
+        if (not payload.member.bot):
+            user = payload.member
+            role = get(user.guild.roles, name=rolesR[0])
+            await user.add_roles(role)
+            await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '🔟':
+        if (not payload.member.bot):
+            user = payload.member
+            role = get(user.guild.roles, name=rolesR[0])
+            await user.add_roles(role)
+            await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+
+
+@bot.event
+async def on_raw_reaction_remove(payload):
+    if payload.emoji.name == '1️⃣':
+        user = get(bot.get_all_members(), id=payload.user_id)
+        role = get(user.guild.roles, name=rolesR[0])
+        await user.add_roles(role)
+        await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '2️⃣':
+        user = get(bot.get_all_members(), id=payload.user_id)
+        role = get(user.guild.roles, name=rolesR[0])
+        await user.add_roles(role)
+        await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '3️⃣':
+        user = get(bot.get_all_members(), id=payload.user_id)
+        role = get(user.guild.roles, name=rolesR[0])
+        await user.add_roles(role)
+        await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '4️⃣':
+        user = get(bot.get_all_members(), id=payload.user_id)
+        role = get(user.guild.roles, name=rolesR[0])
+        await user.add_roles(role)
+        await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '5️⃣':
+        user = get(bot.get_all_members(), id=payload.user_id)
+        role = get(user.guild.roles, name=rolesR[0])
+        await user.add_roles(role)
+        await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '6️⃣':
+        user = get(bot.get_all_members(), id=payload.user_id)
+        role = get(user.guild.roles, name=rolesR[0])
+        await user.add_roles(role)
+        await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '7️⃣':
+        user = get(bot.get_all_members(), id=payload.user_id)
+        role = get(user.guild.roles, name=rolesR[0])
+        await user.add_roles(role)
+        await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '8️⃣':
+        user = get(bot.get_all_members(), id=payload.user_id)
+        role = get(user.guild.roles, name=rolesR[0])
+        await user.add_roles(role)
+        await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '9️⃣':
+        user = get(bot.get_all_members(), id=payload.user_id)
+        role = get(user.guild.roles, name=rolesR[0])
+        await user.add_roles(role)
+        await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+    elif payload.emoji.name == '🔟':
+        user = get(bot.get_all_members(), id=payload.user_id)
+        role = get(user.guild.roles, name=rolesR[0])
+        await user.add_roles(role)
+        await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
+
+
 @bot.command(brief='Says hello')
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def hello(ctx):
     await ctx.send("Hello " + ctx.message.author.mention)
 
+
 @bot.command(brief='Get your id')
 async def id(ctx):
     author = ctx.message.author.id
     await ctx.send(author)
-    
+
+
 @bot.command(aliases=['8ball'], brief='Answer your yes/no questions')
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def _8ball(ctx, *, question=None):
     if (question) == None:
         return await ctx.send("Ask a question sir or ma\'am")
-    responses = ['Maybe', 'Hmm, try again later', 'Yes sir/ma\'am', 'No sir/ma\'am', 'You can count on it!', 'Guaranteed','How did you know?', 'Of course', 'I believe so', 'Nope', 'Definitely NOT', 'Very much so', 'The answer is NO', 'No (u)', 'Does money grow on trees?', 'Is magic better than Kookies? (NOOOO)']
+    responses = ['Maybe', 'Hmm, try again later', 'Yes sir/ma\'am', 'No sir/ma\'am', 'You can count on it!', 'Guaranteed', 'How did you know?', 'Of course',
+                 'I believe so', 'Nope', 'Definitely NOT', 'Very much so', 'The answer is NO', 'No (u)', 'Does money grow on trees?', 'Is magic better than Kookies? (NOOOO)']
     e = discord.Embed(
         title='8ball response',
-        color = random.randint(0, 0xffffff)
+        color=random.randint(0, 0xffffff)
     )
-    e.add_field(name='Question',value=question, inline=False)
-    e.add_field(name='Answer',value=random.choice(responses), inline=False)
+    e.add_field(name='Question', value=question, inline=False)
+    e.add_field(name='Answer', value=random.choice(responses), inline=False)
     e.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
     await ctx.send(embed=e)
+
 
 @bot.command(brief='Clears messages, NotThatBot#3360 only')
 @commands.cooldown(1, 5, commands.BucketType.user)
@@ -149,9 +347,10 @@ async def klear(ctx, amount=1):
     if amount == 0:
         ctx.send("You need to delete a message")
     try:
-        await ctx.channel.purge(limit=amount)
+        await ctx.channel.purge(limit=amount+1)
     except:
         await ctx.send("Input a number please")
+
 
 @bot.command(brief='Gets news from CNN')
 @commands.cooldown(1, 5, commands.BucketType.user)
@@ -168,7 +367,7 @@ async def news(ctx, *, search):
     query_string1 = urllib.parse.urlencode({'q': searchq})
     query_string1 = query_string1.encode('utf-8')
 
-    req1=urllib.request.Request(
+    req1 = urllib.request.Request(
         'https://news.google.com/', query_string1,
         headers={
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
@@ -178,11 +377,13 @@ async def news(ctx, *, search):
     resp1 = urllib.request.urlopen(req1)
     respData1 = resp1.read()
 
-    search_results1 = re.findall('"https://www\.cnn\.com/(.*?)"', str(respData1))
+    search_results1 = re.findall(
+        '"https://www\.cnn\.com/(.*?)"', str(respData1))
     results = {}
     for n in range(int(number_of_results)):
         results[n+1] = ('https://www.cnn.com/search?' + search_results1[n])
     await ctx.send(results)
+
 
 @bot.command(brief='Get your ping')
 @commands.cooldown(1, 5, commands.BucketType.user)
@@ -193,6 +394,7 @@ async def ping(ctx):
 
     await message.edit(content=f"Pong! Latency: {bot.latency*1000:,.0f} ms. Response time: {(end-start)*1000:,.0f} ms.")
 
+
 @bot.event
 async def on_message(message):
     if message.author != bot.user:
@@ -201,23 +403,13 @@ async def on_message(message):
     if message.author == bot.user:
         await message.add_reaction('❌')
     await bot.process_commands(message)
-    #if message.author.id == '740226974248730625':
-        #await message.delete()
+    # if message.author.id == '740226974248730625':
+    # await message.delete()
     #    await message.channel.send('MAGIC SUCKS')
-    #if message.content.startswith('-'):
-        #await message.delete()
+    # if message.content.startswith('-'):
+    # await message.delete()
     #    await message.channel.send('MAGIC SUCKS')
 
-@bot.event
-async def on_raw_reaction_add(payload):
-    channel = discord.utils.get(bot.get_all_channels(), id=payload.channel_id)
-    message = await channel.fetch_message(payload.message_id)
-    if payload.emoji.name == '❌':
-        if (not payload.member.bot):
-            try:
-                await message.delete()
-            except:
-                pass
 
 @bot.command(brief='Kicks people, admin only')
 @commands.cooldown(1, 5, commands.BucketType.user)
@@ -225,7 +417,9 @@ async def on_raw_reaction_add(payload):
 async def cic(ctx, user: discord.Member):
     await user.kick(reason='Admins decided you needed a kick')
     return await ctx.send(str(user) + ' has been kicked')
-    #await ctx.send('Missing Permissions to kick ' + str(user))
+    # await ctx.send('Missing Permissions to kick ' + str(user))
+
+
 @bot.command(name='botstop', aliases=['bstop'], brief='Shutdown the bot, NotThatBot#3360 only')
 @commands.is_owner()
 async def botstop(ctx):
@@ -238,7 +432,6 @@ async def botstop(ctx):
 # 	print("Bot disconnected")
 
 bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.H8jmotH113mVSyRdNnU76aZ1P74')
-
 
 
 '''@bot.command()
