@@ -31,7 +31,7 @@ async def on_ready():
     # bot.load_extension('cogs.Music2')
     bot.load_extension('cogs.CommandErrorHandler')
     bot.load_extension('cogs.Leaderboard')
-    # bot.load_extension('cogs.MusicPlayer')
+    bot.load_extension('cogs.MusicPlayer')
     bot.load_extension('cogs.Level-Schoology')
 
     print('Logged in as:\n{0.user.name}'.format(bot))
@@ -102,7 +102,7 @@ async def addrole(ctx, user: discord.Member, *, role):
     except AttributeError:
         return await ctx.send('That is not a valid role')
     except BadArgument:
-        return await ctx.send(f'`{user.eme}` user not found')
+        return await ctx.send(f'`{user.name}` user not found')
     except discord.Forbidden:
         return await ctx.send('I\'m not allowed to do that')
 
@@ -116,7 +116,7 @@ async def mute(ctx, user: discord.Member):
         await user.add_roles(role)
         await ctx.send(f'{user.name} has been muted from chat')
     except BadArgument:
-        return await ctx.send(f'`{user}` user not found')
+        return await ctx.send(f'`{user.name}` user not found')
     except discord.Forbidden:
         return await ctx.send('I\'m not allowed to do that')
     except AttributeError:
@@ -149,14 +149,14 @@ async def removerole(ctx, user: discord.Member, *, role):
 @bot.command(aliases=['cr'], brief='Creates a role')
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
-async def createrole(ctx, *name):
-    newname = ''
-    for part in name:
-        newname += part+' '
-    newname = newname[0:-1]
+async def createrole(ctx, *, name):
+    # newname = ''
+    # for part in name:
+    #     newname += part+' '
+    # newname = newname[0:-1]
     try:
-        await ctx.guild.create_role(name=newname, reason='Why not')
-        return await ctx.send(f'Created the role `{newname}`')
+        await ctx.guild.create_role(name=name, reason='Why not')
+        return await ctx.send(f'Created the role `{name}`')
     except discord.Forbidden:
         return await ctx.send('I don\'t have the permissions to do that')
 
@@ -456,7 +456,7 @@ async def botstop(ctx):
 # async def on_disconnect():
 # 	print("Bot disconnected")
 
-bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.H8jmotH113mVSyRdNnU76aZ1P74')
+bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.fV8z1X7a4urvvEyhdJKq2URhWqs')
 
 
 '''@bot.command()
