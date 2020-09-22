@@ -29,9 +29,9 @@ bot = commands.Bot(command_prefix=PREFIX, caseInsensitive=True,
 async def on_ready():
     bot.load_extension('cogs.Help')
     # bot.load_extension('cogs.Music2')
-    #bot.load_extension('cogs.CommandErrorHandler')
+    bot.load_extension('cogs.CommandErrorHandler')
     bot.load_extension('cogs.Leaderboard')
-    #bot.load_extension('cogs.MusicPlayer')
+    # bot.load_extension('cogs.MusicPlayer')
     bot.load_extension('cogs.Level-Schoology')
 
     print('Logged in as:\n{0.user.name}'.format(bot))
@@ -102,7 +102,7 @@ async def addrole(ctx, user: discord.Member, *, role):
     except AttributeError:
         return await ctx.send('That is not a valid role')
     except BadArgument:
-        return await ctx.send(f'`{user}` user not found')
+        return await ctx.send(f'`{user.eme}` user not found')
     except discord.Forbidden:
         return await ctx.send('I\'m not allowed to do that')
 
@@ -145,6 +145,7 @@ async def removerole(ctx, user: discord.Member, *, role):
     except discord.Forbidden:
         return await ctx.send('I\'m not allowed to do that')
 
+
 @bot.command(aliases=['cr'], brief='Creates a role')
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
@@ -159,12 +160,13 @@ async def createrole(ctx, *name):
     except discord.Forbidden:
         return await ctx.send('I don\'t have the permissions to do that')
 
+
 @bot.command(aliases=['rc'], brief='Adds a role claim message, use like this: ;rc toxic pro_player noob with spaces as underscores')
 @commands.has_permissions(manage_roles=True)
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def roleclaim(ctx, *roles):
     await ctx.message.delete()
-    if len(roles) == 0: 
+    if len(roles) == 0:
         await ctx.send('You need to input roles')
     global rolesR
     rolesR = list(roles)

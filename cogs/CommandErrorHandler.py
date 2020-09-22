@@ -19,8 +19,6 @@ class CommandErrorHandler(commands.Cog):
         error: commands.CommandError
             The Exception raised.
         """
-
-        # This prevents any commands with local handlers being handled here in on_command_error.
         if hasattr(ctx.command, 'on_error'):
             return
 
@@ -29,51 +27,110 @@ class CommandErrorHandler(commands.Cog):
         if cog:
             if cog._get_overridden_method(cog.cog_command_error) is not None:
                 return
+        # get the original exception
+        error = getattr(error, 'original', error)
+
+        if isinstance(error, commands.CommandNotFound):
+            await ctx.send(f'`{ctx.message.content}` is not a valid command')
+
+        if isinstance(error, commands.BotMissingPermissions):
+            missing = [perm.replace('_', ' ').replace(
+                'guild', 'server').title() for perm in error.missing_perms]
+            if len(missing) > 2:
+                fmt = '{}, and {}'.format(
+                    "**, **".join(missing[:-1]), missing[-1])
+            else:
+                fmt = ' and '.join(missing)
+            _message = 'I need the **{}** permission(s) to run this command.'.format(
+                fmt)
+            await ctx.send(_message)
+            return
+
+        if isinstance(error, commands.DisabledCommand):
+            await ctx.send('This command has been disabled.')
+            return
+
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.message.delete()
+            await ctx.send('{}, That command is on cooldown! Try again in {:.2f}s!'.format(ctx.author.mention, error.retry_after))
+
+        if isinstance(error, commands.MissingPermissions):
+            missing = [perm.replace('_', ' ').replace(
+                'guild', 'server').title() for perm in error.missing_perms]
+            if len(missing) > 2:
+                fmt = '{}, and {}'.format(
+                    "**, **".join(missing[:-1]), missing[-1])
+            else:
+                fmt = ' and '.join(missing)
+            _message = 'You need the **{}** permission(s) to use this command.'.format(
+                fmt)
+            await ctx.send(_message)
+            return
+
+        if isinstance(error, commands.UserInputError):
+            await ctx.send("Invalid input")
+
+        if isinstance(error, commands.NoPrivateMessage):
+            try:
+                await ctx.author.send('This command cannot be used in direct messages.')
+            except discord.Forbidden:
+                pass
+            return
+
+        if isinstance(error, commands.CheckFailure):
+            await ctx.send("You do not have permission to use this command.")
+
+        if isinstance(error, commands.NotOwner):
+            await ctx.message.delete()
+            await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))
+
+        # ignore all other exception types, but print them to stderr
+        print('Ignoring exception in command {}:'.format(
+            ctx.command), file=sys.stderr)
+
+        traceback.print_exception(
+            type(error), error, error.__traceback__, file=sys.stderr)
+
+
+
 
         # ignored = (commands.CommandNotFound, )
 
         # Allows us to check for original exceptions raised and sent to CommandInvokeError.
         # If nothing is found. We keep the exception passed to on_command_error.
-        error = getattr(error, 'original', error)
+        # error = getattr(error, 'original', error)
 
         # Anything in ignored will return and prevent anything happening.
         # if isinstance(error, ignored):
         #     return
 
-        if isinstance(error, commands.DisabledCommand):
-            await ctx.send(f'{ctx.command} has been disabled.')
-        elif isinstance(error, commands.CommandNotFound):
-            await ctx.send(f'`{ctx.message.content}` is not a valid command.')
 
-        elif isinstance(error, commands.NoPrivateMessage):
-            try:
-                await ctx.author.send(f'{ctx.command} can not be used in Private Messages.')
-            except discord.HTTPException:
-                pass
 
         # For this error example we check to see where it came from...
-        elif isinstance(error, commands.BadArgument):
-            if ctx.command.qualified_name == 'tag list':  # Check if the command being invoked is 'tag list'
-                await ctx.send('I could not find that member. Please try again.')
-        elif isinstance(error, commands.CommandOnCooldown):
-            await ctx.message.delete()
-            await ctx.send('{}, That command is on cooldown! Try again in {:.2f}s!'.format(ctx.author.mention, error.retry_after))
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.message.delete()
-            embed = discord.Embed(color=random.randint(
-                0, 0xffffff), title="Seems like you don't have the permissions to do that")
-            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-            await ctx.send(embed=embed)
+        # if isinstance(error, commands.BadArgument):
+        #     if ctx.command.qualified_name == 'tag list':  # Check if the command being invoked is 'tag list'
+        #         await ctx.send('I could not find that member. Please try again.')
+
+        # if isinstance(error, commands.MissingPermissions):
+        #     missing = [perm.replace('_', ' ').replace(
+        #         'guild', 'server').title() for perm in error.missing_perms]
+        #     if len(missing) > 2:
+        #         fmt = '{}, and {}'.format(
+        #             "**, **".join(missing[:-1]), missing[-1])
+        #     else:
+        #         fmt = ' and '.join(missing)
+        #     _message = 'You need the **{}** permission(s) to use this command.'.format(
+        #         fmt)
+        #     await ctx.send(_message)
+        #     return
             
-        elif isinstance(error, commands.NotOwner):
-            await ctx.message.delete()
-            await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))
-        # else:
-        #     # All other Errors not returned come here. And we can just print the default TraceBack.
-        #     print('Ignoring exception in command {}:'.format(
-        #         ctx.command), file=sys.stderr)
-        #     traceback.print_exception(
-        #         type(error), error, error.__traceback__, file=sys.stderr)
+        #else:
+            #All other Errors not returned come here. And we can just print the default TraceBack.
+            # print('Ignoring exception in command {}:'.format(
+            #     ctx.command), file=sys.stderr)
+            # traceback.print_exception(
+            #     type(error), error, error.__traceback__, file=sys.stderr)
+
 
     """Below is an example of a Local Error Handler for our command do_repeat"""
     
