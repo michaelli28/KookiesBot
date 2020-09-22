@@ -36,8 +36,9 @@ class Schoology(commands.Cog):
     now = datetime.datetime.now() 
     current_time = now.strftime("%H:%M")
     day_of_the_week = now.strftime("%A")
-    if day_of_the_week==('Monday' or 'Tuesday' or 'Wednesday' or 'Thursday' or 'Friday'): 
+    if day_of_the_week=='Monday' or day_of_the_week=='Tuesday' or day_of_the_week=='Wednesday' or day_of_the_week=='Thursday' or day_of_the_week=='Friday': 
       if current_time == '07:55':
+        print('hi')
         await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
         await channel2.send("Class starts in 5 minutes!")
 

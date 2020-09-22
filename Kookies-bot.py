@@ -142,6 +142,22 @@ async def mute(ctx, user: discord.Member):
         await user.add_roles(role)
         await ctx.send(f'`{user.name}` has been muted from chat')
 
+@bot.command(aliases=['um'], brief='Mutes someone, need manage roles')
+@commands.cooldown(1, 5, commands.BucketType.user)
+@commands.has_permissions(manage_roles=True)
+async def unmute(ctx, user: discord.Member):
+    try:
+        role = get(user.guild.roles, name='Muted')
+        await user.remove_roles(role)
+        await ctx.send(f'{user.name} has been unmuted')
+    except BadArgument:
+        return await ctx.send(f'`{user.name}` user not found')
+    except discord.Forbidden:
+        return await ctx.send('I\'m not allowed to do that')
+    except AttributeError:
+        return await ctx.send('`Muted` is not a role, use ;mute member to create the muted role')
+
+
 
 @bot.command(aliases=['rr'], brief='Removes a role, need manage roles')
 @commands.cooldown(1, 5, commands.BucketType.user)

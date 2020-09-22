@@ -33,7 +33,7 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, commands.CommandNotFound):
             await ctx.send(f'`{ctx.message.content}` is not a valid command')
 
-        if isinstance(error, commands.BotMissingPermissions):
+        elif isinstance(error, commands.BotMissingPermissions):
             missing = [perm.replace('_', ' ').replace(
                 'guild', 'server').title() for perm in error.missing_perms]
             if len(missing) > 2:
@@ -46,15 +46,19 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send(_message)
             return
 
-        if isinstance(error, commands.DisabledCommand):
-            await ctx.send('This command has been disabled.')
-            return
+        # elif isinstance(error, commands.DisabledCommand):
+        #     await ctx.send('This command has been disabled.')
+        #     return
 
-        if isinstance(error, commands.CommandOnCooldown):
+        elif isinstance(error, commands.CommandOnCooldown):
             await ctx.message.delete()
             await ctx.send('{}, That command is on cooldown! Try again in {:.2f}s!'.format(ctx.author.mention, error.retry_after))
 
-        if isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, commands.NotOwner):
+            await ctx.message.delete()
+            return await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))
+            
+        elif isinstance(error, commands.MissingPermissions):
             missing = [perm.replace('_', ' ').replace(
                 'guild', 'server').title() for perm in error.missing_perms]
             if len(missing) > 2:
@@ -64,25 +68,22 @@ class CommandErrorHandler(commands.Cog):
                 fmt = ' and '.join(missing)
             _message = 'You need the **{}** permission(s) to use this command.'.format(
                 fmt)
-            await ctx.send(_message)
-            return
+            return await ctx.send(_message)
 
-        if isinstance(error, commands.UserInputError):
+
+        elif isinstance(error, commands.UserInputError):
             await ctx.send("Invalid input")
 
-        if isinstance(error, commands.NoPrivateMessage):
+        elif isinstance(error, commands.NoPrivateMessage):
             try:
                 await ctx.author.send('This command cannot be used in direct messages.')
             except discord.Forbidden:
                 pass
             return
 
-        if isinstance(error, commands.CheckFailure):
-            await ctx.send("You do not have permission to use this command.")
+        # elif isinstance(error, commands.CheckFailure):
+        #     await ctx.send("You do not have permission to use this command")
 
-        if isinstance(error, commands.NotOwner):
-            await ctx.message.delete()
-            await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))
 
         # ignore all other exception types, but print them to stderr
         print('Ignoring exception in command {}:'.format(
