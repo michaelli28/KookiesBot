@@ -23,10 +23,23 @@ global PREFIX
 PREFIX = ';'
 bot = commands.Bot(command_prefix=PREFIX, caseInsensitive=True,
                    description='Kookies FOR THE WIN')
+'''
+# Setting `Playing ` status
+await bot.change_presence(activity=discord.Game(name="a game"))
 
+# Setting `Streaming ` status
+await bot.change_presence(activity=discord.Streaming(name="My Stream", url=my_twitch_url))
 
+# Setting `Listening ` status
+await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="a song"))
+
+# Setting `Watching ` status
+await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="a movie"))
+'''
 @bot.event
 async def on_ready():
+    activity = discord.Game(name=";help")
+    await bot.change_presence(activity=activity)
     bot.load_extension('cogs.Help')
     # bot.load_extension('cogs.Music2')
     bot.load_extension('cogs.CommandErrorHandler')
