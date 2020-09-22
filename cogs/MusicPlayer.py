@@ -961,10 +961,7 @@ class MusicPlayer(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def embed(self, ctx):
         #await ctx.message.delete()
-        vc = ctx.voice_client
 
-        if not vc or not vc.is_connected():
-            return await ctx.send('I am not currently connected to voice!')
 
         # Inverse boolean value to loop and unloop.
         ctx.voice_state.sendEmbed = not ctx.voice_state.sendEmbed
@@ -1001,7 +998,6 @@ class MusicPlayer(commands.Cog):
             return await ctx.send('Please reply with **y** or **n** next time, continuing')
         ctx.voice_state.songs.clear()
         return await ctx.send('Cleared the queue')
-
 
 
 
