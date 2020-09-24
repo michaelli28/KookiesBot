@@ -111,6 +111,16 @@ async def on_member_remove(member):
 @commands.has_permissions(manage_roles=True)
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def addrole(ctx, user: discord.Member, *, role):
+    if user == '@everyone':
+        try:
+            for user in ctx.guild.members:
+                role = get(user.guild.roles, name=role)
+                await user.add_roles(role)
+            await ctx.send(f'Gave everyone the {role} role')
+        except AttributeError:
+            return await ctx.send('That is not a valid role')
+        except discord.Forbidden:
+            return await ctx.send('I\'m not allowed to do that')
     try:
         role = get(user.guild.roles, name=role)
         await user.add_roles(role)
@@ -127,6 +137,15 @@ async def addrole(ctx, user: discord.Member, *, role):
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
 async def mute(ctx, user: discord.Member):
+    if user == '@everyone':
+        try:
+            for user in ctx.guild.members:
+                role = get(user.guild.roles, name='Muted')
+                await user.add_roles(role)
+            await ctx.send(f'Muted everyone')
+
+        except discord.Forbidden:
+            return await ctx.send('I\'m not allowed to do that')
     try:
         role = get(user.guild.roles, name='Muted')
         await user.add_roles(role)
@@ -150,6 +169,15 @@ async def mute(ctx, user: discord.Member):
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
 async def unmute(ctx, user: discord.Member):
+    if user == '@everyone':
+        try:
+            for user in ctx.guild.members:
+                role = get(user.guild.roles, name='Muted')
+                await user.remove_roles(role)
+            await ctx.send(f'Unmuted everyone')
+
+        except discord.Forbidden:
+            return await ctx.send('I\'m not allowed to do that')
     try:
         role = get(user.guild.roles, name='Muted')
         await user.remove_roles(role)
@@ -166,6 +194,16 @@ async def unmute(ctx, user: discord.Member):
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
 async def removerole(ctx, user: discord.Member, *, role):
+    if user == '@everyone':
+        try:
+            for user in ctx.guild.members:
+                role = get(user.guild.roles, name=role)
+                await user.remove_roles(role)
+            await ctx.send(f'Removed everyone\'s {role} role')
+        except AttributeError:
+            return await ctx.send('That is not a valid role')
+        except discord.Forbidden:
+            return await ctx.send('I\'m not allowed to do that')
     try:
         role = get(user.guild.roles, name=role)
         await user.remove_roles(role)
