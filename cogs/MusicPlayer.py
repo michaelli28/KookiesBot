@@ -4,7 +4,9 @@ import itertools
 import math
 import random
 import re
+import requests
 import discord
+from collections import OrderedDict
 import youtube_dl
 from async_timeout import timeout
 from discord.ext import commands
@@ -800,6 +802,9 @@ class MusicPlayer(commands.Cog):
         other songs finished playing
         This command automatically searches from various sites if no URL is provided
         """
+        # ['fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA', 'r6zIGXun57U', '4Q46xYqUwZQ\\u0026list=RD4Q46xYqUwZQ\\u0026start_radio=1', 'NuB-1myGido\\u0026list=RD4Q46xYqUwZQ\\u0026start_radio=1', 'nblbhJg3sAA', 'fB8TyLTD7EE', '28hYUZMufDg\\u0026list=RDCLAK5uy_l3XabTm3_hzKqB9XOpyJj2xYRO597H5eE', 'p2oL7Uj1P_o', 'LBr7kECsjcQ', 'QpR8_Onc9ho', 'vOwVTtoR-9E', 'LSvOTw8UH6s', 'T-7V-EbDLDQ', 'fmI_Ndrxy14', 'GMG-SkU0Cis', 'NuB-1myGido', 'UOxkGD8qRB4', 'Ks0Q0N2npfg', 'i1IKnWDecwA', 'a9hiUoWrl8s', 'V5M2WZiAy6k', 'mP3fGkpmVM0', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=1', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', '1uBPOu3si5w\\u0026list=RDFaXs-ZDS-dA\\u0026index=3', '5-mT9D4fdgQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=4', 'LSvOTw8UH6s\\u0026list=RDFaXs-ZDS-dA\\u0026index=5', 'GYFJjwXtsU4\\u0026list=RDFaXs-ZDS-dA\\u0026index=6', 'WImBhU43MYg\\u0026list=RDFaXs-ZDS-dA\\u0026index=7', 'Kx7B-XvmFtE\\u0026list=RDFaXs-ZDS-dA\\u0026index=8', 'Yo7nscCXUgM\\u0026list=RDFaXs-ZDS-dA\\u0026index=9', 'l9PxOanFjxQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=10', 'ktvTqknDobU\\u0026list=RDFaXs-ZDS-dA\\u0026index=11',
+        #     'bpOSxM0rNPM\\u0026list=RDFaXs-ZDS-dA\\u0026index=12', 'NuB-1myGido\\u0026list=RDFaXs-ZDS-dA\\u0026index=13', 'bFlZVGGiI7Y\\u0026list=RDFaXs-ZDS-dA\\u0026index=14', 'Qzw6A2WC5Qo\\u0026list=RDFaXs-ZDS-dA\\u0026index=15', 's4vAOYI4QoI\\u0026list=RDFaXs-ZDS-dA\\u0026index=16', 'LBr7kECsjcQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=17', 'oUiOylPbfV0\\u0026list=RDFaXs-ZDS-dA\\u0026index=18', 'X5CFnb7e44s\\u0026list=RDFaXs-ZDS-dA\\u0026index=19', '9XaS93WMRQQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=20', 'gOsM-DYAEhY\\u0026list=RDFaXs-ZDS-dA\\u0026index=21', '7rmRTUTdZEc\\u0026list=RDFaXs-ZDS-dA\\u0026index=22', 'L3wKzyIN1yk\\u0026list=RDFaXs-ZDS-dA\\u0026index=23', 'SCD2tB1qILc\\u0026list=RDFaXs-ZDS-dA\\u0026index=24', 'fTFxE32onKs\\u0026list=RDFaXs-ZDS-dA\\u0026index=25', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=1', 'r6zIGXun57U', 'NuB-1myGido\\u0026list=RD4Q46xYqUwZQ', 'nblbhJg3sAA', 'fB8TyLTD7EE', '28hYUZMufDg\\u0026list=RDCLAK5uy_l3XabTm3_hzKqB9XOpyJj2xYRO597H5eE', 'p2oL7Uj1P_o', 'LBr7kECsjcQ', 'QpR8_Onc9ho', 'vOwVTtoR-9E', 'LSvOTw8UH6s', 'T-7V-EbDLDQ', 'fmI_Ndrxy14', 'r6zIGXun57U', 'g9GI7XRRQMQ', 'r6zIGXun57U', 'g9GI7XRRQMQ', 'KbNL9ZyB49c', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=3\\u0026ab_channel=LeagueofLegends', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=3\\u0026ab_channel=LeagueofLegends']
+
 
         if search == None:
             return await ctx.send('You need to input a url or search')
@@ -839,8 +844,64 @@ class MusicPlayer(commands.Cog):
                         return
                     except YTDLError as e:
                         await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
-                else:
-                    return await ctx.send('Please format your playlist link like this: https://www.youtube.com/playlist?list=aOgenasdovoawoeNeoi3oi308udfe')
+                elif len(watch)>0:
+
+                    response = requests.get(search)
+                    soup = BeautifulSoup(response.text, 'lxml')
+
+                    # print(soup.prettify())
+
+                    playlistUrls = re.findall('"url":"/watch\?v=(.*?)"' , soup.prettify())
+                    # print(playlistUrls)
+                    playlistUrls2 = []
+
+                    for url in playlistUrls:
+                        url2 = re.findall('(.*?)\\\\u0026list=', url)
+                        if len(url2)>0:
+                            playlistUrls2.append(url2[0])
+                        else:
+                            playlistUrls2.append(url)
+                    print(playlistUrls2)
+                    # for i in range(len(playlistUrls2)):
+                    #     if len(playlistUrls2[i][0]) > 3:
+                    #         playlistUrls2.append(playlistUrls2[i][0])
+                    #         playlistUrls2.remove(playlistUrls2[i])
+                    # print(playlistUrls2)
+                    res = [i for n, i in enumerate(playlistUrls2) if i not in playlistUrls2[:n]]
+                    maxPlaylistSize = 40
+                    showVidSize = None
+                    print(res)
+                    if len(res) >= maxPlaylistSize:
+                        showVidSize = maxPlaylistSize
+                    else:
+                        showVidSize = len(res)
+                    try:
+                        if not ctx.voice_state.voice:
+                            await ctx.invoke(self._join)
+                        await ctx.send('Putting songs into the queue, please wait a minute or two before checking the queue')
+                        for n in range(showVidSize):
+                            try:
+                                source = await YTDLSource.create_source(ctx, 'https://www.youtube.com/watch?v=' + res[n], loop=self.bot.loop)
+                                song = Song(source)
+                                await ctx.voice_state.songs.put(song)
+                            except:
+                                # try:
+                                #     source = await YTDLSource.create_source(ctx, 'https://www.youtube.com/watch?v=' + res[n][0], loop=self.bot.loop)
+                                #     song = Song(source)
+                                #     await ctx.voice_state.songs.put(song)
+
+                                # except:
+                                #     try:
+                                await ctx.send('There was an error downloading ' + 'https://www.youtube.com/watch?v=' + res[n])
+                                    # except:
+                                    #     try:
+                                    #         await ctx.send('There was an error downloading ' + 'https://www.youtube.com/watch?v=' + res[n])
+                                    #     except:
+                                    #         await ctx.send("There was an error downloading a song")
+                        return
+                    except YTDLError as e:
+                        await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
+
             else:
                 pass
             try:

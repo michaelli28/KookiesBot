@@ -11,6 +11,7 @@ from discord.utils import get
 import json
 import asyncio
 from os import system
+import requests
 #import spotdl
 import urllib.parse
 import urllib.request
@@ -36,6 +37,8 @@ await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.li
 # Setting `Watching ` status
 await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="a movie"))
 '''
+
+
 @bot.event
 async def on_ready():
     activity = discord.Game(name=";help")
@@ -74,7 +77,7 @@ async def on_member_join(member):
     # await client.add_roles(member, role)
 
     embed = discord.Embed(
-        title='Welcome to ' + str(member.guild.name), color=random.randint(0, 0xffffff))
+        title='Welcome to ' + str(member.guild.name) + " "+  str(member.name), color=random.randint(0, 0xffffff))
 
     embed.set_author(name=member.name, icon_url=member.avatar_url)
     with open("guild.json", "r") as f:
@@ -142,6 +145,7 @@ async def mute(ctx, user: discord.Member):
         await user.add_roles(role)
         await ctx.send(f'`{user.name}` has been muted from chat')
 
+
 @bot.command(aliases=['um'], brief='Mutes someone, need manage roles')
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
@@ -156,7 +160,6 @@ async def unmute(ctx, user: discord.Member):
         return await ctx.send('I\'m not allowed to do that')
     except AttributeError:
         return await ctx.send('`Muted` is not a role, use ;mute member to create the muted role')
-
 
 
 @bot.command(aliases=['rr'], brief='Removes a role, need manage roles')
@@ -178,50 +181,90 @@ async def removerole(ctx, user: discord.Member, *, role):
 @bot.command(aliases=['cr'], brief='Creates a role')
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
-async def createrole(ctx, *, name):
+async def createrole(ctx, name, color=None, permission=None):
+    rindex = 0
+    for char in name:
+        try:
+            name.find('_')
+            rindex += 1
+        except:
+            pass
+
+    r = name.replace('_', " ", rindex)
     # newname = ''
     # for part in name:
     #     newname += part+' '
     # newname = newname[0:-1]
-    try:
-        await ctx.guild.create_role(name=name, reason='Why not')
-        return await ctx.send(f'Created the role `{name}`')
-    except discord.Forbidden:
-        return await ctx.send('I don\'t have the permissions to do that')
 
+    if str(color)=='blank' or color==None:
+        color = random.randint(0, 0xffffff)
+
+
+    if permission==None:
+        try:
+            await ctx.guild.create_role(name=r, reason='Why not', color=discord.Color(int(color)))
+            return await ctx.send(f'Created the role `{r}`')
+        except discord.Forbidden:
+            return await ctx.send('I don\'t have the permissions to do that')
+    else:
+        try:
+            await ctx.guild.create_role(name=r, reason='Why not', color=discord.Color(int(color)), permissions=discord.Permissions(permissions=int(permission)))
+            return await ctx.send(f'Created the role `{r}`')
+        except discord.Forbidden:
+            return await ctx.send('I don\'t have the permissions to do that')
 
 @bot.command(aliases=['rc'], brief='Adds a role claim message, use like this: ;rc toxic pro_player noob with spaces as underscores')
 @commands.has_permissions(manage_roles=True)
 @commands.cooldown(1, 5, commands.BucketType.user)
-async def roleclaim(ctx, *roles):
+async def roleclaim(ctx, *roles, messagea=None):
     await ctx.message.delete()
-    if len(roles) == 0:
-        await ctx.send('You need to input roles')
-    global rolesR
-    rolesR = list(roles)
     if 1 > len(roles) > 10:
         return await ctx.send('List of roles must be between 1 and 10')
+
+    global rolesR
+    rolesR = list(roles)
+
+    with open("roles.json", "r") as f:
+        rolesjson = json.load(f)
+
+    if str(ctx.message.channel.id) in rolesjson:
+        del rolesjson[str(ctx.message.id)]
+
     index = 0
     reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣',
                  '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
     message = ''
     rindex = 0
     for r in rolesR:
+
         for char in r:
             try:
                 r.find('_')
                 rindex += 1
             except:
                 pass
+
         r = r.replace('_', " ", rindex)
         rolesR[index] = r
+
         role = get(ctx.author.guild.roles, name=r)
+
         if role == None:
-            await ctx.send(await ctx.send(f'`{r}` is not a valid role'))
+            return await ctx.send(await ctx.send(f'`{r}` is not a valid role'))
+
         message += f'React with {reactions[index]} to receive the `{role}` role!\n'
         index += 1
 
-    messagesent = await ctx.send(message)
+    if messagea == None:
+        messagesent = await ctx.send(message)
+    else:
+        messagesent = await ctx.send(message+str(messagea))
+
+    rolesjson[messagesent.id] = rolesR
+
+    with open("roles.json", "w") as f:
+        json.dump(rolesjson, f)
+
     for i in range(len(roles)):
         await messagesent.add_reaction(reactions[i])
 
@@ -230,138 +273,233 @@ async def roleclaim(ctx, *roles):
 async def on_raw_reaction_add(payload):
     channel = discord.utils.get(bot.get_all_channels(), id=payload.channel_id)
     user = payload.member
+
     if payload.emoji.name == '❌':
         try:
             message = await channel.fetch_message(payload.message_id)
         except:
             pass
-        if message.content.startswith('React with 1️⃣ to receive the '):
-            try:
-                return await user.send('I can\'t delete that')
-            except:
-                pass
-        else:
-            try:
-                if (not payload.member.bot):
-                    try:
-                        await message.delete()
-                    except:
-                        pass
-            except:
-                pass
+        try:
+            if message.content.startswith('React with 1️⃣ to receive the '):
+                try:
+                    return await user.send('I can\'t delete that message you just reacted to')
+                except:
+                    pass
+            else:
+                try:
+                    if (not payload.member.bot):
+                        try:
+                            await message.delete()
+                        except:
+                            pass
+                except:
+                    pass
+        except:
+            pass
     elif payload.emoji.name == '1️⃣':
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
             role = get(user.guild.roles, name=rolesR[0])
             await user.add_roles(role)
             await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '2️⃣':
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
-            role = get(user.guild.roles, name=rolesR[0])
+            role = get(user.guild.roles, name=rolesR[1])
             await user.add_roles(role)
             await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '3️⃣':
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
-            role = get(user.guild.roles, name=rolesR[0])
+            role = get(user.guild.roles, name=rolesR[2])
             await user.add_roles(role)
             await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '4️⃣':
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
-            role = get(user.guild.roles, name=rolesR[0])
+            role = get(user.guild.roles, name=rolesR[3])
             await user.add_roles(role)
             await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '5️⃣':
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
-            role = get(user.guild.roles, name=rolesR[0])
+            role = get(user.guild.roles, name=rolesR[4])
             await user.add_roles(role)
             await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '6️⃣':
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
-            role = get(user.guild.roles, name=rolesR[0])
+            role = get(user.guild.roles, name=rolesR[5])
             await user.add_roles(role)
             await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '7️⃣':
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
-            role = get(user.guild.roles, name=rolesR[0])
+            role = get(user.guild.roles, name=rolesR[6])
             await user.add_roles(role)
             await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '8️⃣':
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
-            role = get(user.guild.roles, name=rolesR[0])
+            role = get(user.guild.roles, name=rolesR[7])
             await user.add_roles(role)
             await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '9️⃣':
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
-            role = get(user.guild.roles, name=rolesR[0])
+            role = get(user.guild.roles, name=rolesR[8])
             await user.add_roles(role)
             await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '🔟':
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
-            role = get(user.guild.roles, name=rolesR[0])
+            role = get(user.guild.roles, name=rolesR[9])
             await user.add_roles(role)
             await user.send('You have received the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
 
 
 @bot.event
 async def on_raw_reaction_remove(payload):
+
     if payload.emoji.name == '1️⃣':
-        user = get(bot.get_all_members(), id=payload.user_id)
-        role = get(user.guild.roles, name=rolesR[0])
-        await user.add_roles(role)
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
+        guild = bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        role = get(guild.roles, name=rolesR[0])
+        await user.remove_roles(role)
         await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '2️⃣':
-        user = get(bot.get_all_members(), id=payload.user_id)
-        role = get(user.guild.roles, name=rolesR[0])
-        await user.add_roles(role)
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
+        guild = bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        role = get(guild.roles, name=rolesR[1])
+        await user.remove_roles(role)
         await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '3️⃣':
-        user = get(bot.get_all_members(), id=payload.user_id)
-        role = get(user.guild.roles, name=rolesR[0])
-        await user.add_roles(role)
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
+        guild = bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        role = get(guild.roles, name=rolesR[2])
+        await user.remove_roles(role)
         await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '4️⃣':
-        user = get(bot.get_all_members(), id=payload.user_id)
-        role = get(user.guild.roles, name=rolesR[0])
-        await user.add_roles(role)
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
+        guild = bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        role = get(guild.roles, name=rolesR[3])
+        await user.remove_roles(role)
         await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '5️⃣':
-        user = get(bot.get_all_members(), id=payload.user_id)
-        role = get(user.guild.roles, name=rolesR[0])
-        await user.add_roles(role)
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
+        guild = bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        role = get(guild.roles, name=rolesR[4])
+        await user.remove_roles(role)
         await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '6️⃣':
-        user = get(bot.get_all_members(), id=payload.user_id)
-        role = get(user.guild.roles, name=rolesR[0])
-        await user.add_roles(role)
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
+        guild = bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        role = get(guild.roles, name=rolesR[5])
+        await user.remove_roles(role)
         await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '7️⃣':
-        user = get(bot.get_all_members(), id=payload.user_id)
-        role = get(user.guild.roles, name=rolesR[0])
-        await user.add_roles(role)
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
+        guild = bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        role = get(guild.roles, name=rolesR[6])
+        await user.remove_roles(role)
         await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '8️⃣':
-        user = get(bot.get_all_members(), id=payload.user_id)
-        role = get(user.guild.roles, name=rolesR[0])
-        await user.add_roles(role)
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
+        guild = bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        role = get(guild.roles, name=rolesR[7])
+        await user.remove_roles(role)
         await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '9️⃣':
-        user = get(bot.get_all_members(), id=payload.user_id)
-        role = get(user.guild.roles, name=rolesR[0])
-        await user.add_roles(role)
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
+        guild = bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        role = get(guild.roles, name=rolesR[8])
+        await user.remove_roles(role)
         await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
     elif payload.emoji.name == '🔟':
-        user = get(bot.get_all_members(), id=payload.user_id)
-        role = get(user.guild.roles, name=rolesR[0])
-        await user.add_roles(role)
+        with open("roles.json", "r") as f:
+            rolesjson = json.load(f)
+
+        rolesR = rolesjson[str(payload.message_id)]
+        guild = bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        role = get(guild.roles, name=rolesR[9])
+        await user.remove_roles(role)
         await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
 
 
@@ -455,7 +593,10 @@ async def on_message(message):
         if message.content.startswith('no u'):
             return await message.channel.send('no u', delete_after=10)
     if message.author == bot.user:
-        await message.add_reaction('❌')
+        if message.content.startswith('React with 1️⃣ to receive the '):
+            return
+        else:
+            await message.add_reaction('❌')
     await bot.process_commands(message)
     # if message.author.id == '740226974248730625':
     # await message.delete()

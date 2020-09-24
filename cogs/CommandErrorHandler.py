@@ -31,6 +31,8 @@ class CommandErrorHandler(commands.Cog):
         error = getattr(error, 'original', error)
 
         if isinstance(error, commands.CommandNotFound):
+            if ctx.message.content.startswith(';)'):
+                return
             await ctx.send(f'`{ctx.message.content}` is not a valid command')
 
         elif isinstance(error, commands.BotMissingPermissions):
@@ -49,7 +51,8 @@ class CommandErrorHandler(commands.Cog):
         # elif isinstance(error, commands.DisabledCommand):
         #     await ctx.send('This command has been disabled.')
         #     return
-
+        elif isinstance(error, discord.errors.Forbidden):
+            return await ctx.send('I don\'t have permissions to do that')
         elif isinstance(error, commands.CommandOnCooldown):
             await ctx.message.delete()
             await ctx.send('{}, That command is on cooldown! Try again in {:.2f}s!'.format(ctx.author.mention, error.retry_after))

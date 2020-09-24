@@ -5,7 +5,7 @@ from time import sleep
 import pyprog
 from discord.ext import tasks, commands
 
-
+'''
 class MyCog(commands.Cog):
     def __init__(self):
         self.index = 0
@@ -20,7 +20,7 @@ class MyCog(commands.Cog):
         self.index += 1
 def setup(bot):
     bot.add_cog(MyCog(bot))
-'''
+
 bot = commands.Bot(command_prefix=';', caseInsensitive=True,
                    description='Kookies FOR THE WIN')
 
@@ -65,3 +65,5 @@ collection = db['Xp']
 #except:
 collection.insert_one({'_id': 'id4', 'name': 'cool', "Xp": random.randint(15, 25)})
 '''
+
+
