@@ -15,6 +15,7 @@ import requests
 #import spotdl
 import urllib.parse
 import urllib.request
+from typing import Optional
 import re
 from discord import Embed, File, DMChannel
 # from googleapiclient.discovery import build
@@ -47,7 +48,7 @@ async def on_ready():
     # bot.load_extension('cogs.Music2')
     bot.load_extension('cogs.CommandErrorHandler')
     bot.load_extension('cogs.Leaderboard')
-    bot.load_extension('cogs.MusicPlayer')
+    #bot.load_extension('cogs.MusicPlayer')
     bot.load_extension('cogs.Level-Schoology')
 
     print('Logged in as:\n{0.user.name}'.format(bot))
@@ -110,7 +111,7 @@ async def on_member_remove(member):
 # This must be exactly the name of the appropriate role
 @commands.has_permissions(manage_roles=True)
 @commands.cooldown(1, 5, commands.BucketType.user)
-async def addrole(ctx, user: discord.Member, role, everyone=None):
+async def addrole(ctx, user: Optional[discord.Member], role, everyone=None):
     rindex = 0
     for char in role:
         try:
@@ -120,19 +121,18 @@ async def addrole(ctx, user: discord.Member, role, everyone=None):
             pass
 
     r = role.replace('_', " ", rindex)
-    print(r)
-    print(user)
-    print(ctx.message.guild.members)
     if everyone == 'everyone':
-        try:
-            r = get(person.guild.roles, name=r)
-            for person in ctx.message.guild.members:
-                await person.add_roles(r)
-            return await ctx.send(f'Gave everyone the {r} role')
-        # except AttributeError:
-        #     return await ctx.send('That is not a valid role')
-        except discord.Forbidden:
-            return await ctx.send('I\'m not allowed to do that')
+        async with ctx.typing():
+            try:
+                r = get(ctx.message.guild.roles, name=r)
+                for person in ctx.message.guild.members:
+                    u = ctx.guild.get_member(person.id)
+                    await u.add_roles(r)
+                return await ctx.send(f'Gave everyone the {r} role')
+            except AttributeError:
+                return await ctx.send('That is not a valid role')
+            except discord.Forbidden:
+                return await ctx.send('I\'m not allowed to do that')
     else:
         try:
             r = get(user.guild.roles, name=r)
@@ -149,20 +149,33 @@ async def addrole(ctx, user: discord.Member, role, everyone=None):
 @bot.command(aliases=['m'], brief='Mutes someone, need manage roles')
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
-async def mute(ctx, user: discord.Member, everyone=None):
+async def mute(ctx, user: Optional[discord.Member], everyone=None):
     if everyone == 'everyone':
-        try:
-            for user in ctx.guild.members:
+        async with ctx.typing():
+            try:
+                r = get(ctx.message.guild.roles, name='Muted')
+                for person in ctx.message.guild.members:
+                    u = ctx.guild.get_member(person.id)
+                    await u.add_roles(r)
+                return await ctx.send(f'Muted everyone')
+            except AttributeError:
+                Muted = await ctx.guild.create_role(name="Muted", reason="To use for muting")
+                for channel in ctx.guild.channels:  # removes permission to view and send in the channels
+                    await channel.set_permissions(Muted, send_messages=False,
+                                                read_message_history=False,
+                                                read_messages=False)
                 role = get(user.guild.roles, name='Muted')
-                await user.add_roles(role)
-            return await ctx.send(f'Muted everyone')
-
-        except discord.Forbidden:
-            return await ctx.send('I\'m not allowed to do that')
+                for person in ctx.message.guild.members:
+                    u = ctx.guild.get_member(person.id)
+                    await u.add_roles(role)
+                await ctx.send(f'Muted Everyone')
+                
+            except discord.Forbidden:
+                return await ctx.send('I\'m not allowed to do that')
     try:
         role = get(user.guild.roles, name='Muted')
         await user.add_roles(role)
-        await ctx.send(f'{user.name} has been muted from chat')
+        await ctx.send(f'`{user.name}` has been muted from chat')
     except BadArgument:
         return await ctx.send(f'`{user.name}` user not found')
     except discord.Forbidden:
@@ -181,16 +194,18 @@ async def mute(ctx, user: discord.Member, everyone=None):
 @bot.command(aliases=['um'], brief='Mutes someone, need manage roles')
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
-async def unmute(ctx, user: discord.Member, everyone=None):
+async def unmute(ctx, user: Optional[discord.Member], everyone=None):
     if everyone == 'everyone':
-        try:
-            for user in ctx.guild.members:
-                role = get(user.guild.roles, name='Muted')
-                await user.remove_roles(role)
-            return await ctx.send(f'Unmuted everyone')
+        async with ctx.typing():
+            try:
+                r = get(ctx.message.guild.roles, name='Muted')
+                for person in ctx.message.guild.members:
+                    u = ctx.guild.get_member(person.id)
+                    await u.remove_roles(r)
+                return await ctx.send(f'Unmuted everyone')
 
-        except discord.Forbidden:
-            return await ctx.send('I\'m not allowed to do that')
+            except discord.Forbidden:
+                return await ctx.send('I\'m not allowed to do that')
     try:
         role = get(user.guild.roles, name='Muted')
         await user.remove_roles(role)
@@ -206,7 +221,7 @@ async def unmute(ctx, user: discord.Member, everyone=None):
 @bot.command(aliases=['rr'], brief='Removes a role, need manage roles')
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
-async def removerole(ctx, user: discord.Member, role, everyone):
+async def removerole(ctx, user: Optional[discord.Member], role, everyone=None):
     rindex = 0
     for char in role:
         try:
@@ -217,15 +232,17 @@ async def removerole(ctx, user: discord.Member, role, everyone):
 
     r = role.replace('_', " ", rindex)
     if everyone == 'everyone':
-        try:
-            r = get(user.guild.roles, name=r)
-            for user in ctx.message.guild.members:
-                await user.remove_roles(r)
-            return await ctx.send(f'Removed everyone\'s {r} role')
-        except AttributeError:
-            return await ctx.send('That is not a valid role')
-        except discord.Forbidden:
-            return await ctx.send('I\'m not allowed to do that')
+        async with ctx.typing():
+            try:
+                r = get(ctx.message.guild.roles, name='Muted')
+                for person in ctx.message.guild.members:
+                    u = ctx.guild.get_member(person.id)
+                    await u.remove_roles(r)
+                return await ctx.send(f'Everyone\'s {r} role has been removed')
+            except AttributeError:
+                return await ctx.send('That is not a valid role')
+            except discord.Forbidden:
+                return await ctx.send('I\'m not allowed to do that')
     try:
         r = get(user.guild.roles, name=r)
         await user.remove_roles(r)
@@ -238,7 +255,7 @@ async def removerole(ctx, user: discord.Member, role, everyone):
         return await ctx.send('I\'m not allowed to do that')
 
 
-@bot.command(aliases=['cr'], brief='Creates a role')
+@bot.command(aliases=['cr'], brief='Creates a role; Using `random` for color sets a random color')
 @commands.cooldown(1, 5, commands.BucketType.user)
 @commands.has_permissions(manage_roles=True)
 async def createrole(ctx, name, color=None, permission=None):
@@ -256,7 +273,7 @@ async def createrole(ctx, name, color=None, permission=None):
     #     newname += part+' '
     # newname = newname[0:-1]
 
-    if str(color)=='blank' or color==None:
+    if str(color)=='random' or color==None:
         color = random.randint(0, 0xffffff)
 
 

@@ -17,10 +17,10 @@ import discord
 import youtube_dl
 from discord.ext import commands
 import math
+from typing import Optional
 #import pyprog
 from time import sleep
-#TODO choose channel to send song is playing messages
-#TODO skipto command to skip to a certain song
+
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 class YTDLError(Exception):
@@ -77,9 +77,11 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return '**{0.title}** by **{0.uploader}**'.format(self)
 
     @classmethod
-    async def create_source(cls, ctx, search: str, *, loop: asyncio.BaseEventLoop = None):
+    async def create_source(cls, ctx, search: str, *, loop: asyncio.BaseEventLoop = None, timestamp: int=0):
         loop = loop or asyncio.get_event_loop()
-
+        ffmpeg_options = {
+            'options': f'-vn -ss {timestamp}'
+        }
         partial = functools.partial(cls.ytdl.extract_info, search, download=False, process=False)
         data = await loop.run_in_executor(None, partial)
 
@@ -96,7 +98,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
                     break
 
             if process_info is None:
-                raise YTDLError('Couldn\'t find anything that matches `{}`'.format(search))
+                await ctx.send('Couldn\'t find anything that matches `{}`'.format(search))
 
         webpage_url = process_info['webpage_url']
         partial = functools.partial(cls.ytdl.extract_info, webpage_url, download=False)
@@ -113,15 +115,17 @@ class YTDLSource(discord.PCMVolumeTransformer):
                 try:
                     info = processed_info['entries'].pop(0)
                 except IndexError:
-                    raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
+                    await ctx.send('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
         
         return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
 
     @classmethod
-    async def search_source(cls, bot: commands.Bot, ctx, search: str, *, loop: asyncio.BaseEventLoop = None):
+    async def search_source(cls, bot: commands.Bot, ctx, search: str, *, loop: asyncio.BaseEventLoop = None, timestamp: int=0):
         channel = ctx.channel
         loop = loop or asyncio.get_event_loop()
-
+        ffmpeg_options = {
+            'options': f'-vn -ss {timestamp}'
+        }
         cls.search_query = '%s%s:%s' % ('ytsearch', 10, ''.join(search))
 
         partial = functools.partial(cls.ytdl.extract_info, cls.search_query, download=False, process=False)
@@ -232,6 +236,9 @@ class Song:
     def __init__(self, source: YTDLSource):
         self.source = source
         self.requester = source.requester
+    
+    def getsourceurl(self):
+        return self.source.url
 
     def create_embed(self):
         embed = (discord.Embed(title='Now playing', description='```css\n{0.source.title}\n```'.format(self), color=random.randint(0, 0xffffff))
@@ -566,16 +573,16 @@ class MusicPlayer(commands.Cog):
                 return await ctx.send(f'Current volume is at **{ctx.voice_client.source.volume*100}**%')
             except:
                 return await ctx.send(f'Current volume is at **{ctx.voice_state.volume*100}**%')
-        if volume > 40:
-            return await ctx.send("Volume exceeds 40 percent, safety implemented to reduce hearing loss, ask NotThatBot#3360 for manual override")
+        if volume > 80:
+            return await ctx.send("Volume exceeds 80 percent, safety implemented to reduce hearing loss, ask NotThatBot#3360 for manual override")
 
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
             return await ctx.send('I am not currently in a voice channel')
 
-        if 0 > volume > 40:
-            return await ctx.send('Volume must be between 0 and 40')
+        if 0 > volume > 80:
+            return await ctx.send('Volume must be between 0 and 80')
         if ctx.voice_client:
             ctx.voice_client.source.volume = volume/100
         ctx.voice_state.current.source.volume = volume/100
@@ -802,9 +809,7 @@ class MusicPlayer(commands.Cog):
         other songs finished playing
         This command automatically searches from various sites if no URL is provided
         """
-        # ['fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA', 'r6zIGXun57U', '4Q46xYqUwZQ\\u0026list=RD4Q46xYqUwZQ\\u0026start_radio=1', 'NuB-1myGido\\u0026list=RD4Q46xYqUwZQ\\u0026start_radio=1', 'nblbhJg3sAA', 'fB8TyLTD7EE', '28hYUZMufDg\\u0026list=RDCLAK5uy_l3XabTm3_hzKqB9XOpyJj2xYRO597H5eE', 'p2oL7Uj1P_o', 'LBr7kECsjcQ', 'QpR8_Onc9ho', 'vOwVTtoR-9E', 'LSvOTw8UH6s', 'T-7V-EbDLDQ', 'fmI_Ndrxy14', 'GMG-SkU0Cis', 'NuB-1myGido', 'UOxkGD8qRB4', 'Ks0Q0N2npfg', 'i1IKnWDecwA', 'a9hiUoWrl8s', 'V5M2WZiAy6k', 'mP3fGkpmVM0', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=1', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', '1uBPOu3si5w\\u0026list=RDFaXs-ZDS-dA\\u0026index=3', '5-mT9D4fdgQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=4', 'LSvOTw8UH6s\\u0026list=RDFaXs-ZDS-dA\\u0026index=5', 'GYFJjwXtsU4\\u0026list=RDFaXs-ZDS-dA\\u0026index=6', 'WImBhU43MYg\\u0026list=RDFaXs-ZDS-dA\\u0026index=7', 'Kx7B-XvmFtE\\u0026list=RDFaXs-ZDS-dA\\u0026index=8', 'Yo7nscCXUgM\\u0026list=RDFaXs-ZDS-dA\\u0026index=9', 'l9PxOanFjxQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=10', 'ktvTqknDobU\\u0026list=RDFaXs-ZDS-dA\\u0026index=11',
-        #     'bpOSxM0rNPM\\u0026list=RDFaXs-ZDS-dA\\u0026index=12', 'NuB-1myGido\\u0026list=RDFaXs-ZDS-dA\\u0026index=13', 'bFlZVGGiI7Y\\u0026list=RDFaXs-ZDS-dA\\u0026index=14', 'Qzw6A2WC5Qo\\u0026list=RDFaXs-ZDS-dA\\u0026index=15', 's4vAOYI4QoI\\u0026list=RDFaXs-ZDS-dA\\u0026index=16', 'LBr7kECsjcQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=17', 'oUiOylPbfV0\\u0026list=RDFaXs-ZDS-dA\\u0026index=18', 'X5CFnb7e44s\\u0026list=RDFaXs-ZDS-dA\\u0026index=19', '9XaS93WMRQQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=20', 'gOsM-DYAEhY\\u0026list=RDFaXs-ZDS-dA\\u0026index=21', '7rmRTUTdZEc\\u0026list=RDFaXs-ZDS-dA\\u0026index=22', 'L3wKzyIN1yk\\u0026list=RDFaXs-ZDS-dA\\u0026index=23', 'SCD2tB1qILc\\u0026list=RDFaXs-ZDS-dA\\u0026index=24', 'fTFxE32onKs\\u0026list=RDFaXs-ZDS-dA\\u0026index=25', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', 'fB8TyLTD7EE\\u0026list=RDFaXs-ZDS-dA\\u0026index=2', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=1', 'r6zIGXun57U', 'NuB-1myGido\\u0026list=RD4Q46xYqUwZQ', 'nblbhJg3sAA', 'fB8TyLTD7EE', '28hYUZMufDg\\u0026list=RDCLAK5uy_l3XabTm3_hzKqB9XOpyJj2xYRO597H5eE', 'p2oL7Uj1P_o', 'LBr7kECsjcQ', 'QpR8_Onc9ho', 'vOwVTtoR-9E', 'LSvOTw8UH6s', 'T-7V-EbDLDQ', 'fmI_Ndrxy14', 'r6zIGXun57U', 'g9GI7XRRQMQ', 'r6zIGXun57U', 'g9GI7XRRQMQ', 'KbNL9ZyB49c', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=3\\u0026ab_channel=LeagueofLegends', '4Q46xYqUwZQ\\u0026list=RDFaXs-ZDS-dA\\u0026index=3\\u0026ab_channel=LeagueofLegends']
-
+        
 
         if search == None:
             return await ctx.send('You need to input a url or search')
@@ -921,6 +926,13 @@ class MusicPlayer(commands.Cog):
                 else:
                     await ctx.send('Playing {}'.format(str(source)))
 
+    @commands.command(name='seek', brief='Plays or queues a song or playlist by link or by search')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def seek(self, ctx, timestamp=0):
+        source = await YTDLSource.create_source(ctx, Song.getsourceurl, loop=self.bot.loop, timestamp=timestamp)
+        song = Song(source)
+        await ctx.voice_state.songs.put(song)
+        return await ctx.send(f'Seeking to {timestamp} seconds')
     '''@commands.command() 
     async def playlist(self, ctx, *, url):
         maxPlaylistSize = 40
@@ -963,7 +975,7 @@ class MusicPlayer(commands.Cog):
             return await ctx.send('I am not currently connected to voice!')
         
         if len(ctx.voice_state.song_history) == 0:
-            return await ctx.send('Empty history.')
+            return await ctx.send('Empty history')
 
         items_per_page = 10
         pages = math.ceil(len(ctx.voice_state.song_history) / items_per_page)
@@ -1066,21 +1078,14 @@ class MusicPlayer(commands.Cog):
     @_play.before_invoke
     async def ensure_voice_state(self, ctx):
         if not ctx.author.voice or not ctx.author.voice.channel:
-            raise commands.CommandError(
-                'You are not connected to any voice channel.')
+            await ctx.send('You are not connected to any voice channel')
 
         if ctx.voice_client:
             if ctx.voice_client.channel != ctx.author.voice.channel:
-                raise commands.CommandError(
-                    'Bot is already in a voice channel.')
+                await ctx.send('Bot is already in a voice channel')
 
 
-bot = commands.Bot(command_prefix=';')
 
-
-@bot.event
-async def on_ready():
-    print('Logged in as:\n{0.user.name}\n{0.user.id}'.format(bot))
 
 
 def setup(bot):
