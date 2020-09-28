@@ -57,11 +57,16 @@ class Leaderboard(Cog):
   async def show_leaderboard(self, ctx):
     async with ctx.typing():
       cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
-      
+
       db = cluster['KookiesBot']
 
       global collection
-      collection = db['Xp']
+      try:
+        collection = db[ctx.guild.name]
+      except:
+        db.createCollection(ctx.guild.name)
+        collection = db[ctx.guild.name]
+        return await ctx.send('No one is on the leaderboard yet... send more messages to get on the leaderboard')
       result = collection.find({})
 
       sort = sorted(result, key=itemgetter('Xp'), reverse=True)

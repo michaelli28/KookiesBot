@@ -48,10 +48,11 @@ async def on_ready():
     # bot.load_extension('cogs.Music2')
     bot.load_extension('cogs.CommandErrorHandler')
     bot.load_extension('cogs.Leaderboard')
-    #bot.load_extension('cogs.MusicPlayer')
+    bot.load_extension('cogs.MusicPlayer')
     bot.load_extension('cogs.Level-Schoology')
 
     print('Logged in as:\n{0.user.name}'.format(bot))
+
 
 
 # allows server members to set channel for welcome messages to send to
@@ -76,7 +77,10 @@ async def welcome(ctx):
 async def on_member_join(member):
     # role = discord.utils.get(member.server.roles, name='Member')
     # await client.add_roles(member, role)
-
+    # if str(member.name) == 'zero0two2':
+    #     Muted = get(member.guild.roles, name='Muted')
+    #     u = member.guild.get_member(member.id)
+    #     await u.add_roles(Muted)
     embed = discord.Embed(
         title='Welcome to ' + str(member.guild.name) + " "+  str(member.name), color=random.randint(0, 0xffffff))
 
@@ -106,6 +110,34 @@ async def on_member_remove(member):
     channel = bot.get_channel(channel)
     await channel.send(embed=embed)
 
+
+# @bot.event
+# async def on_raw_bulk_message_delete(payload):
+#     message = payload.cached_messages[0]
+#     for ids in payload.message_ids:
+#         new = await message.channel.fetch_message(ids)
+#         print(f'{message.guild}/{message.channel}/{new.author}>{new.content}')
+@bot.event
+async def on_bulk_message_delete(messages):
+    print('START OF DELETED MESSAGES')
+    print('##############################################################################################################################################################')
+    for message in messages:
+        print(f'{message.guild}/{message.channel}/{message.author}>{message.content}')
+        if message.embeds:
+            print(message.embeds[0].to_dict())
+    print('END OF DELETED MESSAGES')
+    print('##############################################################################################################################################################')
+
+
+@bot.event
+async def on_message_delete(message):
+    print('DELETED MESSAGE START')
+    print('##############################################################################################################################################################')
+    print(f'{message.guild}/{message.channel}/{message.author}>{message.content}')
+    if message.embeds:
+        print(message.embeds[0].to_dict())
+    print('DELETED MESSAGE END')
+    print('##############################################################################################################################################################')
 
 @bot.command(aliases=['ar'], brief='Gives someone a role, need manage roles')
 # This must be exactly the name of the appropriate role
@@ -579,6 +611,29 @@ async def on_raw_reaction_remove(payload):
         await user.remove_roles(role)
         await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
 
+
+@bot.command(aliases=['sm'], brief='Server mute everyone in a voice channel')
+@commands.cooldown(1, 5, commands.BucketType.user)
+@commands.has_any_role('Admin', 'Admin but lower')
+async def servermute(ctx):
+    async with ctx.typing():
+        if ctx.author.voice and ctx.author.voice.channel:
+            channel = ctx.author.voice.channel
+        for member in channel.members:
+            await member.edit(mute=True)
+        return await ctx.send('Everyone has been muted')
+
+
+@bot.command(aliases=['su'], brief='Unmutes everyone in a voice channel')
+@commands.cooldown(1, 5, commands.BucketType.user)
+@commands.has_any_role('Admin', 'Admin but lower')
+async def serverunmute(ctx):
+    async with ctx.typing():
+        if ctx.author.voice and ctx.author.voice.channel:
+            channel = ctx.author.voice.channel
+        for member in channel.members:
+            await member.edit(mute=False)
+        return await ctx.send('Everyone has been unmuted')
 
 @bot.command(brief='Says hello')
 @commands.cooldown(1, 5, commands.BucketType.user)

@@ -37,39 +37,38 @@ class Schoology(commands.Cog):
     current_time = now.strftime("%H:%M")
     day_of_the_week = now.strftime("%A")
     if day_of_the_week=='Monday' or day_of_the_week=='Tuesday' or day_of_the_week=='Wednesday' or day_of_the_week=='Thursday' or day_of_the_week=='Friday': 
-      if current_time == '07:55':
-        print('hi')
+      if current_time == '07:50':
         await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
         await channel2.send("Class starts in 5 minutes!")
 
-      elif current_time == '09:55':
+      elif current_time == '09:30':
         await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
         await channel2.send("Class starts in 5 minutes!")
 
-      elif current_time == '11:55':
+      elif current_time == '11:40':
         await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
         await channel2.send("Class starts in 5 minutes!")
       else:
         pass
-  @commands.command(brief='Gets NotThatBot#3360\'s Schoology events, only for him')
-  @commands.cooldown(1, 5, commands.BucketType.user)
-  @commands.is_owner()
-  async def events(self, ctx):
-    sc = schoolopy.Schoology(schoolopy.Auth('254b46a2ce719be6b891fbf217028a5105f4f9215', 'd489775f4a578c226a7fc4476c7df9a5'))
+  # @commands.command(brief='Gets NotThatBot#3360\'s Schoology events, only for him')
+  # @commands.cooldown(1, 5, commands.BucketType.user)
+  # @commands.is_owner()
+  # async def events(self, ctx):
+  #   sc = schoolopy.Schoology(schoolopy.Auth('254b46a2ce719be6b891fbf217028a5105f4f9215', 'd489775f4a578c226a7fc4476c7df9a5'))
 
-    response = sc.get_events(section_id=2908224243)
-    for i in range(len(response)):
-      await ctx.send(response[i]['title'])
+  #   response = sc.get_events(section_id=2908224243)
+  #   for i in range(len(response)):
+  #     await ctx.send(response[i]['title'])
 
-  @commands.command(brief='Gets NotThatBot#3360\'s Schoology courses, only for him')
-  @commands.cooldown(1, 5, commands.BucketType.user)
-  @commands.is_owner()
-  async def courses(self, ctx):
-    sc = schoolopy.Schoology(schoolopy.Auth(
-        '254b46a2ce719be6b891fbf217028a5105f4f9215', 'd489775f4a578c226a7fc4476c7df9a5'))
-    response = sc.get_courses()
+  # @commands.command(brief='Gets NotThatBot#3360\'s Schoology courses, only for him')
+  # @commands.cooldown(1, 5, commands.BucketType.user)
+  # @commands.is_owner()
+  # async def courses(self, ctx):
+  #   sc = schoolopy.Schoology(schoolopy.Auth(
+  #       '254b46a2ce719be6b891fbf217028a5105f4f9215', 'd489775f4a578c226a7fc4476c7df9a5'))
+  #   response = sc.get_courses()
 
-    await ctx.send(response)
+  #   await ctx.send(response)
   @commands.command(brief='Gets the time')
   @commands.cooldown(1, 5, commands.BucketType.user)
   async def time(self, ctx):
@@ -92,14 +91,14 @@ class Schoology(commands.Cog):
   #   channel = ctx.message.channel
   #   await ctx.send(f'Channel is set to {channel}')
 
-  @commands.command(brief='Gets NotThatBot#3360\'s grades, definitely only for him')
-  @commands.cooldown(1, 5, commands.BucketType.user)
-  @commands.is_owner()
-  async def grades(self, ctx):
-    sc = schoolopy.Schoology(schoolopy.Auth(
-        '254b46a2ce719be6b891fbf217028a5105f4f9215', 'd489775f4a578c226a7fc4476c7df9a5'))
-    response = sc.get_user_grades(user_id=59969976)
-    print(response)
+  # @commands.command(brief='Gets NotThatBot#3360\'s grades, definitely only for him')
+  # @commands.cooldown(1, 5, commands.BucketType.user)
+  # @commands.is_owner()
+  # async def grades(self, ctx):
+  #   sc = schoolopy.Schoology(schoolopy.Auth(
+  #       '254b46a2ce719be6b891fbf217028a5105f4f9215', 'd489775f4a578c226a7fc4476c7df9a5'))
+  #   response = sc.get_user_grades(user_id=59969976)
+  #   print(response)
   
 
   # @commands.command(brief='Get the leaderboard!')
@@ -133,7 +132,12 @@ class Schoology(commands.Cog):
       cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
       db = cluster['KookiesBot']
       global collection
-      collection = db['Xp']
+      try:
+        collection = db[ctx.guild.name]
+      except:
+        db.createCollection(ctx.guild.name)
+        collection = db[ctx.guild.name]
+        return await ctx.send('You don\'t have xp yet, send more messages to get xp')
 
       if author == None:
         author = ctx.author.id
@@ -144,6 +148,11 @@ class Schoology(commands.Cog):
       user = await self.bot.fetch_user(author)
       res = collection.find({})
       result = collection.find_one({'_id': int(author)}) 
+      try:
+        if result['Xp']==0:
+          print('hi')
+      except:
+        return await ctx.send(f'{user.mention} has no xp, send more messages to gain xp')
       embed = discord.Embed(color=random.randint(0, 0xffffff))
       embed.set_author(name='Rank')
       sort = sorted(res, key=itemgetter('Xp'), reverse=True)
@@ -155,11 +164,12 @@ class Schoology(commands.Cog):
         embed.add_field(name='Total Xp', value='**'+str(result['Xp'])+'**')
       except:
         embed.add_field(name='Total Xp', value='**'+str(0)+'**')
+
       embed.add_field(name='Rank', value='**'+str(result['rank'])+'**')
 
       embed.set_author(name=result['name'], icon_url=user.avatar_url)
       embed.add_field(name='Level', value = '**'+ str(int(((12*result['Xp'])//800) ** 0.55))+'**')
-      def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
+      def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 20, fill = '█'):
       # @params:
       #     iteration   - Required  : current iteration (Int)
       #     total       - Required  : total iterations (Int)
@@ -177,7 +187,7 @@ class Schoology(commands.Cog):
 
         return (f'\r{prefix} |{bar}| {percent}% {suffix}')
 
-      embed.add_field(name='Xp', value = printProgressBar(result['Xp'], 100000, prefix = '**'+str(result['Xp'])+"**", suffix = '**100,000**', length = 20))
+      embed.add_field(name='Xp', value = printProgressBar(result['Xp'], 100000, prefix = '**'+str(result['Xp'])+"**", suffix = '**100,000**'))
       
       return await ctx.send(embed=embed)
 
@@ -187,7 +197,12 @@ class Schoology(commands.Cog):
     db = cluster['KookiesBot']
 
     global collection
-    collection = db['Xp']
+    try:
+      collection = db[ctx.guild.name]
+    except:
+      db.createCollection(ctx.guild.name)
+      collection = db[ctx.guild.name]
+
     author = ctx.author.id
     res = collection.find({})
     result = collection.find_one({'_id': int(author)})

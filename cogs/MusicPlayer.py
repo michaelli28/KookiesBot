@@ -7,6 +7,7 @@ import re
 import requests
 import discord
 from collections import OrderedDict
+import datetime
 import youtube_dl
 from async_timeout import timeout
 from discord.ext import commands
@@ -505,8 +506,10 @@ class MusicPlayer(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        now = datetime.datetime.now() 
+        current_time = now.strftime("%H:%M|%m/%d/%Y")
         if message.author.id != self.bot.user.id:
-            print(f"{message.guild}/{message.channel}/{message.author.name}>{message.content}  ")
+            print(f"{message.guild}/{message.channel}/  {current_time}  /{message.author.name}>{message.content}  ")
             if message.embeds:
                 print(message.embeds[0].to_dict())
 
