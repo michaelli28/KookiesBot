@@ -29,11 +29,11 @@ class HelpMenu(ListPageSource):
     len_data = len(self.entries)
 
     embed = Embed(
-              title="Leaderboard", color=random.randint(0, 0xffffff))
+              title=f"Leaderboard for {self.ctx.guild.name}", color=random.randint(0, 0xffffff))
     embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
     embed.set_footer(
               text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} users")
-
+    embed.timestamp = datetime.datetime.now()
     for name, value in fields:
       embed.add_field(name=name, value=value, inline=False)
 
@@ -58,7 +58,7 @@ class Leaderboard(Cog):
     async with ctx.typing():
       cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
 
-      db = cluster['KookiesBot']
+      db = cluster.KookiesBot
 
       global collection
       try:

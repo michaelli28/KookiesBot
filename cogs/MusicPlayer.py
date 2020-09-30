@@ -24,6 +24,12 @@ from time import sleep
 
 youtube_dl.utils.bug_reports_message = lambda: ''
 
+
+timestamp = 1000
+FFMPEG_OPTIONS = {
+    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+    'options': f'-vn -ss {timestamp}'
+    }
 class YTDLError(Exception):
     pass
 
@@ -44,10 +50,10 @@ class YTDLSource(discord.PCMVolumeTransformer):
         'source_address': '0.0.0.0',
     }
 
-    FFMPEG_OPTIONS = {
-        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-        'options': '-vn',
-    }
+    # FFMPEG_OPTIONS = {
+    #     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+    #     'options': '-vn',
+    # }
 
     ytdl = youtube_dl.YoutubeDL(YTDL_OPTIONS)
     ytdl.cache.remove()
@@ -80,9 +86,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
     @classmethod
     async def create_source(cls, ctx, search: str, *, loop: asyncio.BaseEventLoop = None, timestamp: int=0):
         loop = loop or asyncio.get_event_loop()
-        ffmpeg_options = {
-            'options': f'-vn -ss {timestamp}'
-        }
+
+
         partial = functools.partial(cls.ytdl.extract_info, search, download=False, process=False)
         data = await loop.run_in_executor(None, partial)
 
@@ -118,15 +123,13 @@ class YTDLSource(discord.PCMVolumeTransformer):
                 except IndexError:
                     await ctx.send('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
         
-        return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
+        return cls(ctx, discord.FFmpegPCMAudio(info['url'], **FFMPEG_OPTIONS), data=info)
 
     @classmethod
     async def search_source(cls, bot: commands.Bot, ctx, search: str, *, loop: asyncio.BaseEventLoop = None, timestamp: int=0):
         channel = ctx.channel
         loop = loop or asyncio.get_event_loop()
-        ffmpeg_options = {
-            'options': f'-vn -ss {timestamp}'
-        }
+
         cls.search_query = '%s%s:%s' % ('ytsearch', 10, ''.join(search))
 
         partial = functools.partial(cls.ytdl.extract_info, cls.search_query, download=False, process=False)
@@ -172,7 +175,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
                             VUrl = 'https://www.youtube.com/watch?v=%s' % (VId)
                             partial = functools.partial(cls.ytdl.extract_info, VUrl, download=False)
                             data = await loop.run_in_executor(None, partial)
-                    rtrn = cls(ctx, discord.FFmpegPCMAudio(data['url'], **cls.FFMPEG_OPTIONS), data=data)
+                    rtrn = cls(ctx, discord.FFmpegPCMAudio(data['url'], **FFMPEG_OPTIONS), data=data)
                 else:
                     rtrn = 'sel_invalid'
             elif m.content == 'cancel':
@@ -250,6 +253,7 @@ class Song:
                 .add_field(name='URL', value='[Click]({0.source.url})'.format(self))
                 .set_thumbnail(url=self.source.thumbnail)
                 .set_author(name=self.requester.name, icon_url=self.requester.avatar_url))
+        embed.timestamp = datetime.datetime.now()
         return embed
 
 
@@ -354,6 +358,7 @@ class VoiceState:
                     self.exists = False
                     embed = discord.Embed(color=random.randint(0, 0xffffff))
                     embed.add_field(name='Queue has ended', value='Leaving the voice channel')
+                    embed.timestamp = datetime.datetime.now()
                     return await ctx.send(embed=embed)
                     #     # Spoof user agent to show whole page.
                     #     headers = {
@@ -430,7 +435,7 @@ class VoiceState:
             elif self.loop == True:
                 self.song_history.insert(0, self.current)
                 self.now = discord.FFmpegPCMAudio(
-                    self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS)
+                    self.current.source.stream_url, **FFMPEG_OPTIONS)
                 self.current.source.volume = self._volume
                 # if ctx.voice_client:
                 #     ctx.voice_client.source.volume = self._volume
@@ -504,14 +509,14 @@ class MusicPlayer(commands.Cog):
     #async def cog_command_error(self, ctx , error: commands.CommandError):
     #    await ctx.send('An error occurred: {}'.format(str(error)))
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        now = datetime.datetime.now() 
-        current_time = now.strftime("%H:%M|%m/%d/%Y")
-        if message.author.id != self.bot.user.id:
-            print(f"{message.guild}/{message.channel}/  {current_time}  /{message.author.name}>{message.content}  ")
-            if message.embeds:
-                print(message.embeds[0].to_dict())
+    # @commands.Cog.listener()
+    # async def on_message(self, message):
+    #     now = datetime.datetime.now() 
+    #     current_time = now.strftime("%H:%M|%m/%d/%Y")
+    #     if message.author.id != self.bot.user.id:
+    #         print(f"{message.guild}/{message.channel}/  {current_time}  /{message.author.name}>{message.content}  ")
+    #         if message.embeds:
+    #             print(message.embeds[0].to_dict())
 
     @commands.command(name='join', aliases=['j'], brief='Makes the bot join a voice channel')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -530,7 +535,7 @@ class MusicPlayer(commands.Cog):
             await ctx.send(f'Connected to: **{destination}**, type **;leave** to leave the channel')
             return
         ctx.voice_state.voice = await destination.connect()
-        await ctx.send(f'Connected to: **{destination}**, type **;leave** to leave the channel')
+        return await ctx.send(f'Connected to: **{destination}**, type **;leave** to leave the channel')
     @commands.command(name='summon', brief='Summons the bot to a channel')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _summon(self, ctx , *, channel: discord.VoiceChannel = None):
@@ -742,6 +747,7 @@ class MusicPlayer(commands.Cog):
 
         embed = (discord.Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
                 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
+        embed.timestamp = datetime.datetime.now()
         await ctx.send(embed=embed)
 
 
@@ -840,7 +846,10 @@ class MusicPlayer(commands.Cog):
 
                     try:
                         if not ctx.voice_state.voice:
-                            await ctx.invoke(self._join)
+                            try:
+                                await ctx.invoke(self._join)
+                            except:
+                                pass
                         await ctx.send('Putting songs into the queue, please wait a minute or two before checking the queue')
                         for n in range(showVidSize):
                             try:
@@ -931,8 +940,9 @@ class MusicPlayer(commands.Cog):
 
     @commands.command(name='seek', brief='Plays or queues a song or playlist by link or by search')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def seek(self, ctx, timestamp=0):
-        source = await YTDLSource.create_source(ctx, Song.getsourceurl, loop=self.bot.loop, timestamp=timestamp)
+    async def seek(self, ctx, timestamp=500):
+        timestamp = timestamp
+        source = await YTDLSource.create_source(ctx, 'chill gaming beats', loop=self.bot.loop)
         song = Song(source)
         await ctx.voice_state.songs.put(song)
         return await ctx.send(f'Seeking to {timestamp} seconds')
@@ -992,6 +1002,7 @@ class MusicPlayer(commands.Cog):
 
         embed = (discord.Embed(description='{} tracks:\n\n{}'.format(len(ctx.voice_state.song_history), queue))
                 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
+        embed.timestamp = datetime.datetime.now()
         await ctx.send(embed=embed)
     
     @commands.command(name='search', brief='Shows 10 search results for videos')

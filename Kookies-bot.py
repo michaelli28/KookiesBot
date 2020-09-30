@@ -12,6 +12,7 @@ import json
 import asyncio
 from os import system
 import requests
+import datetime
 #import spotdl
 import urllib.parse
 import urllib.request
@@ -62,6 +63,7 @@ async def on_ready():
 async def welcome(ctx):
     with open("guild.json", "r") as f:
         guildInfo = json.load(f)
+        f.close()
 # sets channel to send message to as the channel the command was sent to
     guildInfo[ctx.message.guild.id] = ctx.message.channel.id
 
@@ -70,6 +72,7 @@ async def welcome(ctx):
             json.dump(guildInfo, f)
         except:
             pass
+        f.close()
     await ctx.send('Channel set to: '+str(ctx.message.channel.id))
 
 
@@ -85,9 +88,11 @@ async def on_member_join(member):
         title='Welcome to ' + str(member.guild.name) + " "+  str(member.name), color=random.randint(0, 0xffffff))
 
     embed.set_author(name=member.name, icon_url=member.avatar_url)
+    embed.timestamp = datetime.datetime.now()
+
     with open("guild.json", "r") as f:
         guildInfo = json.load(f)
-
+        f.close()
     channel = guildInfo[str(member.guild.id)]
     channel = bot.get_channel(channel)
     await channel.send(embed=embed)
@@ -103,9 +108,11 @@ async def on_member_remove(member):
     embed = discord.Embed(title=str(member.name)+' has left ' +
                           str(member.guild.name), color=random.randint(0, 0xffffff))
     embed.set_author(name=member.name, icon_url=member.avatar_url)
+    embed.timestamp = datetime.datetime.now()
+
     with open("guild.json", "r") as f:
         guildInfo = json.load(f)
-
+        f.close()
     channel = guildInfo[str(member.guild.id)]
     channel = bot.get_channel(channel)
     await channel.send(embed=embed)
@@ -335,7 +342,7 @@ async def roleclaim(ctx, *roles, messagea=None):
 
     with open("roles.json", "r") as f:
         rolesjson = json.load(f)
-
+        f.close()
     if str(ctx.message.channel.id) in rolesjson:
         del rolesjson[str(ctx.message.id)]
 
@@ -373,7 +380,7 @@ async def roleclaim(ctx, *roles, messagea=None):
 
     with open("roles.json", "w") as f:
         json.dump(rolesjson, f)
-
+        f.close()
     for i in range(len(roles)):
         await messagesent.add_reaction(reactions[i])
 
@@ -408,7 +415,7 @@ async def on_raw_reaction_add(payload):
     elif payload.emoji.name == '1️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
@@ -418,7 +425,7 @@ async def on_raw_reaction_add(payload):
     elif payload.emoji.name == '2️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
@@ -428,7 +435,7 @@ async def on_raw_reaction_add(payload):
     elif payload.emoji.name == '3️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
@@ -438,7 +445,7 @@ async def on_raw_reaction_add(payload):
     elif payload.emoji.name == '4️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
@@ -448,7 +455,7 @@ async def on_raw_reaction_add(payload):
     elif payload.emoji.name == '5️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
@@ -458,7 +465,7 @@ async def on_raw_reaction_add(payload):
     elif payload.emoji.name == '6️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
@@ -468,7 +475,7 @@ async def on_raw_reaction_add(payload):
     elif payload.emoji.name == '7️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
@@ -478,7 +485,7 @@ async def on_raw_reaction_add(payload):
     elif payload.emoji.name == '8️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
@@ -488,7 +495,7 @@ async def on_raw_reaction_add(payload):
     elif payload.emoji.name == '9️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
@@ -498,7 +505,7 @@ async def on_raw_reaction_add(payload):
     elif payload.emoji.name == '🔟':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         if (not payload.member.bot):
             user = payload.member
@@ -513,7 +520,7 @@ async def on_raw_reaction_remove(payload):
     if payload.emoji.name == '1️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         guild = bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)
@@ -523,7 +530,7 @@ async def on_raw_reaction_remove(payload):
     elif payload.emoji.name == '2️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         guild = bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)
@@ -533,7 +540,7 @@ async def on_raw_reaction_remove(payload):
     elif payload.emoji.name == '3️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         guild = bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)
@@ -543,7 +550,7 @@ async def on_raw_reaction_remove(payload):
     elif payload.emoji.name == '4️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         guild = bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)
@@ -553,7 +560,7 @@ async def on_raw_reaction_remove(payload):
     elif payload.emoji.name == '5️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         guild = bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)
@@ -563,7 +570,7 @@ async def on_raw_reaction_remove(payload):
     elif payload.emoji.name == '6️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         guild = bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)
@@ -573,7 +580,7 @@ async def on_raw_reaction_remove(payload):
     elif payload.emoji.name == '7️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         guild = bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)
@@ -583,7 +590,7 @@ async def on_raw_reaction_remove(payload):
     elif payload.emoji.name == '8️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         guild = bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)
@@ -593,7 +600,7 @@ async def on_raw_reaction_remove(payload):
     elif payload.emoji.name == '9️⃣':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         guild = bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)
@@ -603,7 +610,7 @@ async def on_raw_reaction_remove(payload):
     elif payload.emoji.name == '🔟':
         with open("roles.json", "r") as f:
             rolesjson = json.load(f)
-
+            f.close()
         rolesR = rolesjson[str(payload.message_id)]
         guild = bot.get_guild(payload.guild_id)
         user = guild.get_member(payload.user_id)
@@ -654,14 +661,15 @@ async def _8ball(ctx, *, question=None):
         return await ctx.send("Ask a question sir or ma\'am")
     responses = ['Maybe', 'Hmm, try again later', 'Yes sir/ma\'am', 'No sir/ma\'am', 'You can count on it!', 'Guaranteed', 'How did you know?', 'Of course',
                  'I believe so', 'Nope', 'Definitely NOT', 'Very much so', 'The answer is NO', 'No (u)', 'Does money grow on trees?', 'Is magic better than Kookies? (NOOOO)']
-    e = discord.Embed(
+    embed = discord.Embed(
         title='8ball response',
         color=random.randint(0, 0xffffff)
     )
-    e.add_field(name='Question', value=question, inline=False)
-    e.add_field(name='Answer', value=random.choice(responses), inline=False)
-    e.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-    await ctx.send(embed=e)
+    embed.add_field(name='Question', value=question, inline=False)
+    embed.add_field(name='Answer', value=random.choice(responses), inline=False)
+    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+    embed.timestamp = datetime.datetime.now()
+    await ctx.send(embed=embed)
 
 
 @bot.command(brief='Clears messages, NotThatBot#3360 only')
@@ -757,6 +765,13 @@ async def botstop(ctx):
 # @bot.event
 # async def on_disconnect():
 # 	print("Bot disconnected")
+@bot.command(brief='Give money')
+@commands.cooldown(1, 5, commands.BucketType.user)
+async def gimme(ctx):
+    return await ctx.send(f'{ctx.author.mention} has recieved {random.randint(100, 1000000)} dollars')
+
+
+
 
 bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.fV8z1X7a4urvvEyhdJKq2URhWqs')
 

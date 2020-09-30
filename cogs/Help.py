@@ -6,6 +6,7 @@ from discord.ext.menus import MenuPages, ListPageSource
 from discord.ext.commands import Cog
 from discord.ext import commands
 import random
+import datetime
 PREFIX=';'
 def syntax(command):
 	cmd_and_aliases = "|;".join([str(command), *command.aliases])
@@ -45,7 +46,7 @@ class HelpMenu(ListPageSource):
 		embed = Embed(title="Help", description="<cmd|alias|alias> [arg][arg]",  color=random.randint(0, 0xffffff))
 		embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
 		embed.set_footer(text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} commands.")
-
+		embed.timestamp = datetime.datetime.now()
 		for name, value in fields:
 			embed.add_field(name=name, value=value, inline=False)
 
@@ -76,6 +77,7 @@ class Help(Cog):
 			print(param(command))
 			embed.add_field(name='Usage:', value='**'+PREFIX+str(command)+'** '+ str(param(command)))
 		embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+		embed.timestamp = datetime.datetime.now()
 		await ctx.send(embed=embed)
 
 	@commands.command(name="help")

@@ -30,7 +30,7 @@ class Schoology(commands.Cog):
 
   @tasks.loop(seconds=55)
   async def timeforclass(self):
-    channel = self.bot.get_channel(668863931200307248)
+    # channel = self.bot.get_channel(668863931200307248)
     channel2 = self.bot.get_channel(751142599418445824)
 
     now = datetime.datetime.now() 
@@ -38,15 +38,15 @@ class Schoology(commands.Cog):
     day_of_the_week = now.strftime("%A")
     if day_of_the_week=='Monday' or day_of_the_week=='Tuesday' or day_of_the_week=='Wednesday' or day_of_the_week=='Thursday' or day_of_the_week=='Friday': 
       if current_time == '07:50':
-        await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
+        # await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
         await channel2.send("Class starts in 5 minutes!")
 
       elif current_time == '09:30':
-        await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
+        # await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
         await channel2.send("Class starts in 5 minutes!")
 
       elif current_time == '11:40':
-        await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
+        # await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
         await channel2.send("Class starts in 5 minutes!")
       else:
         pass
@@ -129,16 +129,16 @@ class Schoology(commands.Cog):
   @commands.cooldown(1, 5, commands.BucketType.user)
   async def rank(self, ctx, author=None):
     async with ctx.typing():
+      
       cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
-      db = cluster['KookiesBot']
+
+      db = cluster.KookiesBot
       global collection
       try:
         collection = db[ctx.guild.name]
       except:
         db.createCollection(ctx.guild.name)
         collection = db[ctx.guild.name]
-        return await ctx.send('You don\'t have xp yet, send more messages to get xp')
-
       if author == None:
         author = ctx.author.id
 
@@ -161,9 +161,9 @@ class Schoology(commands.Cog):
         collection.update_one({'_id': item['_id']}, {"$set":{"rank": rank}}) 
         rank+=1
       try:
-        embed.add_field(name='Total Xp', value='**'+str(result['Xp'])+'**')
+        embed.add_field(name=f'Total Xp in {ctx.guild.name}', value='**'+str(result['Xp'])+'**')
       except:
-        embed.add_field(name='Total Xp', value='**'+str(0)+'**')
+        embed.add_field(name=f'Total Xp in {ctx.guild.name}', value='**'+str(0)+'**')
 
       embed.add_field(name='Rank', value='**'+str(result['rank'])+'**')
 
@@ -188,57 +188,80 @@ class Schoology(commands.Cog):
         return (f'\r{prefix} |{bar}| {percent}% {suffix}')
 
       embed.add_field(name='Xp', value = printProgressBar(result['Xp'], 100000, prefix = '**'+str(result['Xp'])+"**", suffix = '**100,000**'))
-      
+      embed.timestamp = datetime.datetime.now()
       return await ctx.send(embed=embed)
 
   @commands.Cog.listener()
   async def on_message(self, ctx):
-    cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
-    db = cluster['KookiesBot']
-
-    global collection
+    if ctx.author.bot:
+      return
+    
+    with open("cooldown.json", "r") as f:
+        cooldowns = json.load(f)
+        f.close()
     try:
-      collection = db[ctx.guild.name]
+      previous = datetime.datetime.strptime(cooldowns[str(ctx.author.id)], '%Y-%m-%d %H:%M:%S.%f')
     except:
-      db.createCollection(ctx.guild.name)
-      collection = db[ctx.guild.name]
+      previous = datetime.datetime.strptime(cooldowns['start'], '%Y-%m-%d %H:%M:%S.%f')
+    
+    time_difference = (datetime.datetime.now() - previous).total_seconds()
+    if time_difference < 60:
+      return
 
-    author = ctx.author.id
-    res = collection.find({})
-    result = collection.find_one({'_id': int(author)})
-    chance = random.randint(1, 5)
-    if chance == 5:
-      # try:
-      xp = random.randint(15, 25)
-      collection.update_one({'_id': ctx.author.id}, {"$inc":{"Xp": xp}})
+    else:
+      cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+      db = cluster.KookiesBot
 
-      sort = sorted(res, key=itemgetter('Xp'), reverse=True)
-      rank = 1
-
-      for item in sort:
-        collection.update_one({'_id': item['_id']}, {"$set": {"rank": rank}})
-        rank += 1
-
+      global collection
       try:
-        new_lvl = int(((12*result['Xp']+xp)//800) ** 0.55)
-        old_lvl = int(((12*result['Xp'])//800) ** 0.55)
-
-        if new_lvl > old_lvl:
-          await ctx.channel.send(f"Congrats {ctx.author.mention}! You reached level {new_lvl:,}!")
-
+        collection = db[ctx.guild.name]
       except:
+        db.createCollection(ctx.guild.name)
+        collection = db[ctx.guild.name]
+
+      author = ctx.author.id
+      res = collection.find({})
+      result = collection.find_one({'_id': int(author)})
+      chance = random.randint(1, 5)
+      if chance == 5:
+        # try:
         xp = random.randint(15, 25)
-        collection.insert_one(
-            {'_id': ctx.author.id, 'name': ctx.author.name, "Xp": xp})
+        collection.update_one({'_id': ctx.author.id}, {"$inc":{"Xp": xp}})
+
         sort = sorted(res, key=itemgetter('Xp'), reverse=True)
         rank = 1
 
         for item in sort:
-          if item['rank'] != rank:
-            collection.update_one({'_id': item['_id']}, {"$set": {"rank": rank}})
-            rank += 1
-        
-      
+          collection.update_one({'_id': item['_id']}, {"$set": {"rank": rank}})
+          rank += 1
+
+        try:
+          new_lvl = int(((12*result['Xp']+xp)//800) ** 0.55)
+          old_lvl = int(((12*result['Xp'])//800) ** 0.55)
+
+          if new_lvl > old_lvl:
+            await ctx.channel.send(f"Congrats {ctx.author.mention}! You reached level {new_lvl:,}!")
+
+        except:
+          xp = random.randint(15, 25)
+          collection.insert_one(
+              {'_id': ctx.author.id, 'name': ctx.author.name, "Xp": xp})
+          sort = sorted(res, key=itemgetter('Xp'), reverse=True)
+          rank = 1
+
+          for item in sort:
+            if item['rank'] != rank:
+              collection.update_one({'_id': item['_id']}, {"$set": {"rank": rank}})
+              rank += 1
+      with open("cooldown.json", "r") as f:
+        cooldowns = json.load(f)
+        # del cooldowns[str(ctx.author.id)]
+        cooldowns[str(ctx.author.id)] = str(datetime.datetime.now())
+        f.close()
+
+      with open("cooldown.json", "w") as f:
+        json.dump(cooldowns, f)
+        f.close()
 
 
 def setup(bot):
