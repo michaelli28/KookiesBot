@@ -289,7 +289,7 @@ async def gimme(ctx):
     return await ctx.send(f'{ctx.author.mention} has recieved {random.randint(100, 1000000)} dollars')
 
 
-bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.FGHdqh0v3zI0ZofKY_pVeme6wIg')
+bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.YC7CkxByk0-P93Xw7E2ZrOyqvYs')
 
 
 '''@bot.command()

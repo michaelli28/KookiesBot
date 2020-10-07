@@ -350,16 +350,15 @@ class VoiceState:
                 # reasons.
                 # if self.autoplay and self.current:
                 try:
-                    async with timeout(15):
+                    async with timeout(10):
                         self.current = await self.songs.get()
                 except asyncio.TimeoutError:
-                    ctx = self._ctx
-                    embed = discord.Embed(color=random.randint(0, 0xffffff))
-                    embed.add_field(name='Timed Out... couldn\'t get next song within 15 seconds', value='Leaving the voice channel')
-                    embed.timestamp = datetime.datetime.now()
+                    # embed = discord.Embed(color=random.randint(0, 0xffffff))
+                    # embed.add_field(name='Timed Out... couldn\'t get next song within 15 seconds', value='Leaving the voice channel')
+                    # embed.timestamp = datetime.datetime.now()
                     self.bot.loop.create_task(self.stop())
                     self.exists = False
-                    return await ctx.send(embed=embed)
+                    return #await ctx.send(embed=embed)
                     #     # Spoof user agent to show whole page.
                     #     headers = {
                     #         'User-Agent': 'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)'}
