@@ -25,7 +25,7 @@ from time import sleep
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 
-timestamp = 1000
+timestamp = 0
 FFMPEG_OPTIONS = {
     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
     'options': f'-vn -ss {timestamp}'
@@ -354,11 +354,11 @@ class VoiceState:
                         self.current = await self.songs.get()
                 except asyncio.TimeoutError:
                     ctx = self._ctx
+                    embed = discord.Embed(color=random.randint(0, 0xffffff))
+                    embed.add_field(name='Timed Out... couldn\'t get next song within 15 seconds', value='Leaving the voice channel')
+                    embed.timestamp = datetime.datetime.now()
                     self.bot.loop.create_task(self.stop())
                     self.exists = False
-                    embed = discord.Embed(color=random.randint(0, 0xffffff))
-                    embed.add_field(name='Queue has ended', value='Leaving the voice channel')
-                    embed.timestamp = datetime.datetime.now()
                     return await ctx.send(embed=embed)
                     #     # Spoof user agent to show whole page.
                     #     headers = {
@@ -429,7 +429,16 @@ class VoiceState:
                 # else:
                 #     self.voice.play(self.current.source, after=await stopplayer())
                 if self.sendEmbed:
-                    await self.current.source.channel.send(embed=self.current.create_embed())
+                    msg: discord.Message= await self.current.source.channel.send(embed=self.current.create_embed())
+                    
+                    #await msg.add_reaction('⏪')
+                    await msg.add_reaction('⏯️')
+                    await msg.add_reaction('⏩')
+                    await msg.add_reaction('🔁')
+                    await msg.add_reaction('🔀')
+                    await msg.add_reaction('⏹️')
+                    await msg.add_reaction('🔈')
+                    await msg.add_reaction('🔊')
 
             #If the song is looped
             elif self.loop == True:
@@ -437,6 +446,10 @@ class VoiceState:
                 self.now = discord.FFmpegPCMAudio(
                     self.current.source.stream_url, **FFMPEG_OPTIONS)
                 self.current.source.volume = self._volume
+                # if ctx.voice_client:
+                #     ctx.voice_client.source.volume = self._volume/100
+                # ctx.voice_state.current.source.volume = self._volume/100
+                # ctx.voice_state.volume = self._volume/100
                 # if ctx.voice_client:
                 #     ctx.voice_client.source.volume = self._volume
                 # ctx.voice_state.volume = self._volume
@@ -483,7 +496,7 @@ class MusicPlayer(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.voice_states = {}
-
+        self.vc = None
     def get_voice_state(self, ctx):
         state = self.voice_states.get(ctx.guild.id)
         if not state or not state.exists:
@@ -505,18 +518,133 @@ class MusicPlayer(commands.Cog):
 
     async def cog_before_invoke(self, ctx):
         ctx.voice_state = self.get_voice_state(ctx)
-
+        self.vc = self.get_voice_state(ctx)
+        self.ctx = ctx
     #async def cog_command_error(self, ctx , error: commands.CommandError):
     #    await ctx.send('An error occurred: {}'.format(str(error)))
 
-    # @commands.Cog.listener()
-    # async def on_message(self, message):
-    #     now = datetime.datetime.now() 
-    #     current_time = now.strftime("%H:%M|%m/%d/%Y")
-    #     if message.author.id != self.bot.user.id:
-    #         print(f"{message.guild}/{message.channel}/  {current_time}  /{message.author.name}>{message.content}  ")
-    #         if message.embeds:
-    #             print(message.embeds[0].to_dict())
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        now = datetime.datetime.now() 
+        current_time = now.strftime("%H:%M|%m/%d/%Y")
+        if message.author.id != self.bot.user.id:
+            print(f"{message.guild}/{message.channel}/  {current_time}  /{message.author.name}>{message.content}  ")
+            if message.embeds:
+                print(message.embeds[0].to_dict())
+
+
+    @commands.Cog.listener()
+    async def on_reaction_add(self, reaction, user):
+        if user.bot:
+            return
+        
+        msg = reaction.message
+        if msg.author.id != self.bot.user.id:
+            return
+        channel = msg.channel
+
+        ctx = self.ctx
+
+        if reaction.emoji=='⏯️':
+            await msg.remove_reaction(reaction, user)
+            vc = self.vc
+            if not ctx.voice_client:
+                return await channel.send('I am not currently playing anything!')
+            elif vc.voice.is_playing():
+                vc.voice.pause()
+                await channel.send(f'{user.mention} has paused the song!')
+
+            elif vc.voice.is_paused():
+                ctx.voice_client.resume()
+                await channel.send(f'{user.mention} has resumed the song!')
+        if reaction.emoji=='⏩':
+            await msg.remove_reaction(reaction, user)
+            vc = self.vc
+            if not ctx.voice_client or not ctx.voice_client.is_connected:
+                return await channel.send('I am not currently in a voice channel!')
+            if len(vc.songs) == 0: 
+                if vc.autoplay:
+                    vc.skip()
+                    return await channel.send(f'{user.mention} has skipped the song!')
+                elif vc.loop:
+                    vc.skip()
+                    return await channel.send(f'{user.mention} has skipped the song!')
+                else: #not ctx.voice_state.loop and not ctx.voice_state.autoplay: 
+                    return await channel.send('Empty queue, autoplay and loop not on, cannot skip the song')
+            else:
+                vc.skip()
+                await channel.send(f'{user.mention} has skipped the song!')
+        if reaction.emoji=='🔀':
+            await msg.remove_reaction(reaction, user)
+            vc = self.vc
+            if len(vc.songs) == 0:
+                return await channel.send('Queue is empty')
+            else:
+                vc.songs.shuffle()
+                await channel.send(f'{user.mention} has shuffled the queue')
+        if reaction.emoji == '🔁':
+            await msg.remove_reaction(reaction, user)
+            vc = self.vc
+            try:
+                if not vc.is_playing:
+                    return await channel.send('I am not currently playing anything')
+                else:
+                    vc.loop = not vc.loop
+                    await channel.send('Song loop is now turned ' + ('**on**' if vc.loop else '**off**'))
+
+            except:
+                pass
+            
+        if reaction.emoji=='🔈':
+            await msg.remove_reaction(reaction, user)
+            vc = self.vc
+            if not ctx.voice_client or not ctx.voice_client.is_connected():
+                return await channel.send('I am not currently in a voice channel')
+            volume = vc.volume*100
+            if volume-10 < 0:
+                volume = 0
+            else:
+                volume = volume-10
+            if vc:
+                vc.volume = volume/100
+            vc.current.source.volume = volume/100
+            vc.volume = volume/100
+            await channel.send('Volume of the player set to **{}**%'.format(volume), delete_after=10)
+
+        if reaction.emoji=='🔊':
+            await msg.remove_reaction(reaction, user)
+            vc = self.vc
+            if not ctx.voice_client or not ctx.voice_client.is_connected():
+                return await channel.send('I am not currently in a voice channel')
+            volume = vc.volume*100
+            if volume+10 > 100:
+                volume = 100
+            else:
+                volume = volume+10
+            if vc:
+                vc.volume = volume/100
+            vc.current.source.volume = volume/100
+            vc.volume = volume/100
+            await channel.send('Volume of the player set to **{}**%'.format(volume), delete_after=10)
+
+        if reaction.emoji == '⏹️':
+            await msg.remove_reaction(reaction, user)
+            ctx = self.ctx
+            vc = ctx.voice_client
+            if not vc or not vc.is_connected:
+                return await ctx.send('I am not currently in a voice channel!')
+            else:
+                await ctx.send('Stopping player and clearing queue')
+                if ctx.voice_state.is_playing:
+                    ctx.voice_state.voice.pause()
+                await ctx.voice_state.stop()
+                del self.voice_states[ctx.guild.id]
+
+            ctx.voice_state.songs.clear()
+
+
+
+
 
     @commands.command(name='join', aliases=['j'], brief='Makes the bot join a voice channel')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -581,16 +709,16 @@ class MusicPlayer(commands.Cog):
                 return await ctx.send(f'Current volume is at **{ctx.voice_client.source.volume*100}**%')
             except:
                 return await ctx.send(f'Current volume is at **{ctx.voice_state.volume*100}**%')
-        if volume > 80:
-            return await ctx.send("Volume exceeds 80 percent, safety implemented to reduce hearing loss, ask NotThatBot#3360 for manual override")
+        # if volume > 80:
+        #     return await ctx.send("Volume exceeds 80 percent, safety implemented to reduce hearing loss, ask NotThatBot#3360 for manual override")
 
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
             return await ctx.send('I am not currently in a voice channel')
 
-        if 0 > volume > 80:
-            return await ctx.send('Volume must be between 0 and 80')
+        if 0 > volume > 100:
+            return await ctx.send('Volume must be between 0 and 100')
         if ctx.voice_client:
             ctx.voice_client.source.volume = volume/100
         ctx.voice_state.current.source.volume = volume/100
@@ -940,12 +1068,13 @@ class MusicPlayer(commands.Cog):
 
     @commands.command(name='seek', brief='Plays or queues a song or playlist by link or by search')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def seek(self, ctx, timestamp=500):
-        timestamp = timestamp
-        source = await YTDLSource.create_source(ctx, 'chill gaming beats', loop=self.bot.loop)
-        song = Song(source)
-        await ctx.voice_state.songs.put(song)
-        return await ctx.send(f'Seeking to {timestamp} seconds')
+    async def seek(self, ctx, timestamp=0):
+        async with ctx.typing():
+            timestamp = timestamp
+            source = await YTDLSource.create_source(ctx, ctx.voice_state.current.source.url, loop=self.bot.loop)
+            song = Song(source)
+            await ctx.voice_state.songs.put(song)
+            return await ctx.send(f'Seeking to {timestamp} seconds')
     '''@commands.command() 
     async def playlist(self, ctx, *, url):
         maxPlaylistSize = 40

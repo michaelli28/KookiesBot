@@ -138,9 +138,8 @@ class CommandErrorHandler(commands.Cog):
 
     """Below is an example of a Local Error Handler for our command do_repeat"""
     
-    @commands.command(name='repeat', aliases=['mimic', 'copy'], brief='Repeats your input')
+    @commands.command(name='repeat', brief='Repeats your input')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.is_owner()
     async def do_repeat(self, ctx, *, inp: str):
         """A simple command which repeats your input!
         Parameters
