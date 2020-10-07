@@ -11,3 +11,4 @@ pymongo
 pymongo[src]
 dnspython
 PyNaCl
+nltk
