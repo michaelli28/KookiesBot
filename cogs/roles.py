@@ -152,7 +152,7 @@ class roles(commands.Cog):
         if everyone == 'everyone':
             async with ctx.typing():
                 try:
-                    r = get(ctx.message.guild.roles, name='Muted')
+                    r = get(ctx.message.guild.roles, name=r)
                     for person in ctx.message.guild.members:
                         u = ctx.guild.get_member(person.id)
                         await u.remove_roles(r)
