@@ -17,7 +17,7 @@ import time
 
 import asyncio
 from discord.ext import tasks
-from operator import itemgetter
+
 from discord.ext.commands.errors import BadArgument
 
 class roles(commands.Cog):

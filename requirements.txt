@@ -12,3 +12,5 @@ pymongo[src]
 dnspython
 PyNaCl
 nltk
+praw
+markovify
