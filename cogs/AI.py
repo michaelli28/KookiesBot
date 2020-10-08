@@ -130,7 +130,10 @@ class AI(commands.Cog):
                 return m.author == ctx.author and m.channel == ctx.channel
 
             await ctx.send(embed=embed)
-            msg = await self.bot.wait_for('message', check=check, timeout=20)
+            try:
+                msg = await self.bot.wait_for('message', check=check, timeout=20)
+            except asyncio.TimeoutError:
+                return await ctx.send('Please respond with p or n for positive or negative within 20 seconds')
             if msg.content.lower()=='p':
                 await ctx.send(f'Thank you for responding {msg.content}, your data will be used to help make the AI smarter')
                 response = f'"{sentence}",positive\n'

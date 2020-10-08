@@ -696,6 +696,7 @@ class MusicPlayer(commands.Cog):
             return await ctx.send('I am not currently in a voice channel!')
 
         await ctx.voice_state.stop()
+        ctx.voice_state.exists = False
         await ctx.send('Left **' + str(channel) + '**')
         del self.voice_states[ctx.guild.id]
 
@@ -815,6 +816,7 @@ class MusicPlayer(commands.Cog):
         if ctx.voice_state.is_playing:
             ctx.voice_state.voice.pause()
         await ctx.voice_state.stop()
+        ctx.voice_state.exists = False
         del self.voice_states[ctx.guild.id]
 
 
@@ -1021,7 +1023,10 @@ class MusicPlayer(commands.Cog):
                         showVidSize = len(res)
                     try:
                         if not ctx.voice_state.voice:
-                            await ctx.invoke(self._join)
+                            try:
+                                await ctx.invoke(self._join)
+                            except:
+                                pass
                         await ctx.send('Putting songs into the queue, please wait a minute or two before checking the queue')
                         for n in range(showVidSize):
                             try:
@@ -1054,7 +1059,10 @@ class MusicPlayer(commands.Cog):
                 await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
             else:
                 if not ctx.voice_state.voice:
-                    await ctx.invoke(self._join)
+                    try:
+                        await ctx.invoke(self._join)
+                    except:
+                        pass
                 try:
                     song = Song(source)
                     await ctx.voice_state.songs.put(song)
