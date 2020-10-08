@@ -25,7 +25,7 @@ class roles(commands.Cog):
         self.bot = bot
 
 
-    @commands.command(aliases=['ar'], brief='Gives someone a role, need manage roles')
+    @commands.command(aliases=['ar'], brief='Gives someone a role, need manage roles, use _ as spaces')
     # This must be exactly the name of the appropriate role
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -136,7 +136,7 @@ class roles(commands.Cog):
             return await ctx.send('`Muted` is not a role, use ;mute member to create the muted role')
 
 
-    @commands.command(aliases=['rr'], brief='Removes a role, need manage roles')
+    @commands.command(aliases=['rr'], brief='Removes a role, need manage roles, use _ as spaces')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def removerole(self, ctx, user: Optional[discord.Member], role, everyone=None):
@@ -173,7 +173,7 @@ class roles(commands.Cog):
             return await ctx.send('I\'m not allowed to do that')
 
 
-    @commands.command(aliases=['cr'], brief='Creates a role; Using `random` for color sets a random color')
+    @commands.command(aliases=['cr'], brief='Creates a role; Using `random` for color sets a random color, use _ as spaces')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def createrole(self, ctx, name, color=None, permission=None):
@@ -207,6 +207,45 @@ class roles(commands.Cog):
             except discord.Forbidden:
                 return await ctx.send('I don\'t have the permissions to do that')
 
+    @commands.command(aliases=['dr'], brief='Deletes a role')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def deleterole(self, ctx, *, role: discord.Role):
+        try:
+            await role.delete()
+            return await ctx.send(f'Deleted the role `{role.name}`')
+        except discord.Forbidden:
+            return await ctx.send('I don\'t have the permissions to do that')
+
+
+    @commands.command(aliases=['er'], brief='Edits a role;  permissions is an integer as well')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def editrole(self, ctx, name, newname: Optional[str] = None, mentionable: Optional[bool]=None, position: Optional[int]=None):
+        rindex = 0
+        for char in name:
+            try:
+                name.find('_')
+                rindex += 1
+            except:
+                pass
+        
+        r = name.replace('_', " ", rindex)
+        r = get(ctx.message.guild.roles, name=r)
+        try:
+            if newname != None:
+                await r.edit(name = newname)
+                await ctx.send(f'Changed the name to `{newname}`')
+            if mentionable != None:
+                await r.edit(mentionable=mentionable)
+                await ctx.send(f'Changed the mentionability to `{mentionable}`')
+
+            if position != None:
+                await r.edit(position=position)
+                await ctx.send(f'Changed the position of the role to `{position}`')
+
+        except discord.Forbidden:
+            return await ctx.send('I don\'t have the permissions to do that')
 
     @commands.command(aliases=['rc'], brief='Adds a role claim message, use like this: ;rc toxic pro_player noob with spaces as underscores')
     @commands.has_permissions(manage_roles=True)
@@ -530,6 +569,56 @@ class roles(commands.Cog):
         await member.edit(nick=nick)
         await ctx.send(f'Nickname was changed for {member.mention} from {old} to {nick}')
 
+    
+    @commands.command(aliases=['lock'], brief='Locks the server from messages')
+    @commands.has_permissions(administrator=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def serverlock(self, ctx):
+        try:
+            role = ctx.guild.default_role
+            for channel in ctx.guild.channels:  
+                await channel.set_permissions(role, send_messages=False)
+            return await ctx.send('Locked the server')
+        except discord.Forbidden:
+            return await ctx.send('I don\'t have the permissions to do that')
+
+
+    # @commands.command(aliases=['unlock'], brief='Unlocks the server')
+    # @commands.has_permissions(administrator=True)
+    # @commands.cooldown(1, 5, commands.BucketType.user)
+    # async def serverunlock(self, ctx):
+    #     try:
+    #         role = ctx.guild.default_role
+    #         for channel in ctx.guild.channels:
+    #             await channel.set_permissions(role, send_messages=True)
+    #         return await ctx.send('Unlocked the server')
+    #     except discord.Forbidden:
+    #         return await ctx.send('I don\'t have the permissions to do that')
+    
+    @commands.command(aliases=['lockc'], brief='Locks the channel from messages')
+    @commands.has_permissions(administrator=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def channellock(self, ctx):
+        try:
+            channel = ctx.message.channel
+            role = ctx.guild.default_role
+            await channel.set_permissions(role, send_messages=False)
+            return await ctx.send('Locked the channel')
+        except discord.Forbidden:
+            return await ctx.send('I don\'t have the permissions to do that')
+
+
+    @commands.command(aliases=['unlockc'], brief='Unlocks the channel')
+    @commands.has_permissions(administrator=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def channelunlock(self, ctx):
+        try:
+            channel = ctx.message.channel
+            role = ctx.guild.default_role
+            await channel.set_permissions(role, send_messages=True)
+            return await ctx.send('Unlocked the channel')
+        except discord.Forbidden:
+            return await ctx.send('I don\'t have the permissions to do that')
 
 def setup(bot):
 	bot.add_cog(roles(bot))
