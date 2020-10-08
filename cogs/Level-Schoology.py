@@ -183,7 +183,7 @@ class Schoology(commands.Cog):
             embed.add_field(name='Rank', value='**'+str(result['rank'])+'**')
 
             embed.set_author(name=result['name'], icon_url=user.avatar_url)
-            embed.add_field(name='Level', value = '**'+ str(int(((12*result['Xp'])//800) ** 0.55))+'**')
+            embed.add_field(name='Level', value = '**'+ str( int ( ( ( 12*result['Xp'] )//800 ) ** 0.55) )+'**')
 
 
             embed.add_field(name='Xp', value = printProgressBar(result['Xp'], 100000, prefix = '**'+str(result['Xp'])+"**", suffix = '**100,000**'))
@@ -225,7 +225,7 @@ class Schoology(commands.Cog):
                 chance = random.randint(1, 5)
                 if chance == 5:
                     # try:
-                    xp = random.randint(15, 25)
+                    xp = random.randint(15, 22)
                     try:
                         collection.update_one({'_id': ctx.author.id}, {"$inc":{"Xp": xp}})
                     except:
@@ -253,10 +253,10 @@ class Schoology(commands.Cog):
                         sort = sorted(res, key=itemgetter('Xp'), reverse=True)
                         rank = 1
 
-                    for item in sort:
-                        if item['rank'] != rank:
-                            collection.update_one({'_id': item['_id']}, {"$set": {"rank": rank}})
-                            rank += 1
+                        for item in sort:
+                            if item['rank'] != rank:
+                                collection.update_one({'_id': item['_id']}, {"$set": {"rank": rank}})
+                                rank += 1
                     with open("cooldown.json", "r") as f:
                         cooldowns = json.load(f)
                         # del cooldowns[str(ctx.author.id)]
