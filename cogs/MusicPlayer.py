@@ -1167,7 +1167,10 @@ class MusicPlayer(commands.Cog):
                     await ctx.send(':alarm_clock: **Time\'s up bud**')
                 else:
                     if not ctx.voice_state.voice:
-                        await ctx.invoke(self._join)
+                        try:
+                            await ctx.invoke(self._join)
+                        except:
+                            pass
                     try:
                         song = Song(source)
                         await ctx.voice_state.songs.put(song)
