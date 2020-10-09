@@ -76,7 +76,7 @@ class Help(Cog):
 		else:
 			print(param(command))
 			embed.add_field(name='Usage:', value='**'+PREFIX+str(command)+'** '+ str(param(command)))
-		embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+		embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
 		embed.timestamp = datetime.datetime.now()
 		await ctx.send(embed=embed)
 

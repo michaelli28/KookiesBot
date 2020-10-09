@@ -42,7 +42,7 @@ class fun(commands.Cog):
                 return await ctx.send(f'Subreddit {subreddit} not found')
             embed = discord.Embed(color = random.randint(0, 0xffffff), description = f'[Click here if image isn\'t loading]({submission.url})')
             embed.set_image(url = submission.url)
-            embed.set_author(name=ctx.author.name,
+            embed.set_author(name=ctx.author.display_name,
                             icon_url=ctx.author.avatar_url)
 
             embed.timestamp = datetime.datetime.now()
@@ -57,7 +57,7 @@ class fun(commands.Cog):
                     0, 0xffffff), description='DEFINITELY NOT, this meme is marked as nsfw')
                 print(data['url'])
 
-                embed.set_author(name=ctx.author.name,
+                embed.set_author(name=ctx.author.display_name,
                                 icon_url=ctx.author.avatar_url)
 
                 embed.timestamp = datetime.datetime.now()
@@ -69,7 +69,7 @@ class fun(commands.Cog):
                     
                 embed.set_image(url=data['url'])
 
-                embed.set_author(name=ctx.author.name,
+                embed.set_author(name=ctx.author.display_name,
                                 icon_url=ctx.author.avatar_url)
 
                 embed.timestamp = datetime.datetime.now()

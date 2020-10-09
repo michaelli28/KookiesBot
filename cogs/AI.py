@@ -47,7 +47,7 @@ class AI(commands.Cog):
         n=1
         embed = discord.Embed(
             title=f'Sentences that {ctx.author.display_name} might say based off of a small paragraph')
-        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.timestamp = datetime.datetime.now()
         for i in range(5):
             sentence = model.make_sentence()
@@ -60,7 +60,7 @@ class AI(commands.Cog):
     async def define(self, ctx, word):
         synsets = wordnet.synsets(word)
         embed = discord.Embed(title=f'Definition of the word: `{word}`')
-        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.timestamp = datetime.datetime.now()
         n = 1
         if len(synsets) == 0:
@@ -124,7 +124,7 @@ class AI(commands.Cog):
 
             embed = discord.Embed(
                 title=f'The mood for the sentence: `{sentence}` was `{text_predict(sentence)}`', description='Was your sentence positive or negative, reply p for positive, n for negative', color=random.randint(0, 0xffffff))
-            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             embed.timestamp = datetime.datetime.now()
             def check(m):
                 return m.author == ctx.author and m.channel == ctx.channel

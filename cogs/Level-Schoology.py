@@ -51,7 +51,7 @@ class Schoology(commands.Cog):
         channel2 = self.bot.get_channel(751142599418445824)
 
         now = datetime.datetime.now() 
-        current_time = now.strftime("%H:%M")
+        current_time = now.strftime(f"{int('%H')-4}:%M")
         day_of_the_week = now.strftime("%A")
         if day_of_the_week=='Monday' or day_of_the_week=='Tuesday' or day_of_the_week=='Wednesday' or day_of_the_week=='Thursday' or day_of_the_week=='Friday': 
             if current_time == '07:50':

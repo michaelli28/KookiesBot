@@ -55,11 +55,11 @@ class roles(commands.Cog):
             try:
                 r = get(user.guild.roles, name=r)
                 await user.add_roles(r)
-                await ctx.send(f'`{r}` role was given to `{user.name}`')
+                await ctx.send(f'`{r}` role was given to `{user.display_name}`')
             except AttributeError:
                 return await ctx.send('That is not a valid role')
             except BadArgument:
-                return await ctx.send(f'`{user.name}` user not found')
+                return await ctx.send(f'`{user.display_name}` user not found')
             except discord.Forbidden:
                 return await ctx.send('I\'m not allowed to do that')
 
@@ -93,9 +93,9 @@ class roles(commands.Cog):
         try:
             role = get(user.guild.roles, name='Muted')
             await user.add_roles(role)
-            await ctx.send(f'`{user.name}` has been muted from chat')
+            await ctx.send(f'`{user.display_name}` has been muted from chat')
         except BadArgument:
-            return await ctx.send(f'`{user.name}` user not found')
+            return await ctx.send(f'`{user.display_name}` user not found')
         except discord.Forbidden:
             return await ctx.send('I\'m not allowed to do that')
         except AttributeError:
@@ -106,7 +106,7 @@ class roles(commands.Cog):
                                             read_messages=False)
             role = get(user.guild.roles, name='Muted')
             await user.add_roles(role)
-            await ctx.send(f'`{user.name}` has been muted from chat')
+            await ctx.send(f'`{user.display_name}` has been muted from chat')
 
 
     @commands.command(aliases=['um'], brief='Unmutes someone, need manage roles')
@@ -127,9 +127,9 @@ class roles(commands.Cog):
         try:
             role = get(user.guild.roles, name='Muted')
             await user.remove_roles(role)
-            await ctx.send(f'{user.name} has been unmuted')
+            await ctx.send(f'{user.display_name} has been unmuted')
         except BadArgument:
-            return await ctx.send(f'`{user.name}` user not found')
+            return await ctx.send(f'`{user.display_name}` user not found')
         except discord.Forbidden:
             return await ctx.send('I\'m not allowed to do that')
         except AttributeError:
@@ -164,7 +164,7 @@ class roles(commands.Cog):
         try:
             r = get(user.guild.roles, name=r)
             await user.remove_roles(r)
-            await ctx.send(f'`{r}` role was removed from `{user.name}`')
+            await ctx.send(f'`{r}` role was removed from `{user.display_name}`')
         except AttributeError:
             return await ctx.send('That is not a valid role')
         except BadArgument:

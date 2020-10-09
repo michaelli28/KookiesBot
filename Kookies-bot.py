@@ -112,9 +112,9 @@ async def on_member_join(member):
 
 @bot.event
 async def on_member_remove(member):
-    embed = discord.Embed(title=str(member.name)+' has left ' +
+    embed = discord.Embed(title=str(member.name.display_name)+' has left ' +
                           str(member.guild.name), color=random.randint(0, 0xffffff))
-    embed.set_author(name=member.name, icon_url=member.avatar_url)
+    embed.set_author(name=member.name.display_name, icon_url=member.avatar_url)
     embed.timestamp = datetime.datetime.now()
 
     with open("guild.json", "r") as f:
@@ -181,7 +181,7 @@ async def _8ball(ctx, *, question=None):
     embed.add_field(name='Question', value=question, inline=False)
     embed.add_field(name='Answer', value=random.choice(
         responses), inline=False)
-    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+    embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
     embed.timestamp = datetime.datetime.now()
     await ctx.send(embed=embed)
 
@@ -267,7 +267,7 @@ async def on_message(message):
 @has_permissions(administrator=True)
 async def cic(ctx, user: discord.Member):
     await user.kick(reason='Admins decided you needed a kick')
-    return await ctx.send(str(user) + ' has been kicked')
+    return await ctx.send(str(user.display_name) + ' has been kicked')
     # await ctx.send('Missing Permissions to kick ' + str(user))
 
 
