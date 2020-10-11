@@ -445,6 +445,7 @@ class VoiceState:
                 self.now = discord.FFmpegPCMAudio(
                     self.current.source.stream_url, **FFMPEG_OPTIONS)
                 self.current.source.volume = self._volume
+
                 # if ctx.voice_client:
                 #     ctx.voice_client.source.volume = self._volume/100
                 # ctx.voice_state.current.source.volume = self._volume/100
@@ -658,6 +659,8 @@ class MusicPlayer(commands.Cog):
             return
         ctx.voice_state.voice = await destination.connect()
         return await ctx.send(f'Connected to: **{destination}**, type **;leave** to leave the channel')
+
+
     @commands.command(name='summon', brief='Summons the bot to a channel')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _summon(self, ctx , *, channel: discord.VoiceChannel = None):
@@ -695,6 +698,7 @@ class MusicPlayer(commands.Cog):
         await ctx.send('Left **' + str(channel) + '**')
         del self.voice_states[ctx.guild.id]
 
+
     @commands.command(name='volume', aliases=['vol','v'], brief='Set the volume of the music')
     async def _volume(self, ctx, *, volume: int = None):
         """Sets the volume of the player"""
@@ -712,13 +716,38 @@ class MusicPlayer(commands.Cog):
         if not vc or not vc.is_connected():
             return await ctx.send('I am not currently in a voice channel')
 
-        if 0 > volume > 100:
+        if 0 > volume or volume > 100:
             return await ctx.send('Volume must be between 0 and 100')
-        if ctx.voice_client:
-            ctx.voice_client.source.volume = volume/100
-        ctx.voice_state.current.source.volume = volume/100
-        ctx.voice_state.volume = volume/100
+        
+        if ctx.voice_state.loop is True:
+            ctx.voice_state._volume = volume/100
+            ctx.voice_state.current.source.volume = volume/100
+            ctx.voice_state.volume = volume/100
+        else:
+            if ctx.voice_client:
+                ctx.voice_client.source.volume = volume/100
+            ctx.voice_state.current.source.volume = volume/100
+            ctx.voice_state.volume = volume/100
+
+        # if ctx.voice_state.loop == True:
+        #     ctx.voice_state._volume = volume/100
+        #     ctx.voice_state.current.source.volume = volume/100
+        #     ctx.voice_state.volume = volume/100
+        #     print(ctx.voice_state.volume)
+        #     print(ctx.voice_state._volume)
+        #     print(ctx.voice_state.current.source.volume)
+        # else:
+        #     if ctx.voice_client:
+        #         ctx.voice_client.source.volume = volume/100
+
+        #     ctx.voice_state.current.source.volume = volume/100
+        #     ctx.voice_state.volume = volume/100
+        #     print(ctx.voice_state.volume)
+        #     print(ctx.voice_state._volume)
+        #     print(ctx.voice_state.current.source.volume)
         await ctx.send('Volume of the player set to **{}**%'.format(volume))
+
+
     # @commands.command(brief='Override for volume, NotThatBot#3360 only')
     # @commands.is_owner()
     # async def voln(self, ctx, *, volume: int=None):
@@ -736,6 +765,7 @@ class MusicPlayer(commands.Cog):
     #         ctx.voice_client.source.volume = volume/100
     #     ctx.voice_state.volume = volume/100
     #     await ctx.send('Volume of the player set to **{}**%'.format(volume))
+
 
     @commands.command(name='now', aliases=['current', 'playing', 'np'], brief='Shows the song that is playing')
     @commands.cooldown(1, 5, commands.BucketType.user)

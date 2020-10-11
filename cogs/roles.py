@@ -594,7 +594,7 @@ class roles(commands.Cog):
         await ctx.send(f'Nickname was changed for {member.mention} from {old} to {nick}')
 
     
-    @commands.command(aliases=['lock'], brief='Locks the server from messages')
+    @commands.command(brief='Locks the server from messages')
     @commands.has_permissions(administrator=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def serverlock(self, ctx):
@@ -607,19 +607,19 @@ class roles(commands.Cog):
             return await ctx.send('I don\'t have the permissions to do that')
 
 
-    # @commands.command(aliases=['unlock'], brief='Unlocks the server')
-    # @commands.has_permissions(administrator=True)
-    # @commands.cooldown(1, 5, commands.BucketType.user)
-    # async def serverunlock(self, ctx):
-    #     try:
-    #         role = ctx.guild.default_role
-    #         for channel in ctx.guild.channels:
-    #             await channel.set_permissions(role, send_messages=True)
-    #         return await ctx.send('Unlocked the server')
-    #     except discord.Forbidden:
-    #         return await ctx.send('I don\'t have the permissions to do that')
+    @commands.command(brief='Unlocks the server')
+    @commands.has_permissions(administrator=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def serverunlock(self, ctx):
+        try:
+            role = ctx.guild.default_role
+            for channel in ctx.guild.channels:
+                await channel.set_permissions(role, send_messages=None)
+            return await ctx.send('Unlocked the server')
+        except discord.Forbidden:
+            return await ctx.send('I don\'t have the permissions to do that')
     
-    @commands.command(aliases=['lockc'], brief='Locks the channel from messages')
+    @commands.command(brief='Locks the channel from messages')
     @commands.has_permissions(administrator=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def channellock(self, ctx):
@@ -632,17 +632,52 @@ class roles(commands.Cog):
             return await ctx.send('I don\'t have the permissions to do that')
 
 
-    @commands.command(aliases=['unlockc'], brief='Unlocks the channel')
+    @commands.command(brief='Unlocks the channel')
     @commands.has_permissions(administrator=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def channelunlock(self, ctx):
         try:
             channel = ctx.message.channel
             role = ctx.guild.default_role
-            await channel.set_permissions(role, send_messages=True)
+            await channel.set_permissions(role, send_messages=None)
             return await ctx.send('Unlocked the channel')
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
+    
+
+    @commands.command(brief='Creates a channel')
+    @commands.has_permissions(administrator=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def createchannel(self, ctx, name):
+        guild = ctx.message.guild
+        await guild.create_text_channel(name)
+
+    @commands.command(brief='Creates a voice channel')
+    @commands.has_permissions(administrator=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def createvoicechannel(self, ctx, name):
+        guild = ctx.message.guild
+        await guild.create_voice_channel(name)
+
+
+    @commands.command(brief='Edits a text channel')
+    @commands.has_permissions(administrator=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def editchannel(self, ctx, name: discord.TextChannel, nname: Optional[str] = None, slowmode: Optional[int] = None):
+        if nname != None:
+            await name.edit(name=nname)
+            await ctx.send(f'Changed the name of channel {name.name} to {nname}')
+        if slowmode != None:
+            await name.edit(slowmode_delay=slowmode)
+            await ctx.send(f'Set the slowmode delay for channel {name.name} to {slowmode} seconds')
+
+    @commands.command(brief='Creates a category')
+    @commands.has_permissions(administrator=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def createcategory(self, ctx, name):
+        guild = ctx.message.guild
+        await guild.create_category(name)
+        return await ctx.send(f'Created category {name}')
 
 def setup(bot):
 	bot.add_cog(roles(bot))
