@@ -165,7 +165,10 @@ class Schoology(commands.Cog):
             user = await self.bot.fetch_user(author)
             res = collection.find({})
             result = collection.find_one({'_id': int(author)})
-            if result['Xp']==0:
+            try:
+                if result['Xp']==0:
+                    return await ctx.send(f'{user.mention} has no xp, send more messages to gain xp')
+            except:
                 return await ctx.send(f'{user.mention} has no xp, send more messages to gain xp')
 
             embed = discord.Embed(color=random.randint(0, 0xffffff))
