@@ -486,11 +486,6 @@ class VoiceState:
 
 
 
-
-
-
-
-
 class MusicPlayer(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -724,23 +719,23 @@ class MusicPlayer(commands.Cog):
         ctx.voice_state.current.source.volume = volume/100
         ctx.voice_state.volume = volume/100
         await ctx.send('Volume of the player set to **{}**%'.format(volume))
-    @commands.command(brief='Override for volume, NotThatBot#3360 only')
-    @commands.is_owner()
-    async def voln(self, ctx, *, volume: int=None):
+    # @commands.command(brief='Override for volume, NotThatBot#3360 only')
+    # @commands.is_owner()
+    # async def voln(self, ctx, *, volume: int=None):
 
-        if volume == None:
-            return await ctx.send(f'Current volume is at **{ctx.voice_client.source.volume}%**')
-        """Sets the volume of the player"""
-        vc = ctx.voice_client
+    #     if volume == None:
+    #         return await ctx.send(f'Current volume is at **{ctx.voice_client.source.volume}%**')
+    #     """Sets the volume of the player"""
+    #     vc = ctx.voice_client
 
-        if not vc or not vc.is_connected():
-            return await ctx.send('I am not currently playing anything')
-        if 0 > volume > 100:
-            return await ctx.send('Volume must be between 0 and 100')
-        if ctx.voice_client:
-            ctx.voice_client.source.volume = volume/100
-        ctx.voice_state.volume = volume/100
-        await ctx.send('Volume of the player set to **{}**%'.format(volume))
+    #     if not vc or not vc.is_connected():
+    #         return await ctx.send('I am not currently playing anything')
+    #     if 0 > volume > 100:
+    #         return await ctx.send('Volume must be between 0 and 100')
+    #     if ctx.voice_client:
+    #         ctx.voice_client.source.volume = volume/100
+    #     ctx.voice_state.volume = volume/100
+    #     await ctx.send('Volume of the player set to **{}**%'.format(volume))
 
     @commands.command(name='now', aliases=['current', 'playing', 'np'], brief='Shows the song that is playing')
     @commands.cooldown(1, 5, commands.BucketType.user)

@@ -561,6 +561,30 @@ class roles(commands.Cog):
             return await ctx.send('Everyone has been unmuted')
 
 
+    @commands.command(aliases=['sd'], brief='Server deafen everyone in a voice channel')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_any_role('Admin', 'Admin but lower')
+    async def serverdeafen(self, ctx):
+        async with ctx.typing():
+            if ctx.author.voice and ctx.author.voice.channel:
+                channel = ctx.author.voice.channel
+            for member in channel.members:
+                await member.edit(deafen=True)
+            return await ctx.send('Everyone has been deafened')
+
+
+    @commands.command(aliases=['sud'], brief='Undeafens everyone in a voice channel')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_any_role('Admin', 'Admin but lower')
+    async def serverundeafen(self, ctx):
+        async with ctx.typing():
+            if ctx.author.voice and ctx.author.voice.channel:
+                channel = ctx.author.voice.channel
+            for member in channel.members:
+                await member.edit(deafen=False)
+            return await ctx.send('Everyone has been undeafened')
+
+
     @commands.command(aliases=['n'], brief='Changes someone\'s nickname')
     @commands.has_permissions(manage_nicknames=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
