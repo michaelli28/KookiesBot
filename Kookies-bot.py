@@ -53,7 +53,7 @@ async def on_ready():
     # bot.load_extension('cogs.Music2')
     bot.load_extension('cogs.CommandErrorHandler')
     bot.load_extension('cogs.fun')
-    bot.load_extension('cogs.help')
+    bot.load_extension('cogs.helpmenu')
     bot.load_extension('cogs.levels')
     bot.load_extension('cogs.moderation')
     bot.load_extension('cogs.music')
