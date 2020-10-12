@@ -773,24 +773,8 @@ class music(commands.Cog):
         if not vc:
             return await ctx.send('I am not currently playing anything')
         return await ctx.send(embed=ctx.voice_state.current.create_embed())
-        """Displays the currently playing song"""
-        '''
-        # Create Object
-        prog = pyprog.ProgressBar(" ", " ", total=34, bar_length=26, complete_symbol="=", not_complete_symbol=" ", wrap_bar_prefix=" [", wrap_bar_suffix="] ", progress_explain="", progress_loc=pyprog.ProgressBar.PROGRESS_LOC_END)
-        # Update Progress Bar
-        prog.update()
 
-        for i in range(34):
-            # Do something
-            sleep(0.1)
-            # Set current status
-            prog.set_stat(i + 1)
-            # Update Progress Bar again
-            prog.update()
-
-        # Make the Progress Bar final
-        prog.end()
-        '''
+        
     @commands.command(name='pause', aliases=['pau'], brief='Pauses the song playing')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _pause(self, ctx): 
@@ -835,7 +819,7 @@ class music(commands.Cog):
             return await ctx.send('Continuing')
         else:
             return await ctx.send('Please reply with **y** or **n** next time, continuing')
-        """Stops playing song and clears the queue"""
+
         if ctx.voice_state.is_playing:
             ctx.voice_state.voice.pause()
         await ctx.voice_state.stop()
@@ -843,13 +827,11 @@ class music(commands.Cog):
         del self.voice_states[ctx.guild.id]
 
 
-        ctx.voice_state.songs.clear()
-        return
-        '''
-        if ctx.voice_state.autoplay:
-            ctx.voice_state.autoplay = False
-            await ctx.send('Autoplay is now turned off')
-        '''
+        return ctx.voice_state.songs.clear()
+
+        # if ctx.voice_state.autoplay:
+        #     ctx.voice_state.autoplay = False
+        #     await ctx.send('Autoplay is now turned off')
 
 
     @commands.command(name='skip', brief='Skips the song playing')

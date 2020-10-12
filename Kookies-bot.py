@@ -51,7 +51,7 @@ async def on_ready():
     activity = discord.Game(name=";help")
     await bot.change_presence(activity=activity)
     # bot.load_extension('cogs.Music2')
-    #bot.load_extension('cogs.ai')
+    bot.load_extension('cogs.ai')
     bot.load_extension('cogs.CommandErrorHandler')
     bot.load_extension('cogs.fun')
     bot.load_extension('cogs.help')

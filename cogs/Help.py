@@ -61,7 +61,7 @@ class HelpMenu(ListPageSource):
         return await self.write_page(menu, fields)
 
 
-class help(Cog):
+class help(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bot.remove_command("help")
