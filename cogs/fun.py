@@ -3,6 +3,7 @@ import json
 import datetime
 import re
 import praw
+import discord
 import requests
 from time import time
 import numpy as np
@@ -20,7 +21,7 @@ from discord.utils import get
 from discord import Embed
 from typing import Optional
 import random
-import time
+
 import asyncio
 from discord.ext import tasks
 from operator import itemgetter
