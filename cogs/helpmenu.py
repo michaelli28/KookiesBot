@@ -88,7 +88,7 @@ class help(commands.Cog):
                 for commandC in cogC.get_commands():
                     if str(commandC.name) == str(command):
                         commandCog = cogC.qualified_name
-                        embed.add_field(name='Category:', value=f'**{commandCog}**')
+                        embed.add_field(name='**Category:**', value=f'**{commandCog}**')
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.timestamp = datetime.datetime.now()
         await ctx.send(embed=embed)
