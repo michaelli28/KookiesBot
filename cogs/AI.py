@@ -29,7 +29,7 @@ import nltk
 # nltk.download('wordnet')
 from nltk.corpus import wordnet
 
-class AI(commands.Cog):
+class ai(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.df = pd.read_csv('./IMDB Dataset.csv')
@@ -152,7 +152,7 @@ class AI(commands.Cog):
                 return await ctx.send('Please reply with p or n after using ;mood to help make the AI smarter')
             
 def setup(bot):
-	bot.add_cog(AI(bot))
+	bot.add_cog(ai(bot))
 
 
 

@@ -149,7 +149,7 @@ class CommandErrorHandler(commands.Cog):
         """
         message = ctx.message
         await message.delete()
-        await ctx.send(inp)
+        return await ctx.send(inp)
 
     @do_repeat.error
     async def do_repeat_handler(self, ctx, error):
@@ -161,7 +161,7 @@ class CommandErrorHandler(commands.Cog):
         # Check if our required argument inp is missing.
         if isinstance(error, commands.MissingRequiredArgument):
             if error.param.name == 'inp':
-                await ctx.send("You forgot to give me input to repeat!")
+                return await ctx.send("You forgot to give me input to repeat!")
 
 
 def setup(bot):

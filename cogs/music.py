@@ -487,7 +487,7 @@ class VoiceState:
 
 
 
-class MusicPlayer(commands.Cog):
+class music(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.voice_states = {}
@@ -518,15 +518,6 @@ class MusicPlayer(commands.Cog):
     #async def cog_command_error(self, ctx , error: commands.CommandError):
     #    await ctx.send('An error occurred: {}'.format(str(error)))
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        now = datetime.datetime.now() 
-        current_time = now.strftime("%H:%M|%m/%d/%Y")
-        if message.author.id != self.bot.user.id:
-            print(f"{message.guild}/{message.channel}/  {current_time}  /{message.author.name}>{message.content}  ")
-            if message.embeds:
-                print(message.embeds[0].to_dict())
-
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
@@ -538,9 +529,10 @@ class MusicPlayer(commands.Cog):
             return
         channel = msg.channel
 
-        ctx = self.ctx
+        
 
         if reaction.emoji=='⏯️':
+            ctx = self.ctx
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             if not ctx.voice_client:
@@ -553,6 +545,7 @@ class MusicPlayer(commands.Cog):
                 ctx.voice_client.resume()
                 await channel.send(f'{user.mention} has resumed the song!')
         if reaction.emoji=='⏩':
+            ctx = self.ctx
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             if not ctx.voice_client or not ctx.voice_client.is_connected:
@@ -570,6 +563,7 @@ class MusicPlayer(commands.Cog):
                 vc.skip()
                 await channel.send(f'{user.mention} has skipped the song!')
         if reaction.emoji=='🔀':
+            ctx = self.ctx
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             if len(vc.songs) == 0:
@@ -578,6 +572,7 @@ class MusicPlayer(commands.Cog):
                 vc.songs.shuffle()
                 await channel.send(f'{user.mention} has shuffled the queue')
         if reaction.emoji == '🔁':
+            ctx = self.ctx
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             try:
@@ -591,6 +586,7 @@ class MusicPlayer(commands.Cog):
                 pass
             
         if reaction.emoji=='🔈':
+            ctx = self.ctx
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             if not ctx.voice_client or not ctx.voice_client.is_connected():
@@ -607,6 +603,7 @@ class MusicPlayer(commands.Cog):
             await channel.send('Volume of the player set to **{}**%'.format(volume), delete_after=10)
 
         if reaction.emoji=='🔊':
+            ctx = self.ctx
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             if not ctx.voice_client or not ctx.voice_client.is_connected():
@@ -623,6 +620,7 @@ class MusicPlayer(commands.Cog):
             await channel.send('Volume of the player set to **{}**%'.format(volume), delete_after=10)
 
         if reaction.emoji == '⏹️':
+            ctx = self.ctx
             await msg.remove_reaction(reaction, user)
             ctx = self.ctx
             vc = ctx.voice_client
@@ -679,7 +677,7 @@ class MusicPlayer(commands.Cog):
             return
 
         ctx.voice_state.voice = await destination.connect()
-    
+        return
     @commands.command(name='leave', aliases=['disconnect', 'l'], brief='Makes the bot leave the channel it is in')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _leave(self, ctx):
@@ -697,8 +695,8 @@ class MusicPlayer(commands.Cog):
         ctx.voice_state.exists = False
         await ctx.send('Left **' + str(channel) + '**')
         del self.voice_states[ctx.guild.id]
-
-
+        return 
+        
     @commands.command(name='volume', aliases=['vol','v'], brief='Set the volume of the music')
     async def _volume(self, ctx, *, volume: int = None):
         """Sets the volume of the player"""
@@ -745,7 +743,7 @@ class MusicPlayer(commands.Cog):
         #     print(ctx.voice_state.volume)
         #     print(ctx.voice_state._volume)
         #     print(ctx.voice_state.current.source.volume)
-        await ctx.send('Volume of the player set to **{}**%'.format(volume))
+        return await ctx.send('Volume of the player set to **{}**%'.format(volume))
 
 
     # @commands.command(brief='Override for volume, NotThatBot#3360 only')
@@ -772,9 +770,9 @@ class MusicPlayer(commands.Cog):
     async def _now(self, ctx):
         #await ctx.message.delete()
         vc = ctx.voice_client
-        if not vc or not vc.is_playing():
-            return await ctx.send('I am not currently playing anything!')
-        await ctx.send(embed=ctx.voice_state.current.create_embed())
+        if not vc:
+            return await ctx.send('I am not currently playing anything')
+        return await ctx.send(embed=ctx.voice_state.current.create_embed())
         """Displays the currently playing song"""
         '''
         # Create Object
@@ -804,7 +802,7 @@ class MusicPlayer(commands.Cog):
         elif ctx.voice_state.is_playing:
             ctx.voice_state.voice.pause()
 
-            await ctx.send(f'{ctx.author.mention} has paused the song!')
+            return await ctx.send(f'{ctx.author.mention} has paused the song!')
 
 
     @commands.command(name='resume', aliases=['re', 'res','r'], brief='Resumes the song')
@@ -820,7 +818,7 @@ class MusicPlayer(commands.Cog):
 
         elif ctx.voice_state.is_playing and ctx.voice_state.voice.is_paused():
             vc.resume()
-            await ctx.send(f'{ctx.author.mention} has resumed the song!')
+            return await ctx.send(f'{ctx.author.mention} has resumed the song!')
 
 
     @commands.command(name='stop', brief='Stops the music, clears the queue, and disconnects the bot from the voice channel')
@@ -846,6 +844,7 @@ class MusicPlayer(commands.Cog):
 
 
         ctx.voice_state.songs.clear()
+        return
         '''
         if ctx.voice_state.autoplay:
             ctx.voice_state.autoplay = False
@@ -871,7 +870,7 @@ class MusicPlayer(commands.Cog):
                 return await ctx.send('Empty queue, autoplay and loop not on, cannot skip the song')
         else:
             ctx.voice_state.skip()
-            await ctx.send(f'{ctx.author.mention} has skipped the song!')
+            return await ctx.send(f'{ctx.author.mention} has skipped the song!')
 
     @commands.command(name='queue', aliases=['check','q'], brief='Checks the queue for songs')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -902,7 +901,7 @@ class MusicPlayer(commands.Cog):
         embed = (discord.Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
                 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
         embed.timestamp = datetime.datetime.now()
-        await ctx.send(embed=embed)
+        return await ctx.send(embed=embed)
 
 
     @commands.command(name='shuffle', brief='Shuffles the queue')
@@ -916,7 +915,7 @@ class MusicPlayer(commands.Cog):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.send('Queue is empty')
         ctx.voice_state.songs.shuffle()
-        await ctx.send(f'{ctx.author.mention} has shuffled the queue')
+        return await ctx.send(f'{ctx.author.mention} has shuffled the queue')
 
 
     @commands.command(name='remove', brief='Removes a song from a queue')
@@ -929,10 +928,10 @@ class MusicPlayer(commands.Cog):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.send('Queue is empty')
         elif index > len(ctx.voice_state.songs):
-            await ctx.send('Invalid index, number too large')
+            return await ctx.send('Invalid index, number too large')
         else:
             ctx.voice_state.songs.remove(index - 1)
-            await ctx.send('Removed song number **'+ str(index) + '**')
+            return await ctx.send('Removed song number **'+ str(index) + '**')
 
     @commands.command(name='loop', brief='Loops the song currently playing')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -1094,9 +1093,9 @@ class MusicPlayer(commands.Cog):
                 except:
                     await ctx.send('There was an error downloading ' + song)
                 if ctx.voice_state.is_playing:
-                    await ctx.send('Queued {}'.format(str(source)))
+                    return await ctx.send('Queued {}'.format(str(source)))
                 else:
-                    await ctx.send('Playing {}'.format(str(source)))
+                    return await ctx.send('Playing {}'.format(str(source)))
 
     @commands.command(name='seek', brief='Plays or queues a song or playlist by link or by search')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -1164,7 +1163,7 @@ class MusicPlayer(commands.Cog):
         embed = (discord.Embed(description='{} tracks:\n\n{}'.format(len(ctx.voice_state.song_history), queue))
                 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
         embed.timestamp = datetime.datetime.now()
-        await ctx.send(embed=embed)
+        return await ctx.send(embed=embed)
     
     @commands.command(name='search', brief='Shows 10 search results for videos')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -1200,11 +1199,11 @@ class MusicPlayer(commands.Cog):
                         song = Song(source)
                         await ctx.voice_state.songs.put(song)
                         if ctx.voice_state.is_playing:
-                            await ctx.send('Queued {}'.format(str(source)))
+                            return await ctx.send('Queued {}'.format(str(source)))
                         else:
-                            await ctx.send('Playing {}'.format(str(source)))
+                            return await ctx.send('Playing {}'.format(str(source)))
                     except: 
-                        await ctx.send('There was an error downloading ' + song)    
+                        return await ctx.send('There was an error downloading ' + song)    
                     
 
 
@@ -1216,7 +1215,7 @@ class MusicPlayer(commands.Cog):
 
         # Inverse boolean value to loop and unloop.
         ctx.voice_state.sendEmbed = not ctx.voice_state.sendEmbed
-        await ctx.send('Showing now playing embeds after new songs is now ' + ('on' if ctx.voice_state.sendEmbed else 'off'))
+        return await ctx.send('Showing now playing embeds after new songs is now ' + ('on' if ctx.voice_state.sendEmbed else 'off'))
 
     @commands.command(aliases=['st'], brief='Skips to a song in queue')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -1231,7 +1230,7 @@ class MusicPlayer(commands.Cog):
             ctx.voice_state.songs.remove(0)
             n+=1
         ctx.voice_state.skip()
-        await ctx.send(f'{ctx.author.mention} has skipped **{number}** song(s)'), 
+        return await ctx.send(f'{ctx.author.mention} has skipped **{number}** song(s)'), 
     
     @commands.command(aliases=['cq'], brief='Clears the queue')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -1267,4 +1266,4 @@ class MusicPlayer(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(MusicPlayer(bot))
+    bot.add_cog(music(bot))

@@ -50,79 +50,19 @@ await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.wa
 async def on_ready():
     activity = discord.Game(name=";help")
     await bot.change_presence(activity=activity)
-    bot.load_extension('cogs.Help')
+
+    bot.load_extension('cogs.ai')
     # bot.load_extension('cogs.Music2')
     bot.load_extension('cogs.CommandErrorHandler')
-    bot.load_extension('cogs.Leaderboard')
-    bot.load_extension('cogs.MusicPlayer')
-    bot.load_extension('cogs.Level-Schoology')
-    bot.load_extension('cogs.AI')
-    bot.load_extension('cogs.roles')
     bot.load_extension('cogs.fun')
+    bot.load_extension('cogs.help')
+    bot.load_extension('cogs.levels')
+    bot.load_extension('cogs.moderation')
+    bot.load_extension('cogs.music')
+    bot.load_extension('cogs.roles')
+    bot.load_extension('cogs.school')
 
     print('Logged in as:\n{0.user.name}'.format(bot))
-
-
-# allows server members to set channel for welcome messages to send to
-@bot.command(brief='Sets the channel for welcome messages')
-@commands.cooldown(1, 5, commands.BucketType.user)
-@commands.is_owner()
-async def welcome(ctx):
-    with open("guild.json", "r") as f:
-        guildInfo = json.load(f)
-        f.close()
-# sets channel to send message to as the channel the command was sent to
-    guildInfo[ctx.message.guild.id] = ctx.message.channel.id
-
-    with open("guild.json", "w") as f:
-        try:
-            json.dump(guildInfo, f)
-        except:
-            pass
-        f.close()
-    await ctx.send('Channel set to: '+str(ctx.message.channel.id))
-
-
-@bot.event
-async def on_member_join(member):
-    # role = discord.utils.get(member.server.roles, name='Member')
-    # await client.add_roles(member, role)
-    # if str(member.name) == 'zero0two2':
-    #     Muted = get(member.guild.roles, name='Muted')
-    #     u = member.guild.get_member(member.id)
-    #     await u.add_roles(Muted)
-    embed = discord.Embed(
-        title='Welcome to ' + str(member.guild.name) + " " + str(member.name), color=random.randint(0, 0xffffff))
-
-    embed.set_author(name=member.name, icon_url=member.avatar_url)
-    embed.timestamp = datetime.datetime.now()
-
-    with open("guild.json", "r") as f:
-        guildInfo = json.load(f)
-        f.close()
-    channel = guildInfo[str(member.guild.id)]
-    channel = bot.get_channel(channel)
-    await channel.send(embed=embed)
-
-# @bot.event
-# async def on_member_join(member):
-#     channel = bot.get_channel(751137949420224645)
-#     await channel.send(member.mention + " has entered!")
-
-
-@bot.event
-async def on_member_remove(member):
-    embed = discord.Embed(title=str(member.name.display_name)+' has left ' +
-                          str(member.guild.name), color=random.randint(0, 0xffffff))
-    embed.set_author(name=member.name.display_name, icon_url=member.avatar_url)
-    embed.timestamp = datetime.datetime.now()
-
-    with open("guild.json", "r") as f:
-        guildInfo = json.load(f)
-        f.close()
-    channel = guildInfo[str(member.guild.id)]
-    channel = bot.get_channel(channel)
-    await channel.send(embed=embed)
 
 
 # @bot.event
@@ -131,6 +71,7 @@ async def on_member_remove(member):
 #     for ids in payload.message_ids:
 #         new = await message.channel.fetch_message(ids)
 #         print(f'{message.guild}/{message.channel}/{new.author}>{new.content}')
+
 @bot.event
 async def on_bulk_message_delete(messages):
     print('START OF DELETED MESSAGES')
@@ -154,96 +95,8 @@ async def on_message_delete(message):
     print('##############################################################################################################################################################')
 
 
-@bot.command(brief='Says hello')
-@commands.cooldown(1, 5, commands.BucketType.user)
-async def hello(ctx):
-    await ctx.send("Hello " + ctx.message.author.mention)
-
-
-@bot.command(brief='Get your id')
-@commands.cooldown(1, 5, commands.BucketType.user)
-async def id(ctx):
-    author = ctx.message.author.id
-    await ctx.send(author)
-
-
-@bot.command(name='8ball', brief='Answer your yes/no questions')
-@commands.cooldown(1, 5, commands.BucketType.user)
-async def _8ball(ctx, *, question=None):
-    if (question) == None:
-        return await ctx.send("Ask a question sir or ma\'am")
-    responses = ['Maybe', 'Hmm, try again later', 'Yes sir/ma\'am', 'No sir/ma\'am', 'You can count on it!', 'Guaranteed', 'How did you know?', 'Of course',
-                 'I believe so', 'Nope', 'Definitely NOT', 'Very much so', 'The answer is NO', 'No (u)', 'Does money grow on trees?', 'Is magic better than Kookies? (NOOOO)']
-    embed = discord.Embed(
-        title='8ball response',
-        color=random.randint(0, 0xffffff)
-    )
-    embed.add_field(name='Question', value=question, inline=False)
-    embed.add_field(name='Answer', value=random.choice(
-        responses), inline=False)
-    embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-    embed.timestamp = datetime.datetime.now()
-    await ctx.send(embed=embed)
-
-
-@bot.command(brief='Clears messages, NotThatBot#3360 only')
-@commands.cooldown(1, 5, commands.BucketType.user)
-@commands.is_owner()
-async def klear(ctx, amount=1):
-    if amount == 0:
-        ctx.send("You need to delete a message")
-    try:
-        await ctx.channel.purge(limit=amount+1)
-    except:
-        await ctx.send("Input a number please")
-
-
-@bot.command(brief='Gets news from CNN')
-@commands.cooldown(1, 5, commands.BucketType.user)
-async def news(ctx, *, search):
-    num_query = search.split(',', 1)
-    number_of_results = num_query[0]
-
-    try:
-        searchq = num_query[1]
-    except:
-        number_of_results = 1
-        searchq = num_query
-
-    query_string1 = urllib.parse.urlencode({'q': searchq})
-    query_string1 = query_string1.encode('utf-8')
-
-    req1 = urllib.request.Request(
-        'https://news.google.com/', query_string1,
-        headers={
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
-        }
-    )
-
-    resp1 = urllib.request.urlopen(req1)
-    respData1 = resp1.read()
-
-    search_results1 = re.findall(
-        '"https://www\.cnn\.com/(.*?)"', str(respData1))
-    results = {}
-    for n in range(int(number_of_results)):
-        results[n+1] = ('https://www.cnn.com/search?' + search_results1[n])
-    await ctx.send(results)
-
-
-@bot.command(brief='Get your ping')
-@commands.cooldown(1, 5, commands.BucketType.user)
-async def ping(ctx):
-    start = time()
-    message = await ctx.send(f"Pong! Latency: {bot.latency*1000:,.0f} ms.")
-    end = time()
-
-    await message.edit(content=f"Pong! Latency: {bot.latency*1000:,.0f} ms. Response time: {(end-start)*1000:,.0f} ms.")
-
-
 @bot.event
 async def on_message(message):
-
     if message.author != bot.user:
         if message.content.startswith('no u'):
             return await message.channel.send('no u', delete_after=10)
@@ -262,12 +115,7 @@ async def on_message(message):
     #    await message.channel.send('MAGIC SUCKS')
 
 
-@bot.command(brief='Kicks people, admin only')
-@commands.cooldown(1, 5, commands.BucketType.user)
-@has_permissions(administrator=True)
-async def cic(ctx, user: discord.Member):
-    await user.kick(reason='Admins decided you needed a kick')
-    return await ctx.send(str(user.display_name) + ' has been kicked')
+
     # await ctx.send('Missing Permissions to kick ' + str(user))
 
 
@@ -278,18 +126,16 @@ async def botstop(ctx):
     await ctx.send('Goodbye')
     await bot.logout()
     return
+
 # @bot.event
 # async def on_disconnect():
 # 	print("Bot disconnected")
 
 
-@bot.command(brief='Give money')
-@commands.cooldown(1, 5, commands.BucketType.user)
-async def gimme(ctx):
-    return await ctx.send(f'{ctx.author.mention} has recieved {random.randint(100, 1000000)} dollars')
-
-
 bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.YC7CkxByk0-P93Xw7E2ZrOyqvYs')
+
+
+
 
 
 '''@bot.command()
