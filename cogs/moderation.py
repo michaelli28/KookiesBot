@@ -312,5 +312,28 @@ class moderation(commands.Cog):
             return await ctx.send('I\'m not allowed to do that')
         except AttributeError:
             return await ctx.send('`Muted` is not a role, use ;mute member to create the muted role')
+
+    @commands.Cog.listener()
+    async def on_bulk_message_delete(self, messages):
+        print('START OF DELETED MESSAGES')
+        print('##############################################################################################################################################################')
+        for message in messages:
+            print(f'{message.guild}/{message.channel}/{message.author}>{message.content}')
+            if message.embeds:
+                print(message.embeds[0].to_dict())
+        print('END OF DELETED MESSAGES')
+        print('##############################################################################################################################################################')
+
+
+    @commands.Cog.listener()
+    async def on_message_delete(self, message):
+        print('DELETED MESSAGE START')
+        print('##############################################################################################################################################################')
+        print(f'{message.guild}/{message.channel}/{message.author}>{message.content}')
+        if message.embeds:
+            print(message.embeds[0].to_dict())
+        print('DELETED MESSAGE END')
+        print('##############################################################################################################################################################')
+
 def setup(bot):
 	bot.add_cog(moderation(bot))

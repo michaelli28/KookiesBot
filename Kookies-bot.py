@@ -70,27 +70,6 @@ async def on_ready():
 #         new = await message.channel.fetch_message(ids)
 #         print(f'{message.guild}/{message.channel}/{new.author}>{new.content}')
 
-@bot.event
-async def on_bulk_message_delete(messages):
-    print('START OF DELETED MESSAGES')
-    print('##############################################################################################################################################################')
-    for message in messages:
-        print(f'{message.guild}/{message.channel}/{message.author}>{message.content}')
-        if message.embeds:
-            print(message.embeds[0].to_dict())
-    print('END OF DELETED MESSAGES')
-    print('##############################################################################################################################################################')
-
-
-@bot.event
-async def on_message_delete(message):
-    print('DELETED MESSAGE START')
-    print('##############################################################################################################################################################')
-    print(f'{message.guild}/{message.channel}/{message.author}>{message.content}')
-    if message.embeds:
-        print(message.embeds[0].to_dict())
-    print('DELETED MESSAGE END')
-    print('##############################################################################################################################################################')
 
 
 @bot.event
