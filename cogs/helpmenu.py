@@ -116,10 +116,11 @@ class help(commands.Cog):
                 cogs = self.bot.cogs
                 full = 'Categories:\nall\n'
 
-                listofcogs = ''
                 for cog in cogs:
-                    listofcogs += f'{cog}\n'
-                full += f'{listofcogs}'
+                    cogR = self.bot.get_cog(cog)
+                    if len(cogR.get_commands()) != 0:
+                        full += f'{cog}\n'
+
                 embed = Embed(title="Help! Use ;help <Category> to get help for that category or use ;help all to get a list of all commands", color=random.randint(0, 0xffffff), description = full)
 
                 embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
