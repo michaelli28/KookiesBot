@@ -222,6 +222,31 @@ class fun(commands.Cog):
             n += 1
         return await ctx.send(embed=embed)
 
+    @commands.command(name='repeat', brief='Repeats your input')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def do_repeat(self, ctx, *, inp: str):
+        """A simple command which repeats your input!
+        Parameters
+        ------------
+        inp: str
+            The input you wish to repeat.
+        """
+        message = ctx.message
+        await message.delete()
+        return await ctx.send(inp)
+
+    @do_repeat.error
+    async def do_repeat_handler(self, ctx, error):
+        """A local Error Handler for our command do_repeat.
+        This will only listen for errors in do_repeat.
+        The global on_command_error will still be invoked after.
+        """
+
+        # Check if our required argument inp is missing.
+        if isinstance(error, commands.MissingRequiredArgument):
+            if error.param.name == 'inp':
+                return await ctx.send("You forgot to give me input to repeat!")
+
     @commands.command(aliases=['mood'], brief='Returns the mood of the sentence')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def sentiment(self, ctx, *, sentence):
@@ -299,32 +324,7 @@ class fun(commands.Cog):
             else:
                 return await ctx.send('Please reply with p or n after using ;mood to help make the AI smarter')
 
-"""Below is an example of a Local Error Handler for our command do_repeat"""
     
-    @commands.command(name='repeat', brief='Repeats your input')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def do_repeat(self, ctx, *, inp: str):
-        """A simple command which repeats your input!
-        Parameters
-        ------------
-        inp: str
-            The input you wish to repeat.
-        """
-        message = ctx.message
-        await message.delete()
-        return await ctx.send(inp)
-
-    @do_repeat.error
-    async def do_repeat_handler(self, ctx, error):
-        """A local Error Handler for our command do_repeat.
-        This will only listen for errors in do_repeat.
-        The global on_command_error will still be invoked after.
-        """
-
-        # Check if our required argument inp is missing.
-        if isinstance(error, commands.MissingRequiredArgument):
-            if error.param.name == 'inp':
-                return await ctx.send("You forgot to give me input to repeat!")
 
 def setup(bot):
 	bot.add_cog(fun(bot))

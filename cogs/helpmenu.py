@@ -114,12 +114,12 @@ class help(commands.Cog):
             
             elif cmd is None:
                 cogs = self.bot.cogs
-                full = 'Categories:\nall\n'
+                full = '**Categories:**\n**all**\n'
 
                 for cog in cogs:
                     cogR = self.bot.get_cog(cog)
                     if len(cogR.get_commands()) != 0:
-                        full += f'{cog}\n'
+                        full += f'**{cog}**\n'
 
                 embed = Embed(title="Help! Use ;help <Category> to get help for that category or use ;help all to get a list of all commands", color=random.randint(0, 0xffffff), description = full)
 
