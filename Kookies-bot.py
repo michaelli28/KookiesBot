@@ -70,7 +70,21 @@ async def on_ready():
 #         new = await message.channel.fetch_message(ids)
 #         print(f'{message.guild}/{message.channel}/{new.author}>{new.content}')
 
-
+@bot.command(brief='Deletes Kookies\' messages after a certain amount of seconds')
+async def prune(ctx, timec = 60):
+    with open('config.json', 'r') as config:
+        info = json.load(config)
+        info['prune'] = not info['prune']
+        info['time'] = str(timec)
+        config.close()
+    with open ('config.json', 'w') as config:
+        json.dump(info, config)
+        config.close()
+    if info['prune']:
+        message = 'Kookies\' responses will now be deleted after '+ str({info['time']})
+    else:
+        message = 'Pruning is now off'
+    return await ctx.send(message)
 
 @bot.event
 async def on_message(message):
@@ -83,6 +97,12 @@ async def on_message(message):
         else:
             await asyncio.sleep(5)
             await message.add_reaction('❌')
+            with open('config.json', 'r') as config:
+                info = json.load(config)
+                config.close()
+            if info['prune']:
+                await asyncio.sleep(int(info['time']))
+                await message.delete()
     await bot.process_commands(message)
     # if message.author.id == '740226974248730625':
     # await message.delete()
