@@ -80,8 +80,9 @@ async def prune(ctx, timec = 60):
     with open ('config.json', 'w') as config:
         json.dump(info, config)
         config.close()
+    time = info['time']
     if info['prune']:
-        message = 'Kookies\' responses will now be deleted after '+ str({info['time']})
+        message = 'Kookies\' responses will now be deleted after '+ str(time) + ' seconds'
     else:
         message = 'Pruning is now off'
     return await ctx.send(message)
@@ -101,6 +102,7 @@ async def on_message(message):
                 info = json.load(config)
                 config.close()
             if info['prune']:
+                print('hi')
                 await asyncio.sleep(int(info['time']))
                 await message.delete()
     await bot.process_commands(message)
