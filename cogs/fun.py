@@ -105,6 +105,18 @@ class fun(commands.Cog):
     async def _8ball(self, ctx, *, question=None):
         if (question) == None:
             return await ctx.send("Ask a question sir or ma\'am")
+        lie = question.lower().find('are you')
+        if lie != -1:
+            embed = discord.Embed(
+            title='8ball response',
+            color=random.randint(0, 0xffffff)
+        )
+            embed.add_field(name='Question', value=question, inline=False)
+            embed.add_field(name='Answer', value='I\'m very accurate for your information. Don\'t question me!', inline=False)
+            embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.avatar_url)
+            embed.timestamp = datetime.datetime.now()
+            return await ctx.send(embed=embed)
         responses = ['Maybe', 'Hmm, try again later', 'Yes sir/ma\'am', 'No sir/ma\'am', 'You can count on it!', 'Guaranteed', 'How did you know?', 'Of course',
                     'I believe so', 'Nope', 'Definitely NOT', 'Very much so', 'The answer is NO', 'No (u)', 'Does money grow on trees?', 'Is magic better than Kookies? (NOOOO)']
         embed = discord.Embed(

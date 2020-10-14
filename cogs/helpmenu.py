@@ -108,8 +108,7 @@ class help(commands.Cog):
 
 
             elif cmd == 'all':
-                menu = MenuPages(source=HelpMenu(ctx, list(self.bot.commands)),
-                                            delete_message_after=True)
+                menu = MenuPages(source=HelpMenu(ctx, list(self.bot.commands)))
                 await menu.start(ctx)
             
             elif cmd is None:
