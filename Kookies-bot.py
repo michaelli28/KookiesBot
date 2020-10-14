@@ -102,7 +102,7 @@ async def on_message(message):
                 info = json.load(config)
                 config.close()
             if info['prune']:
-                print('hi')
+
                 await asyncio.sleep(int(info['time']))
                 await message.delete()
     await bot.process_commands(message)

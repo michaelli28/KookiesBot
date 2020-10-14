@@ -15,7 +15,7 @@ import httpx
 from bs4 import BeautifulSoup
 import asyncio
 import discord
-import youtube_dl
+
 from discord.ext import commands
 import math
 from typing import Optional
