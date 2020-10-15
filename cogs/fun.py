@@ -344,14 +344,21 @@ class fun(commands.Cog):
     async def moctopus(self, ctx, member: discord.Member, *, repeat):
         # name = 'avatar.png'
         await ctx.message.delete()
-        await self.bot.user.edit(username = member.display_name)
+        
         # await user.avatar_url.save(name)
         avatar = await member.avatar_url.read()
         try:
+            await self.bot.user.edit(username = member.display_name)
             await self.bot.user.edit(avatar = avatar)
+            return await ctx.send(repeat)
         except:
             await ctx.send('Can\'t change the avatar that fast')
-        return await ctx.send(repeat)
+            try:
+                await self.bot.user.edit(username = member.display_name)
+            except:
+                await ctx.send('Too many users have this username')
+            return await ctx.send(repeat)
+        
 
 
 def setup(bot):
