@@ -536,7 +536,7 @@ class music(commands.Cog):
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             if not ctx.voice_client:
-                return await channel.send(f'{user.mention}, I am not currently playing anything!')
+                return await channel.send(f'{user.mention}, I am not currently playing anything')
             elif vc.voice.is_playing():
                 vc.voice.pause()
                 await channel.send(f'{user.mention} has paused the song!')
@@ -648,15 +648,15 @@ class music(commands.Cog):
             try:
                 channel = ctx.author.voice.channel
             except AttributeError:
-                return await ctx.send('Specify a channel for me to join or join one')
+                return await ctx.send(f'{ctx.author.mention}, specify a channel for me to join or join one')
 
         destination = ctx.author.voice.channel
         if ctx.voice_state.voice:
             await ctx.voice_state.voice.move_to(destination)
-            await ctx.send(f'Connected to: **{destination}**, type **;leave** to leave the channel')
+            await ctx.send(f'{ctx.author.mention}, connected to: **{destination}**, type **;leave** to leave the channel')
             return
         ctx.voice_state.voice = await destination.connect()
-        return await ctx.send(f'Connected to: **{destination}**, type **;leave** to leave the channel')
+        return await ctx.send(f'{ctx.author.mention}, connected to: **{destination}**, type **;leave** to leave the channel')
 
 
     @commands.command(name='summon', brief='Summons the bot to a channel')
@@ -667,13 +667,12 @@ class music(commands.Cog):
         """
         #await ctx.message.delete()
         if not channel and not ctx.author.voice:
-            raise VoiceError(
-                'You are neither connected to a voice channel nor specified a channel to join.')
+            return ctx.send(f'{ctx.author.mention}, you are neither connected to a voice channel nor specified a channel to join.')
 
         destination = channel or ctx.author.voice.channel
         if ctx.voice_state.voice:
             await ctx.voice_state.voice.move_to(destination)
-            await ctx.send(f'Connected to: **{destination}** type **;leave** to leave the channel')
+            await ctx.send(f'{ctx.author.mention}, connected to: **{destination}** type **;leave** to leave the channel')
             return
 
         ctx.voice_state.voice = await destination.connect()
@@ -686,10 +685,10 @@ class music(commands.Cog):
         try:
             channel = ctx.author.voice.channel
         except:
-            return await ctx.send('Join the voice channel that Kookies is in!')
+            return await ctx.send(f'{ctx.author.mention}, join the voice channel that Kookies is in!')
         vc = ctx.voice_client
         if not vc or not vc.is_connected:
-            return await ctx.send('I am not currently in a voice channel!')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently in a voice channel!')
 
         await ctx.voice_state.stop()
         ctx.voice_state.exists = False
@@ -703,19 +702,19 @@ class music(commands.Cog):
 
         if volume == None:
             try:
-                return await ctx.send(f'Current volume is at **{ctx.voice_client.source.volume*100}**%')
+                return await ctx.send(f'{ctx.author.mention}, current volume is at **{ctx.voice_client.source.volume*100}**%')
             except:
-                return await ctx.send(f'Current volume is at **{ctx.voice_state.volume*100}**%')
+                return await ctx.send(f'{ctx.author.mention}, current volume is at **{ctx.voice_state.volume*100}**%')
         # if volume > 80:
         #     return await ctx.send("Volume exceeds 80 percent, safety implemented to reduce hearing loss, ask NotThatBot#3360 for manual override")
 
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('I am not currently in a voice channel')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently in a voice channel')
 
         if 0 > volume or volume > 100:
-            return await ctx.send('Volume must be between 0 and 100')
+            return await ctx.send(f'{ctx.author.mention}, vvolume must be between 0 and 100')
         
         if ctx.voice_state.loop is True:
             ctx.voice_state._volume = volume/100
@@ -743,7 +742,7 @@ class music(commands.Cog):
         #     print(ctx.voice_state.volume)
         #     print(ctx.voice_state._volume)
         #     print(ctx.voice_state.current.source.volume)
-        return await ctx.send('Volume of the player set to **{}**%'.format(volume))
+        return await ctx.send(f'{ctx.author.mention} has set the volume of the player set to **{volume}**%')
 
 
     # @commands.command(brief='Override for volume, NotThatBot#3360 only')
@@ -782,7 +781,7 @@ class music(commands.Cog):
         #await ctx.message.delete()
         vc = ctx.voice_client
         if not vc or not vc.is_playing():
-            return await ctx.send('I am not currently playing anything!')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently playing anything!')
         elif ctx.voice_state.is_playing:
             ctx.voice_state.voice.pause()
 
@@ -796,9 +795,9 @@ class music(commands.Cog):
         #await ctx.message.delete()
         vc = ctx.voice_client
         if not vc.is_playing:
-            return await ctx.send('I am not currently playing anything!')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently playing anything!')
         if not vc.is_paused:
-            return await ctx.send('Song is not paused')
+            return await ctx.send(f'{ctx.author.mention}, song is not paused')
 
         elif ctx.voice_state.is_playing and ctx.voice_state.voice.is_paused():
             vc.resume()
@@ -810,15 +809,15 @@ class music(commands.Cog):
     async def _stop(self, ctx):
         vc = ctx.voice_client
         if not vc or not vc.is_connected:
-            return await ctx.send('I am not currently in a voice channel!')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently in a voice channel!')
         await ctx.send('Are you sure you want to stop the song and delete queues and settings? Reply **y** for yes and **n** for no')
         msg = await self.bot.wait_for('message', check=lambda message: message.author == ctx.author)
         if msg.content.lower()=='y':
-            await ctx.send('Stopping player and clearing queue')
+            await ctx.send(f'{ctx.author.mention}, stopping player and clearing queue')
         elif msg.content.lower()=='n':
-            return await ctx.send('Continuing')
+            return await ctx.send(f'{ctx.author.mention}, continuing')
         else:
-            return await ctx.send('Please reply with **y** or **n** next time, continuing')
+            return await ctx.send(f'{ctx.author.mention}, please reply with **y** or **n** next time, continuing')
 
         if ctx.voice_state.is_playing:
             ctx.voice_state.voice.pause()
@@ -840,7 +839,7 @@ class music(commands.Cog):
         #await ctx.message.delete()
         vc = ctx.voice_client
         if not vc or not vc.is_connected:
-            return await ctx.send('I am not currently in a voice channel!')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently in a voice channel!')
         if len(ctx.voice_state.songs) == 0: 
             if ctx.voice_state.autoplay:
                 ctx.voice_state.skip()
@@ -849,7 +848,7 @@ class music(commands.Cog):
                 ctx.voice_state.skip()
                 return await ctx.send(f'{ctx.author.mention} has skipped the song!')
             else: #not ctx.voice_state.loop and not ctx.voice_state.autoplay: 
-                return await ctx.send('Empty queue, autoplay and loop not on, cannot skip the song')
+                return await ctx.send(f'{ctx.author.mention}, Empty queue, autoplay and loop not on, cannot skip the song')
         else:
             ctx.voice_state.skip()
             return await ctx.send(f'{ctx.author.mention} has skipped the song!')
@@ -863,10 +862,10 @@ class music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected:
-            return await ctx.send('I am not currently in a voice channel!')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently in a voice channel!')
         
         if len(ctx.voice_state.songs) == 0:
-            return await ctx.send('Empty queue')
+            return await ctx.send(f'{ctx.author.mention}, empty queue')
 
         items_per_page = 10
         pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
@@ -874,7 +873,7 @@ class music(commands.Cog):
         start = (page - 1) * items_per_page
         end = start + items_per_page
         if page > pages:
-            return await ctx.send('The page can\'t be larger than the number of pages')
+            return await ctx.send(f'{ctx.author.mention}, the page can\'t be larger than the number of pages')
         queue = ''
         for i, song in enumerate(ctx.voice_state.songs[start:end], start=start):
             queue += '{0}. [{1.source.title}]({1.source.url})\n'.format(
@@ -892,10 +891,10 @@ class music(commands.Cog):
         #await ctx.message.delete()
         vc = ctx.voice_client
         if not vc.is_playing:
-            return await ctx.send('I am not currently playing anything!')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently playing anything!')
         """Shuffles the queue"""
         if len(ctx.voice_state.songs) == 0:
-            return await ctx.send('Queue is empty')
+            return await ctx.send(f'{ctx.author.mention}, queue is empty')
         ctx.voice_state.songs.shuffle()
         return await ctx.send(f'{ctx.author.mention} has shuffled the queue')
 
@@ -906,14 +905,14 @@ class music(commands.Cog):
         """Removes a song from the queue at a given index"""
         vc = ctx.voice_client
         if not vc or not vc.is_connected:
-            return await ctx.send('I am not currently in a voice channel!')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently in a voice channel!')
         if len(ctx.voice_state.songs) == 0:
-            return await ctx.send('Queue is empty')
+            return await ctx.send(f'{ctx.author.mention}, queue is empty')
         elif index > len(ctx.voice_state.songs):
-            return await ctx.send('Invalid index, number too large')
+            return await ctx.send(f'{ctx.author.mention}, invalid index, number too large')
         else:
             ctx.voice_state.songs.remove(index - 1)
-            return await ctx.send('Removed song number **'+ str(index) + '**')
+            return await ctx.send(f'{ctx.author.mention}, removed song number **'+ str(index) + '**')
 
     @commands.command(name='loop', brief='Loops the song currently playing')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -923,11 +922,11 @@ class music(commands.Cog):
         """
         #await ctx.message.delete()
         if not ctx.voice_state.is_playing:
-            return await ctx.send('I am not currently playing anything')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently playing anything')
 
         # Inverse boolean value to loop and unloop.
         ctx.voice_state.loop = not ctx.voice_state.loop
-        await ctx.send('Song loop is now turned ' + ('**on**' if ctx.voice_state.loop else '**off**'))
+        await ctx.send(f'{ctx.author.mention}, song loop is now turned ' + ('**on**' if ctx.voice_state.loop else '**off**'))
 
     # @commands.command(name='autoplay', aliases=['a'])
     # @commands.cooldown(1, 5, commands.BucketType.user)
@@ -956,7 +955,7 @@ class music(commands.Cog):
         
 
         if search == None:
-            return await ctx.send('You need to input a url or search')
+            return await ctx.send(f'{ctx.author.mention}, you need to input a url or search')
         httpS = re.findall('www.',search)
         pList = re.findall('list=',search)
         indexL = re.findall('index=',search)
@@ -1033,7 +1032,7 @@ class music(commands.Cog):
                                 await ctx.invoke(self._join)
                             except:
                                 pass
-                        await ctx.send('Putting songs into the queue, please wait a minute or two before checking the queue')
+                        await ctx.send(f'{ctx.author.mention}, putting songs into the queue, please wait a minute or two before checking the queue')
                         for n in range(showVidSize):
                             try:
                                 source = await YTDLSource.create_source(ctx, 'https://www.youtube.com/watch?v=' + res[n], loop=self.bot.loop)
@@ -1047,7 +1046,7 @@ class music(commands.Cog):
 
                                 # except:
                                 #     try:
-                                await ctx.send('There was an error downloading ' + 'https://www.youtube.com/watch?v=' + res[n])
+                                await ctx.send(f'{ctx.author.mention}, there was an error downloading ' + 'https://www.youtube.com/watch?v=' + res[n])
                                     # except:
                                     #     try:
                                     #         await ctx.send('There was an error downloading ' + 'https://www.youtube.com/watch?v=' + res[n])
@@ -1055,14 +1054,14 @@ class music(commands.Cog):
                                     #         await ctx.send("There was an error downloading a song")
                         return
                     except YTDLError as e:
-                        await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
+                        await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {}'.format(str(e)))
 
             else:
                 pass
             try:
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
             except YTDLError as e:
-                await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
+                await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {}'.format(str(e)))
             else:
                 if not ctx.voice_state.voice:
                     try:
@@ -1073,7 +1072,7 @@ class music(commands.Cog):
                     song = Song(source)
                     await ctx.voice_state.songs.put(song)
                 except:
-                    await ctx.send('There was an error downloading ' + song)
+                    await ctx.send(f'{ctx.author.mention}, there was an error downloading ' + song)
                 if ctx.voice_state.is_playing:
                     return await ctx.send('Queued {}'.format(str(source)))
                 else:
@@ -1087,7 +1086,7 @@ class music(commands.Cog):
             source = await YTDLSource.create_source(ctx, ctx.voice_state.current.source.url, loop=self.bot.loop)
             song = Song(source)
             await ctx.voice_state.songs.put(song)
-            return await ctx.send(f'Seeking to {timestamp} seconds')
+            return await ctx.send(f'{ctx.author.mention}, seeking to {timestamp} seconds')
     '''@commands.command() 
     async def playlist(self, ctx, *, url):
         maxPlaylistSize = 40
@@ -1127,10 +1126,10 @@ class music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.send('I am not currently connected to voice!')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently connected to voice!')
         
         if len(ctx.voice_state.song_history) == 0:
-            return await ctx.send('Empty history')
+            return await ctx.send(f'{ctx.author.mention}, empty history')
 
         items_per_page = 10
         pages = math.ceil(len(ctx.voice_state.song_history) / items_per_page)
@@ -1158,12 +1157,12 @@ class music(commands.Cog):
         """
 
         if (search)==None:
-            return await ctx.send('Input a search please')
+            return await ctx.send(f'{ctx.author.mention}, input a search')
         async with ctx.typing():
             try:
                 source = await YTDLSource.search_source(self.bot, ctx, search, loop=self.bot.loop)
             except YTDLError as e:
-                await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
+                await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {}'.format(str(e)))
             else:
                 if source == 'sel_invalid':
                     await ctx.send('Invalid selection')
@@ -1185,7 +1184,7 @@ class music(commands.Cog):
                         else:
                             return await ctx.send('Playing {}'.format(str(source)))
                     except: 
-                        return await ctx.send('There was an error downloading ' + song)    
+                        return await ctx.send(f'{ctx.author.mention}, there was an error downloading ' + song)    
                     
 
 
@@ -1197,16 +1196,16 @@ class music(commands.Cog):
 
         # Inverse boolean value to loop and unloop.
         ctx.voice_state.sendEmbed = not ctx.voice_state.sendEmbed
-        return await ctx.send('Showing now playing embeds after new songs is now ' + ('on' if ctx.voice_state.sendEmbed else 'off'))
+        return await ctx.send(f'{ctx.author.mention}, showing now playing embeds after new songs is now ' + ('on' if ctx.voice_state.sendEmbed else 'off'))
 
     @commands.command(aliases=['st'], brief='Skips to a song in queue')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def skipto(self, ctx, number: int=0):
         if number == 0:
-            return await ctx.send('Input a number to skip to in queue')
+            return await ctx.send(f'{ctx.author.mention}, input a number to skip to in queue')
         vc = ctx.voice_client
         if not vc or not vc.is_connected():
-            return await ctx.send('I am not currently connected to voice!')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently connected to voice')
         
         for n in range(number-1):
             ctx.voice_state.songs.remove(0)
@@ -1219,17 +1218,17 @@ class music(commands.Cog):
     async def clearqueue(self, ctx):
         vc = ctx.voice_client
         if not vc or not vc.is_connected:
-            return await ctx.send('I am not currently in a voice channel!')
-        await ctx.send('Are you sure you want clear the queue? Reply **y** for yes and **n** for no')
+            return await ctx.send(f'{ctx.author.mention}, I am not currently in a voice channel!')
+        await ctx.send(f'{ctx.author.mention}, are you sure you want clear the queue? Reply **y** for yes and **n** for no')
         msg = await self.bot.wait_for('message', check=lambda message: message.author == ctx.author)
         if msg.content.lower() == 'y':
             pass
         elif msg.content.lower() == 'n':
             return await ctx.send('Continuing')
         else:
-            return await ctx.send('Please reply with **y** or **n** next time, continuing')
+            return await ctx.send(f'{ctx.author.mention}, please reply with **y** or **n** next time, continuing')
         ctx.voice_state.songs.clear()
-        return await ctx.send('Cleared the queue')
+        return await ctx.send(f'{ctx.author.mention}, cleared the queue')
 
 
 
@@ -1237,11 +1236,11 @@ class music(commands.Cog):
     @_play.before_invoke
     async def ensure_voice_state(self, ctx):
         if not ctx.author.voice or not ctx.author.voice.channel:
-            await ctx.send('You are not connected to any voice channel')
+            await ctx.send(f'{ctx.author.mention}, you are not connected to any voice channel')
 
         if ctx.voice_client:
             if ctx.voice_client.channel != ctx.author.voice.channel:
-                await ctx.send('Bot is already in a voice channel')
+                await ctx.send(f'{ctx.author.mention}, bot is already in a voice channel')
 
 
 
