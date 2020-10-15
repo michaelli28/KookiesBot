@@ -993,8 +993,8 @@ class music(commands.Cog):
                             except: 
                                 await ctx.send('There was an error downloading ' + 'https://www.youtube.com/watch?v=' + playlist_urls[n])
                         return
-                    except YTDLError as e:
-                        await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
+                    except youtube_dl.utils.ExtractorError as e:
+                        await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
                 elif len(watch)>0:
 
                     response = requests.get(search)
@@ -1038,7 +1038,9 @@ class music(commands.Cog):
                                 source = await YTDLSource.create_source(ctx, 'https://www.youtube.com/watch?v=' + res[n], loop=self.bot.loop)
                                 song = Song(source)
                                 await ctx.voice_state.songs.put(song)
-                            except:
+                            except youtube_dl.utils.ExtractorError:
+                                return await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
+                                
                                 # try:
                                 #     source = await YTDLSource.create_source(ctx, 'https://www.youtube.com/watch?v=' + res[n][0], loop=self.bot.loop)
                                 #     song = Song(source)
@@ -1046,6 +1048,7 @@ class music(commands.Cog):
 
                                 # except:
                                 #     try:
+                            else:
                                 await ctx.send(f'{ctx.author.mention}, there was an error downloading ' + 'https://www.youtube.com/watch?v=' + res[n])
                                     # except:
                                     #     try:
@@ -1054,14 +1057,14 @@ class music(commands.Cog):
                                     #         await ctx.send("There was an error downloading a song")
                         return
                     except YTDLError as e:
-                        await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e}')
+                        await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
 
             else:
                 pass
             try:
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
-            except YTDLError as e:
-                await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e}')
+            except youtube_dl.utils.ExtractorError as e:
+                return await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
             else:
                 if not ctx.voice_state.voice:
                     try:
@@ -1161,8 +1164,8 @@ class music(commands.Cog):
         async with ctx.typing():
             try:
                 source = await YTDLSource.search_source(self.bot, ctx, search, loop=self.bot.loop)
-            except YTDLError as e:
-                await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e}')
+            except youtube_dl.utils.ExtractorError as e:
+                await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
             else:
                 if source == 'sel_invalid':
                     await ctx.send('Invalid selection')
