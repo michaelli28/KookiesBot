@@ -348,9 +348,7 @@ class fun(commands.Cog):
         # await user.avatar_url.save(name)
         avatar = await member.avatar_url.read()
         try:
-            await self.bot.user.edit(username = member.display_name)
             await self.bot.user.edit(avatar = avatar)
-            return await ctx.send(repeat)
         except:
             await ctx.send('Can\'t change the avatar that fast')
             try:
@@ -358,7 +356,12 @@ class fun(commands.Cog):
             except:
                 await ctx.send('Too many users have this username')
             return await ctx.send(repeat)
-        
+        try:
+            await self.bot.user.edit(username = member.display_name)
+            return await ctx.send(repeat)
+        except:
+            await ctx.send('Too many users have this username')
+            return await ctx.send(repeat)
 
 
 def setup(bot):
