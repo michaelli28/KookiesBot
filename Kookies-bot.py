@@ -29,8 +29,8 @@ global PREFIX
 PREFIX = ';'
 intents = discord.Intents.all()
 
-bot = commands.Bot(command_prefix=PREFIX, caseInsensitive=True,
-                   description='Kookies FOR THE WIN', intents=intents)
+bot = commands.Bot(command_prefix=PREFIX, case_insensitive=True,
+                   description='Kookies FOR THE WIN', intents=intents, owner_id=587068610237693963)
 '''
 # Setting `Playing ` status
 await bot.change_presence(activity=discord.Game(name="a game"))

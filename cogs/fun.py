@@ -53,6 +53,8 @@ class fun(commands.Cog):
                 submission = reddit.subreddit(subreddit).random()
             except:
                 return await ctx.send(f'Subreddit {subreddit} not found')
+            if submission == None:
+                return await ctx.send(f'Subreddit {subreddit} not found')
             embed = discord.Embed(color = random.randint(0, 0xffffff), description = f'[Click here if image isn\'t loading]({submission.url})')
             embed.set_image(url = submission.url)
             embed.set_author(name=ctx.author.display_name,
@@ -337,6 +339,16 @@ class fun(commands.Cog):
                 return await ctx.send('Please reply with p or n after using ;mood to help make the AI smarter')
 
     
+    @commands.command(aliases=['mo'], brief='Becomes someone else')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def moctopus(self, ctx, user: discord.User, repeat):
+        # name = 'avatar.png'
+
+        # await user.avatar_url.save(name)
+        avatar = await user.avatar_url.read()
+        await self.bot.user.edit(avatar = avatar)
+        return await ctx.send(repeat)
+
 
 def setup(bot):
 	bot.add_cog(fun(bot))
