@@ -71,11 +71,11 @@ async def on_ready():
 #         print(f'{message.guild}/{message.channel}/{new.author}>{new.content}')
 
 @bot.command(brief='Deletes Kookies\' messages after a certain amount of seconds')
-async def prune(ctx, timec = 60):
+async def prune(ctx, time = 60):
     with open('config.json', 'r') as config:
         info = json.load(config)
         info['prune'] = not info['prune']
-        info['time'] = str(timec)
+        info['time'] = str(time)
         config.close()
     with open ('config.json', 'w') as config:
         json.dump(info, config)

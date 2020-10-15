@@ -47,8 +47,8 @@ class HelpMenu(ListPageSource):
         embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
         embed.set_footer(text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} commands.")
         embed.timestamp = datetime.datetime.now()
-        for name, value in fields:
-            embed.add_field(name=name, value=value, inline=False)
+        for name, value, cog in fields:
+            embed.add_field(name=name, value=f'{value}\n`Category:`**`{cog}`**', inline=False)
 
         return embed
 
@@ -56,7 +56,7 @@ class HelpMenu(ListPageSource):
         fields = []
 
         for entry in entries:
-            fields.append((entry.brief or "No description", syntax(entry)))
+            fields.append((entry.brief or "No description", syntax(entry), entry.cog_name))
 
         return await self.write_page(menu, fields)
 
@@ -73,22 +73,18 @@ class help(commands.Cog):
         embed.add_field(name="Command description:", value=command.brief)
         if param(command)=='``':
             
-            for cog in self.bot.cogs:
-                cogC = self.bot.get_cog(cog)
-                for commandC in cogC.get_commands():
-                    if str(commandC.name) == str(command):
-                        commandCog = cogC.qualified_name
-                        embed.add_field(name='Category:', value=f'**{commandCog}**')
+            # for cog in self.bot.cogs:
+            #     cogC = self.bot.get_cog(cog)
+            #     for commandC in cogC.get_commands():
+            #         if str(commandC.name) == str(command):
+            #             commandCog = cogC.qualified_name
+            embed.add_field(name='Category:', value=f'`{command.cog_name}`')
 
-            embed.add_field(name='Usage:', value='**'+PREFIX+str(command)+'**')
+            embed.add_field(name='Usage:', value=PREFIX+str(command))
         else:
-            embed.add_field(name='Usage:', value='**'+PREFIX+str(command)+'** '+ str(param(command)))
-            for cog in self.bot.cogs:
-                cogC = self.bot.get_cog(cog)
-                for commandC in cogC.get_commands():
-                    if str(commandC.name) == str(command):
-                        commandCog = cogC.qualified_name
-                        embed.add_field(name='**Category:**', value=f'**{commandCog}**')
+            embed.add_field(name='Usage:', value=PREFIX+str(command) + str(param(command)))
+
+            embed.add_field(name='Category:', value=f'`{command.cog_name}`')
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.timestamp = datetime.datetime.now()
         await ctx.send(embed=embed)
