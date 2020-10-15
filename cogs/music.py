@@ -536,7 +536,7 @@ class music(commands.Cog):
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             if not ctx.voice_client:
-                return await channel.send('I am not currently playing anything!')
+                return await channel.send(f'{user.mention}, I am not currently playing anything!')
             elif vc.voice.is_playing():
                 vc.voice.pause()
                 await channel.send(f'{user.mention} has paused the song!')
@@ -549,7 +549,7 @@ class music(commands.Cog):
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             if not ctx.voice_client or not ctx.voice_client.is_connected:
-                return await channel.send('I am not currently in a voice channel!')
+                return await channel.send(f'{user.mention}, I am not currently in a voice channel!')
             if len(vc.songs) == 0: 
                 if vc.autoplay:
                     vc.skip()
@@ -558,7 +558,7 @@ class music(commands.Cog):
                     vc.skip()
                     return await channel.send(f'{user.mention} has skipped the song!')
                 else: #not ctx.voice_state.loop and not ctx.voice_state.autoplay: 
-                    return await channel.send('Empty queue, autoplay and loop not on, cannot skip the song')
+                    return await channel.send(f'{user.mention}, empty queue, autoplay and loop not on, cannot skip the song')
             else:
                 vc.skip()
                 await channel.send(f'{user.mention} has skipped the song!')
@@ -567,7 +567,7 @@ class music(commands.Cog):
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             if len(vc.songs) == 0:
-                return await channel.send('Queue is empty')
+                return await channel.send(f'{user.mention}, queue is empty')
             else:
                 vc.songs.shuffle()
                 await channel.send(f'{user.mention} has shuffled the queue')
@@ -577,10 +577,10 @@ class music(commands.Cog):
             vc = self.vc
             try:
                 if not vc.is_playing:
-                    return await channel.send('I am not currently playing anything')
+                    return await channel.send(f'{user.mention}, I am not currently playing anything')
                 else:
                     vc.loop = not vc.loop
-                    await channel.send('Song loop is now turned ' + ('**on**' if vc.loop else '**off**'))
+                    await channel.send(f'{user.mention}, song loop is now turned ' + ('**on**' if vc.loop else '**off**'))
 
             except:
                 pass
@@ -590,7 +590,7 @@ class music(commands.Cog):
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             if not ctx.voice_client or not ctx.voice_client.is_connected():
-                return await channel.send('I am not currently in a voice channel')
+                return await channel.send(f'{user.mention}, I am not currently in a voice channel')
             volume = vc.volume*100
             if volume-10 < 0:
                 volume = 0
@@ -600,14 +600,14 @@ class music(commands.Cog):
                 vc.volume = volume/100
             vc.current.source.volume = volume/100
             vc.volume = volume/100
-            await channel.send('Volume of the player set to **{}**%'.format(volume), delete_after=10)
+            await channel.send(f'{user.mention} has set the volume of the player set to **{volume}**%', delete_after=10)
 
         if reaction.emoji=='🔊':
             ctx = self.ctx
             await msg.remove_reaction(reaction, user)
             vc = self.vc
             if not ctx.voice_client or not ctx.voice_client.is_connected():
-                return await channel.send('I am not currently in a voice channel')
+                return await channel.send(f'{user.mention}, I am not currently in a voice channel')
             volume = vc.volume*100
             if volume+10 > 100:
                 volume = 100
@@ -617,7 +617,7 @@ class music(commands.Cog):
                 vc.volume = volume/100
             vc.current.source.volume = volume/100
             vc.volume = volume/100
-            await channel.send('Volume of the player set to **{}**%'.format(volume), delete_after=10)
+            await channel.send(f'{user.mention} has set the volume of the player set to **{volume}**%', delete_after=10)
 
         if reaction.emoji == '⏹️':
             ctx = self.ctx
@@ -625,9 +625,9 @@ class music(commands.Cog):
             ctx = self.ctx
             vc = ctx.voice_client
             if not vc or not vc.is_connected:
-                return await ctx.send('I am not currently in a voice channel!')
+                return await ctx.send(f'{user.mention}, I am not currently in a voice channel!')
             else:
-                await ctx.send('Stopping player and clearing queue')
+                await ctx.send(f'{user.mention}, stopping player and clearing queue')
                 if ctx.voice_state.is_playing:
                     ctx.voice_state.voice.pause()
                 await ctx.voice_state.stop()
