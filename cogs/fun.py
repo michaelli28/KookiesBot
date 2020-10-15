@@ -341,12 +341,16 @@ class fun(commands.Cog):
     
     @commands.command(aliases=['mo'], brief='Becomes someone else')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def moctopus(self, ctx, user: discord.User, repeat):
+    async def moctopus(self, ctx, member: discord.Member, *, repeat):
         # name = 'avatar.png'
-
+        await ctx.message.delete()
+        await self.bot.user.edit(username = member.display_name)
         # await user.avatar_url.save(name)
-        avatar = await user.avatar_url.read()
-        await self.bot.user.edit(avatar = avatar)
+        avatar = await member.avatar_url.read()
+        try:
+            await self.bot.user.edit(avatar = avatar)
+        except:
+            await ctx.send('Can\'t change the avatar that fast')
         return await ctx.send(repeat)
 
 
