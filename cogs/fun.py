@@ -135,7 +135,7 @@ class fun(commands.Cog):
     @commands.command(brief='Give money')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def gimme(self, ctx):
-        return await ctx.send(f'{ctx.author.mention} has recieved {random.randint(100, 1000000)} dollars')
+        return await ctx.send(f'{ctx.author.mention} has received {random.randint(100, 1000000)} dollars')
 
     @commands.command(brief='Gets the time')
     @commands.cooldown(1, 5, commands.BucketType.user)
