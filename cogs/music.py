@@ -1054,14 +1054,14 @@ class music(commands.Cog):
                                     #         await ctx.send("There was an error downloading a song")
                         return
                     except YTDLError as e:
-                        await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {}'.format(str(e)))
+                        await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e}')
 
             else:
                 pass
             try:
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
             except YTDLError as e:
-                await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {}'.format(str(e)))
+                await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e}')
             else:
                 if not ctx.voice_state.voice:
                     try:
@@ -1162,7 +1162,7 @@ class music(commands.Cog):
             try:
                 source = await YTDLSource.search_source(self.bot, ctx, search, loop=self.bot.loop)
             except YTDLError as e:
-                await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {}'.format(str(e)))
+                await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e}')
             else:
                 if source == 'sel_invalid':
                     await ctx.send('Invalid selection')
