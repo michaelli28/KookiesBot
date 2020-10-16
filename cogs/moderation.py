@@ -74,7 +74,7 @@ class moderation(commands.Cog):
     async def nick(self, ctx, member: discord.Member, *, nick):
         old = member.display_name
         await member.edit(nick=nick)
-        await ctx.send(f'Nickname was changed for {member.mention} from {old} to {nick}')
+        return await ctx.send(f'Nickname was changed for {member.mention} from {old} to {nick}')
 
     @commands.command(brief='Locks the server from messages')
     @commands.has_permissions(manage_guild=True)
@@ -130,6 +130,7 @@ class moderation(commands.Cog):
     async def createchannel(self, ctx, name):
         guild = ctx.message.guild
         await guild.create_text_channel(name)
+        return await ctx.send(f'Created text chanenl {name}')
 
     @commands.command(brief='Creates a voice channel')
     @commands.has_permissions(manage_guild=True)
@@ -137,6 +138,7 @@ class moderation(commands.Cog):
     async def createvoicechannel(self, ctx, name):
         guild = ctx.message.guild
         await guild.create_voice_channel(name)
+        return await ctx.send(f'Created voice channel {name}')
 
     @commands.command(brief='Edits a text channel')
     @commands.has_permissions(manage_guild=True)
@@ -147,7 +149,7 @@ class moderation(commands.Cog):
             await ctx.send(f'Changed the name of channel {name.name} to {nname}')
         if slowmode != None:
             await name.edit(slowmode_delay=slowmode)
-            await ctx.send(f'Set the slowmode delay for channel {name.name} to {slowmode} seconds')
+            return await ctx.send(f'Set the slowmode delay for channel {name.name} to {slowmode} seconds')
 
     @commands.command(brief='Creates a category')
     @commands.has_permissions(manage_guild=True)

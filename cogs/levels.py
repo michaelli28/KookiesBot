@@ -188,6 +188,7 @@ class levels(Cog):
 
                 xp = random.randint(15, 22)
                 try:
+                    
                     collection.update_one({'_id': ctx.author.id}, {
                                           "$inc": {"Xp": xp}})
                 except:
@@ -203,9 +204,8 @@ class levels(Cog):
 
                 try:
                     result = collection.find_one({'_id': author})
-                    new_lvl = int(((12*result['Xp']+xp)//800) ** 0.55)
-                    old_lvl = int(((12*result['Xp'])//800) ** 0.55)
-
+                    new_lvl = int(((12*result['Xp'])//800) ** 0.55)
+                    old_lvl = int(((12*result['Xp']-xp)//800) ** 0.55)
                     if new_lvl > old_lvl:
                         await ctx.channel.send(f"Congrats {ctx.author.mention}! You reached level {new_lvl:,}!")
 

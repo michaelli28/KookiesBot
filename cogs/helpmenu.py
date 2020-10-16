@@ -97,8 +97,9 @@ class help(commands.Cog):
             if self.bot.get_cog(cmd)!= None:
                 cog = self.bot.get_cog(cmd)
                 commands = cog.get_commands()
-                menu = MenuPages(source=HelpMenu(ctx, commands),
-                                delete_message_after=True)
+                # menu = MenuPages(source=HelpMenu(ctx, commands),
+                #                 delete_message_after=True)
+                menu = MenuPages(source=HelpMenu(ctx, commands))
                 await menu.start(ctx)
             
 

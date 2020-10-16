@@ -340,7 +340,7 @@ class fun(commands.Cog):
 
     
     @commands.command(aliases=['mo'], brief='Becomes someone else')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 600, commands.BucketType.default)
     @commands.is_owner()
     async def moctopus(self, ctx, member: discord.Member, *, repeat):
         # name = 'avatar.png'
