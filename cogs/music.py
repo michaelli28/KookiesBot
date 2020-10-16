@@ -15,7 +15,7 @@ import httpx
 from bs4 import BeautifulSoup
 import asyncio
 import discord
-
+from discord.utils import get
 from discord.ext import commands
 import math
 from typing import Optional
@@ -807,9 +807,7 @@ class music(commands.Cog):
     @commands.command(name='stop', brief='Stops the music, clears the queue, and disconnects the bot from the voice channel')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _stop(self, ctx):
-        vc = ctx.voice_client
-        if not vc or not vc.is_connected:
-            return await ctx.send(f'{ctx.author.mention}, I am not currently in a voice channel!')
+
         await ctx.send('Are you sure you want to stop the song and delete queues and settings? Reply **y** for yes and **n** for no')
         msg = await self.bot.wait_for('message', check=lambda message: message.author == ctx.author)
         if msg.content.lower()=='y':
@@ -953,6 +951,7 @@ class music(commands.Cog):
         This command automatically searches from various sites if no URL is provided
         """
         
+        voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
 
         if search == None:
             return await ctx.send(f'{ctx.author.mention}, you need to input a url or search')
@@ -979,11 +978,10 @@ class music(commands.Cog):
                         showVidSize = len(playlist_urls)
 
                     try:
-                        if not ctx.voice_state.voice:
-                            try:
-                                await ctx.invoke(self._join)
-                            except:
-                                pass
+                        if not voiceconnect or not voiceconnect.is_connected():
+
+                            await ctx.invoke(self._join)
+
                         await ctx.send('Putting songs into the queue, please wait a minute or two before checking the queue')
                         for n in range(showVidSize):
                             try:
@@ -1027,11 +1025,9 @@ class music(commands.Cog):
                     else:
                         showVidSize = len(res)
                     try:
-                        if not ctx.voice_state.voice:
-                            try:
-                                await ctx.invoke(self._join)
-                            except:
-                                pass
+                        if not voiceconnect or not voiceconnect.is_connected():
+
+                            await ctx.invoke(self._join)
                         await ctx.send(f'{ctx.author.mention}, putting songs into the queue, please wait a minute or two before checking the queue')
                         for n in range(showVidSize):
                             try:
@@ -1048,7 +1044,7 @@ class music(commands.Cog):
 
                                 # except:
                                 #     try:
-                            else:
+                            except:
                                 await ctx.send(f'{ctx.author.mention}, there was an error downloading ' + 'https://www.youtube.com/watch?v=' + res[n])
                                     # except:
                                     #     try:
