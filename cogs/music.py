@@ -955,123 +955,106 @@ class music(commands.Cog):
 
         if search == None:
             return await ctx.send(f'{ctx.author.mention}, you need to input a url or search')
+
         httpS = re.findall('www.',search)
         pList = re.findall('list=',search)
         indexL = re.findall('index=',search)
         watch = re.findall('watch',search)
+
         async with ctx.typing():
             if len(httpS)>0 and len(pList)>0:
                 if len(indexL)==0 and len(watch)==0:
+
                     maxPlaylistSize = 40
                     showVidSize = None
                     # Spoof user agent to show whole page.
+
                     headers = {
                         'User-Agent': 'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)'}
                     # Get the page
+
                     async with httpx.AsyncClient() as client:
                         response = await client.get(search, headers=headers)
-                    playlist_urls = re.findall(
-                        'watch\?v=(.*?)\\\\u0026list=', response.text)
+                    playlist_urls = re.findall('watch\?v=(.*?)\\\\u0026list=', response.text)
+
                     if len(playlist_urls) >= maxPlaylistSize:
                         showVidSize = maxPlaylistSize
                     else:
                         showVidSize = len(playlist_urls)
 
-                    try:
-                        if not voiceconnect or not voiceconnect.is_connected():
+                    # try:
+                    if not voiceconnect or not voiceconnect.is_connected():
+                        await ctx.invoke(self._join)
 
-                            await ctx.invoke(self._join)
-
-                        await ctx.send('Putting songs into the queue, please wait a minute or two before checking the queue')
-                        for n in range(showVidSize):
-                            try:
-                                source = await YTDLSource.create_source(ctx, 'https://www.youtube.com/watch?v=' + playlist_urls[n], loop=self.bot.loop)
-                                song = Song(source)
-                                await ctx.voice_state.songs.put(song)
-                            except: 
-                                await ctx.send('There was an error downloading ' + 'https://www.youtube.com/watch?v=' + playlist_urls[n])
-                        return
-                    except youtube_dl.utils.ExtractorError as e:
-                        await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
+                    await ctx.send('Putting songs into the queue, please wait a minute or two before checking the queue')
+                    for n in range(showVidSize):
+                        try:
+                            source = await YTDLSource.create_source(ctx, 'https://www.youtube.com/watch?v=' + playlist_urls[n], loop=self.bot.loop)
+                            song = Song(source)
+                            await ctx.voice_state.songs.put(song)
+                        except: 
+                            await ctx.send('There was an error downloading ' + 'https://www.youtube.com/watch?v=' + playlist_urls[n])
+                    return
+                    # except youtube_dl.utils.ExtractorError as e:
+                    #     await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
                 elif len(watch)>0:
-
                     response = requests.get(search)
                     soup = BeautifulSoup(response.text, 'lxml')
-
-                    # print(soup.prettify())
-
                     playlistUrls = re.findall('"url":"/watch\?v=(.*?)"' , soup.prettify())
-                    # print(playlistUrls)
                     playlistUrls2 = []
 
                     for url in playlistUrls:
                         url2 = re.findall('(.*?)\\\\u0026list=', url)
+
                         if len(url2)>0:
                             playlistUrls2.append(url2[0])
                         else:
                             playlistUrls2.append(url)
-                    print(playlistUrls2)
+
                     # for i in range(len(playlistUrls2)):
                     #     if len(playlistUrls2[i][0]) > 3:
                     #         playlistUrls2.append(playlistUrls2[i][0])
                     #         playlistUrls2.remove(playlistUrls2[i])
                     # print(playlistUrls2)
+
                     res = [i for n, i in enumerate(playlistUrls2) if i not in playlistUrls2[:n]]
                     maxPlaylistSize = 40
                     showVidSize = None
-                    print(res)
+
                     if len(res) >= maxPlaylistSize:
                         showVidSize = maxPlaylistSize
                     else:
                         showVidSize = len(res)
-                    try:
-                        if not voiceconnect or not voiceconnect.is_connected():
+                    # try:
+                    if not voiceconnect or not voiceconnect.is_connected():
+                        await ctx.invoke(self._join)
 
-                            await ctx.invoke(self._join)
-                        await ctx.send(f'{ctx.author.mention}, putting songs into the queue, please wait a minute or two before checking the queue')
-                        for n in range(showVidSize):
-                            try:
-                                source = await YTDLSource.create_source(ctx, 'https://www.youtube.com/watch?v=' + res[n], loop=self.bot.loop)
-                                song = Song(source)
-                                await ctx.voice_state.songs.put(song)
-                            except youtube_dl.utils.ExtractorError:
-                                return await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
-                                
-                                # try:
-                                #     source = await YTDLSource.create_source(ctx, 'https://www.youtube.com/watch?v=' + res[n][0], loop=self.bot.loop)
-                                #     song = Song(source)
-                                #     await ctx.voice_state.songs.put(song)
+                    await ctx.send(f'{ctx.author.mention}, putting songs into the queue, please wait a minute or two before checking the queue')
+                    for n in range(showVidSize):
+                        # try:
+                        source = await YTDLSource.create_source(ctx, 'https://www.youtube.com/watch?v=' + res[n], loop=self.bot.loop)
+                        song = Song(source)
+                        await ctx.voice_state.songs.put(song)
+                        # except youtube_dl.utils.ExtractorError:
+                        #     return await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
+                        # except:
+                        #     await ctx.send(f'{ctx.author.mention}, there was an error downloading ' + 'https://www.youtube.com/watch?v=' + res[n])
+                    return
+                    # except YTDLError as e:
+                    #     await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
 
-                                # except:
-                                #     try:
-                            except:
-                                await ctx.send(f'{ctx.author.mention}, there was an error downloading ' + 'https://www.youtube.com/watch?v=' + res[n])
-                                    # except:
-                                    #     try:
-                                    #         await ctx.send('There was an error downloading ' + 'https://www.youtube.com/watch?v=' + res[n])
-                                    #     except:
-                                    #         await ctx.send("There was an error downloading a song")
-                        return
-                    except YTDLError as e:
-                        await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
-
-            else:
-                pass
             try:
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
+
             except youtube_dl.utils.ExtractorError as e:
                 return await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
             else:
-                if not ctx.voice_state.voice:
-                    try:
-                        await ctx.invoke(self._join)
-                    except:
-                        pass
-                try:
-                    song = Song(source)
-                    await ctx.voice_state.songs.put(song)
-                except:
-                    await ctx.send(f'{ctx.author.mention}, there was an error downloading ' + song)
+                if not voiceconnect or not voiceconnect.is_connected():
+                    await ctx.invoke(self._join)
+
+                song = Song(source)
+                await ctx.voice_state.songs.put(song)
+
                 if ctx.voice_state.is_playing:
                     return await ctx.send('Queued {}'.format(str(source)))
                 else:
