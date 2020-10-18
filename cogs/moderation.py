@@ -26,7 +26,7 @@ class moderation(commands.Cog):
 
     @commands.command(aliases=['sm'], brief='Server mute everyone in a voice channel')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.has_permissions(mute_members=True)
+    @commands.has_guild_permissions(mute_members=True)
     async def servermute(self, ctx):
         async with ctx.typing():
             if ctx.author.voice and ctx.author.voice.channel:
@@ -37,7 +37,7 @@ class moderation(commands.Cog):
 
     @commands.command(aliases=['su'], brief='Unmutes everyone in a voice channel')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.has_permissions(mute_members=True)
+    @commands.has_guild_permissions(mute_members=True)
     async def serverunmute(self, ctx):
         async with ctx.typing():
             if ctx.author.voice and ctx.author.voice.channel:
@@ -48,7 +48,7 @@ class moderation(commands.Cog):
 
     @commands.command(aliases=['sd'], brief='Server deafen everyone in a voice channel')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.has_permissions(deafen_members=True)
+    @commands.has_guild_permissions(deafen_members=True)
     async def serverdeafen(self, ctx):
         async with ctx.typing():
             if ctx.author.voice and ctx.author.voice.channel:
@@ -59,7 +59,7 @@ class moderation(commands.Cog):
 
     @commands.command(aliases=['sud'], brief='Undeafens everyone in a voice channel')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.has_permissions(deafen_members=True)
+    @commands.has_guild_permissions(deafen_members=True)
     async def serverundeafen(self, ctx):
         async with ctx.typing():
             if ctx.author.voice and ctx.author.voice.channel:
