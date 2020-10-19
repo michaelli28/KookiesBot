@@ -64,7 +64,7 @@ class HelpMenu(ListPageSource):
             try:
                 fields.append(('**' + str(entry['rank']) + ') ' + entry['name']+'**', str(entry['Xp']) + ' XP'))
             except KeyError:
-                return await ctx.send('This server has no leaderboard yet... send messages to get on the leaderboard')
+                return await self.ctx.send('This server has no leaderboard yet... send messages to get on the leaderboard')
 
         self.place+=1
 
@@ -101,7 +101,7 @@ class levels(Cog):
 
     @commands.command(aliases=['xp'], brief='Get your xp and level')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def rank(self, ctx, author=None):
+    async def rank(self, ctx, author: discord.Member = None):
         async with ctx.typing():
 
             cluster = MongoClient(
@@ -118,7 +118,7 @@ class levels(Cog):
                 author = ctx.author.id
 
             else:
-                author = (re.findall('<@!(.*?)>', author))[0]
+                author = author.id
 
             user = await self.bot.fetch_user(author)
             res = collection.find({})

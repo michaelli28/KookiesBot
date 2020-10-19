@@ -48,6 +48,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         'no_warnings': True,
         'default_search': 'ytsearch',
         'source_address': '0.0.0.0',
+        
     }
 
     # FFMPEG_OPTIONS = {
@@ -622,12 +623,11 @@ class music(commands.Cog):
         if reaction.emoji == '⏹️':
             ctx = self.ctx
             await msg.remove_reaction(reaction, user)
-            ctx = self.ctx
             vc = ctx.voice_client
             if not vc or not vc.is_connected:
-                return await ctx.send(f'{user.mention}, I am not currently in a voice channel!')
+                return await channel.send(f'{user.mention}, I am not currently in a voice channel!')
             else:
-                await ctx.send(f'{user.mention}, stopping player and clearing queue')
+                await channel.send(f'{user.mention}, stopping player and clearing queue')
                 if ctx.voice_state.is_playing:
                     ctx.voice_state.voice.pause()
                 await ctx.voice_state.stop()
