@@ -104,7 +104,10 @@ async def on_message(message):
             if info['prune']:
 
                 await asyncio.sleep(int(info['time']))
-                await message.delete()
+                try:
+                    await ctx.message.delete()
+                except discord.errors.NotFound:
+                    pass
     await bot.process_commands(message)
     # if message.author.id == '740226974248730625':
     # await message.delete()

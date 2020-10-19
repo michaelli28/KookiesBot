@@ -61,7 +61,11 @@ class HelpMenu(ListPageSource):
         
         fields = []
         for entry in entries:
-            fields.append(('**' + str(entry['rank']) + ') ' + entry['name']+'**', str(entry['Xp']) + ' XP'))
+            try:
+                fields.append(('**' + str(entry['rank']) + ') ' + entry['name']+'**', str(entry['Xp']) + ' XP'))
+            except KeyError:
+                return await ctx.send('This server has no leaderboard yet... send messages to get on the leaderboard')
+
         self.place+=1
 
         return await self.write_page(menu, fields)

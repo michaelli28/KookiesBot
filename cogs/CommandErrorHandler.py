@@ -54,11 +54,17 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, discord.errors.Forbidden):
             return await ctx.send('I don\'t have permissions to do that')
         elif isinstance(error, commands.CommandOnCooldown):
-            await ctx.message.delete()
+            try:
+                await ctx.message.delete()
+            except discord.errors.NotFound:
+                pass
             await ctx.send('{}, That command is on cooldown! Try again in {:.2f}s!'.format(ctx.author.mention, error.retry_after))
 
         elif isinstance(error, commands.NotOwner):
-            await ctx.message.delete()
+            try:
+                await ctx.message.delete()
+            except discord.errors.NotFound:
+                pass
             return await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))
             
         elif isinstance(error, commands.MissingPermissions):
