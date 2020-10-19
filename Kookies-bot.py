@@ -105,7 +105,7 @@ async def on_message(message):
 
                 await asyncio.sleep(int(info['time']))
                 try:
-                    await ctx.message.delete()
+                    await message.delete()
                 except discord.errors.NotFound:
                     pass
     await bot.process_commands(message)
