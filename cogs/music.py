@@ -601,7 +601,7 @@ class music(commands.Cog):
                 vc.volume = volume/100
             vc.current.source.volume = volume/100
             vc.volume = volume/100
-            await channel.send(f'{user.mention} has set the volume of the player set to **{volume}**%', delete_after=10)
+            await channel.send(f'{user.mention} has set the volume to **{volume}**%', delete_after=10)
 
         if reaction.emoji=='🔊':
             ctx = self.ctx
@@ -618,7 +618,7 @@ class music(commands.Cog):
                 vc.volume = volume/100
             vc.current.source.volume = volume/100
             vc.volume = volume/100
-            await channel.send(f'{user.mention} has set the volume of the player set to **{volume}**%', delete_after=10)
+            await channel.send(f'{user.mention} has set the volume to **{volume}**%', delete_after=10)
 
         if reaction.emoji == '⏹️':
             ctx = self.ctx
@@ -742,7 +742,7 @@ class music(commands.Cog):
         #     print(ctx.voice_state.volume)
         #     print(ctx.voice_state._volume)
         #     print(ctx.voice_state.current.source.volume)
-        return await ctx.send(f'{ctx.author.mention} has set the volume of the player set to **{volume}**%')
+        return await ctx.send(f'{ctx.author.mention} has set the volume to **{volume}**%')
 
 
     # @commands.command(brief='Override for volume, NotThatBot#3360 only')

@@ -148,7 +148,17 @@ class roles(commands.Cog):
     @commands.command(aliases=['er'], brief='Edits a role;  permissions is an integer as well')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def editrole(self, ctx, name, newname: Optional[str] = None, mentionable: Optional[bool]=None, position: Optional[int]=None):
+    async def editrole(self, ctx, name, newname =  None):
+        
+        # if mentionable != None:
+        #         await r.edit(mentionable=mentionable)
+        #         await ctx.send(f'Changed the mentionability to `{mentionable}`')
+
+        # if position != None:
+        #     await r.edit(position=position)
+        #     await ctx.send(f'Changed the position of the role to `{position}`')
+        if newname == None:
+            return await ctx.send('You need to specify the new name to change to')
         rindex = 0
         for char in name:
             try:
@@ -160,16 +170,8 @@ class roles(commands.Cog):
         r = name.replace('_', " ", rindex)
         r = get(ctx.message.guild.roles, name=r)
         try:
-            if newname != None:
-                await r.edit(name = newname)
-                await ctx.send(f'Changed the name to `{newname}`')
-            if mentionable != None:
-                await r.edit(mentionable=mentionable)
-                await ctx.send(f'Changed the mentionability to `{mentionable}`')
-
-            if position != None:
-                await r.edit(position=position)
-                await ctx.send(f'Changed the position of the role to `{position}`')
+            await r.edit(name = newname)
+            await ctx.send(f'Changed the name to `{newname}`')
 
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
@@ -463,6 +465,54 @@ class roles(commands.Cog):
             await user.remove_roles(role)
             await user.send('You have successfully removed the `' + str(role) + '` role in `' + str(user.guild.name)+'`')
 
+
+    @commands.command(aliases=['rl'], brief='Show a list of roles from highest to lowest level')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def rolelist(self, ctx):
+        async with ctx.typing():
+            roles = ctx.guild.roles
+            roles.reverse()
+            menu = MenuPages(source=HelpMenu(ctx, roles), delete_message_after=True)
+            return await menu.start(ctx)
+
+
+
+
+class HelpMenu(ListPageSource):
+    def __init__(self, ctx, data):
+        self.ctx = ctx
+        self.place = 1
+        super().__init__(data, per_page=10)
+
+    async def write_page(self, menu, fields=[]):
+        offset = (menu.current_page*self.per_page) + 1
+        len_data = len(self.entries)
+
+        embed = Embed(
+                title=f"List of roles for {self.ctx.guild.name}", color=random.randint(0, 0xffffff))
+        embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
+        embed.set_footer(
+                text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} roles")
+        embed.timestamp = datetime.datetime.now()
+        for name, value in fields:
+            embed.add_field(name=name, value=value, inline=False)
+
+        return embed
+
+    async def format_page(self, menu, entries):
+        fields = []
+        for entry in entries:
+            memberslist = ''
+            for member in entry.members:
+                memberslist += member.display_name + ', '
+            if memberslist == '':
+                fields.append((f'{entry.name}', 'No one has this role right now...'))
+            else:
+                fields.append((f'{entry.name}', memberslist[0:-2]))
+
+        self.place+=1
+
+        return await self.write_page(menu, fields)
 
 
 def setup(bot):
