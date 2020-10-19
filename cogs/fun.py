@@ -108,19 +108,25 @@ class fun(commands.Cog):
         if (question) == None:
             return await ctx.send("Ask a question sir or ma\'am")
         lie = question.lower().find('are you')
+        q1 = question.lower().find('lie')
+        q2 = question.lower().find('lying')
+        q3 = question.lower().find('accurate')
+        
         if lie != -1:
-            embed = discord.Embed(
-            title='8ball response',
-            color=random.randint(0, 0xffffff)
+            if q1 != -1 or q2 != -1 or q3 != -1:
+                embed = discord.Embed(
+                title='8ball response',
+                color=random.randint(0, 0xffffff)
         )
-            embed.add_field(name='Question', value=question, inline=False)
-            embed.add_field(name='Answer', value='I\'m very accurate for your information. Don\'t question me!', inline=False)
-            embed.set_author(name=ctx.author.display_name,
-                            icon_url=ctx.author.avatar_url)
-            embed.timestamp = datetime.datetime.now()
-            return await ctx.send(embed=embed)
-        responses = ['Maybe', 'Hmm, try again later', 'Yes sir/ma\'am', 'No sir/ma\'am', 'You can count on it!', 'Guaranteed', 'How did you know?', 'Of course',
-                    'I believe so', 'Nope', 'Definitely NOT', 'Very much so', 'The answer is NO', 'No (u)', 'Does money grow on trees?', 'Is magic better than Kookies? (NOOOO)']
+                embed.add_field(name='Question', value=question, inline=False)
+                embed.add_field(name='Answer', value='I\'m very accurate for your information. Don\'t question me!', inline=False)
+                embed.set_author(name=ctx.author.display_name,
+                                icon_url=ctx.author.avatar_url)
+                embed.timestamp = datetime.datetime.now()
+                return await ctx.send(embed=embed)
+
+        responses = ['Maybe', 'Hmm, try again later', 'Yes sir/ma\'am', 'No sir/ma\'am', 'You can count on it!', 'Guaranteed', 'How did you know?', 'Of course', 'I believe so', 'Nope', 'Definitely NOT', 'Very much so', 'The answer is NO', 'No (u)', 'Does money grow on trees? (Nope)', 'Is Magic better than Kookies? (NOOOO)', 'Calculating chances... 0%!!!!!', 'Calculating chances... 0%!!!!!', 'Calculating chances... error%!!!!! (this isn\'t a code error btw)', 'You wish', 'Yuppie', 'Debating... I\'m very sorry but the answer is noooooo', 'This answer isn\'t available at the moment', 'Is spamming 8ball good? (probably not)', 'Is finding loopholes good? (Maybe...)', 'Is Michael dumb (maybe)', 'Dependent on the person asking, are they nice? (That\'s the answer)', 'Am I running out of ideas? Yes or no is the answer to your question', 'Do you believe in 8ball (that\'s the answer', 'Nah', 'Sorry but no', 'Sorry but yes', 'Great job it\'s yes!', 'Great job it\'s no!', 'Nopaty nope!', 'Response unencryption failed', 'Accessing data operation has failed, going with no', 'Fetching database failed, going with no', '3rd Party influence detected, try again later', 'Encrypting question failed, response is Nonetype, going with no', 'Too many questions detected, going with yes']
+
         embed = discord.Embed(
             title='8ball response',
             color=random.randint(0, 0xffffff)
