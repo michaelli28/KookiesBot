@@ -351,14 +351,18 @@ class VoiceState:
 
             if self.loop == False:
                 if self.qloop == True:
+                    print('putting new song in queue')
                     ctx = self._ctx
                     source = await YTDLSource.create_source(ctx, self.song_history[0], loop=self.bot.loop)
+                    print('created source')
                     song = Song(source)
-                    await ctx.voice_state.songs.put(song)
+                    await self.songs.put(song)
+                    print('done putting new song in queue')
                     self.current = await self.songs.get()
                     self.song_history.insert(0, self.current)
                     self.current.source.volume = self._volume
                     self.voice.play(self.current.source, after=self.play_next_song)
+                    print('finished all tasks')
                     if self.sendEmbed:
                         msg: discord.Message= await self.current.source.channel.send(embed=self.current.create_embed())
                         
@@ -379,96 +383,98 @@ class VoiceState:
                 # the player will disconnect due to performance
                 # reasons.
                 # if self.autoplay and self.current:
-                try:
-                    async with timeout(10):
-                        self.current = await self.songs.get()
-                except asyncio.TimeoutError:
-                    # embed = discord.Embed(color=random.randint(0, 0xffffff))
-                    # embed.add_field(name='Timed Out... couldn\'t get next song within 15 seconds', value='Leaving the voice channel')
-                    # embed.timestamp = datetime.datetime.now()
-                    self.bot.loop.create_task(self.stop())
-                    self.exists = False
-                    return 
-                    #await ctx.send(embed=embed)
-                    #     # Spoof user agent to show whole page.
-                    #     headers = {
-                    #         'User-Agent': 'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)'}
-                    #     song_url = self.current.source.url
-                    #     # Get the page
-                    #     async with httpx.AsyncClient() as client:
-                    #         response = await client.get(song_url, headers=headers)
 
-                    #     soup = BeautifulSoup(response.text, features='lxml')
+                else:
+                    try:
+                        async with timeout(10):
+                            self.current = await self.songs.get()
+                    except asyncio.TimeoutError:
+                        # embed = discord.Embed(color=random.randint(0, 0xffffff))
+                        # embed.add_field(name='Timed Out... couldn\'t get next song within 15 seconds', value='Leaving the voice channel')
+                        # embed.timestamp = datetime.datetime.now()
+                        self.bot.loop.create_task(self.stop())
+                        self.exists = False
+                        return 
+                        #await ctx.send(embed=embed)
+                        #     # Spoof user agent to show whole page.
+                        #     headers = {
+                        #         'User-Agent': 'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)'}
+                        #     song_url = self.current.source.url
+                        #     # Get the page
+                        #     async with httpx.AsyncClient() as client:
+                        #         response = await client.get(song_url, headers=headers)
 
-                    #     # Parse all the recommended videos out of the response and store them in a list
-                    #     recommended_urls = []
-                    #     for li in soup.find_all('li', class_='related-list-item'):
-                    #         a = li.find('a')
+                        #     soup = BeautifulSoup(response.text, features='lxml')
 
-                    #         # Only videos (no mixes or playlists)
-                    #         if 'content-link' in a.attrs['class']:
-                    #             recommended_urls.append(
-                    #                 f'https://www.youtube.com{a.get("href")}')
+                        #     # Parse all the recommended videos out of the response and store them in a list
+                        #     recommended_urls = []
+                        #     for li in soup.find_all('li', class_='related-list-item'):
+                        #         a = li.find('a')
 
-                    #     ctx = self._ctx
+                        #         # Only videos (no mixes or playlists)
+                        #         if 'content-link' in a.attrs['class']:
+                        #             recommended_urls.append(
+                        #                 f'https://www.youtube.com{a.get("href")}')
 
-                    #     # Chose the next song so that it wasnt played recently
+                        #     ctx = self._ctx
 
-                    #     next_song = recommended_urls[0]
+                        #     # Chose the next song so that it wasnt played recently
 
-                    #     for recommended_url in recommended_urls:
-                    #         not_in_history = True
-                    #         for song in self.song_history[:15]:
-                    #             if recommended_url == song.source.url:
-                    #                 not_in_history = False
-                    #                 break
+                        #     next_song = recommended_urls[0]
 
-                    #         if not_in_history:
-                    #             next_song = recommended_url
-                    #             break
+                        #     for recommended_url in recommended_urls:
+                        #         not_in_history = True
+                        #         for song in self.song_history[:15]:
+                        #             if recommended_url == song.source.url:
+                        #                 not_in_history = False
+                        #                 break
 
-                    #     async with ctx.typing():
-                    #         try:
-                    #             source = await YTDLSource.create_source(ctx, next_song, loop=self.bot.loop)
-                    #         except YTDLError as e:
-                    #             await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
-                    #             self.bot.loop.create_task(self.stop())
-                    #             self.exists = False
-                    #             return
-                    #         else:
-                    #             song = Song(source)
-                    #             self.current = song
-                    #             await ctx.send('Autoplaying {}'.format(str(source)))
+                        #         if not_in_history:
+                        #             next_song = recommended_url
+                        #             break
 
-                # else:
-                #     try:
-                #         async with timeout(180):  # 3 minutes
-                #             self.current = await self.songs.get()
-                #     except asyncio.TimeoutError:
-                #         self.bot.loop.create_task(self.stop())
-                #         self.exists = False
-                #         return
-                self.song_history.insert(0, self.current)
-                self.current.source.volume = self._volume
-                self.voice.play(self.current.source, after=self.play_next_song)
-                # async def stopplayer():
-                #     await self.voice.disconnect()
-                #     self.voice = None
-                # if self.songs.qsize()>0:
-                #     self.voice.play(self.current.source, after=self.play_next_song)
-                # else:
-                #     self.voice.play(self.current.source, after=await stopplayer())
-                if self.sendEmbed:
-                    msg: discord.Message= await self.current.source.channel.send(embed=self.current.create_embed())
-                    
-                    #await msg.add_reaction('⏪')
-                    await msg.add_reaction('⏯️')
-                    await msg.add_reaction('⏩')
-                    await msg.add_reaction('🔁')
-                    await msg.add_reaction('🔀')
-                    await msg.add_reaction('⏹️')
-                    await msg.add_reaction('🔈')
-                    await msg.add_reaction('🔊')
+                        #     async with ctx.typing():
+                        #         try:
+                        #             source = await YTDLSource.create_source(ctx, next_song, loop=self.bot.loop)
+                        #         except YTDLError as e:
+                        #             await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
+                        #             self.bot.loop.create_task(self.stop())
+                        #             self.exists = False
+                        #             return
+                        #         else:
+                        #             song = Song(source)
+                        #             self.current = song
+                        #             await ctx.send('Autoplaying {}'.format(str(source)))
+
+                    # else:
+                    #     try:
+                    #         async with timeout(180):  # 3 minutes
+                    #             self.current = await self.songs.get()
+                    #     except asyncio.TimeoutError:
+                    #         self.bot.loop.create_task(self.stop())
+                    #         self.exists = False
+                    #         return
+                    self.song_history.insert(0, self.current)
+                    self.current.source.volume = self._volume
+                    self.voice.play(self.current.source, after=self.play_next_song)
+                    # async def stopplayer():
+                    #     await self.voice.disconnect()
+                    #     self.voice = None
+                    # if self.songs.qsize()>0:
+                    #     self.voice.play(self.current.source, after=self.play_next_song)
+                    # else:
+                    #     self.voice.play(self.current.source, after=await stopplayer())
+                    if self.sendEmbed:
+                        msg: discord.Message= await self.current.source.channel.send(embed=self.current.create_embed())
+                        
+                        #await msg.add_reaction('⏪')
+                        await msg.add_reaction('⏯️')
+                        await msg.add_reaction('⏩')
+                        await msg.add_reaction('🔁')
+                        await msg.add_reaction('🔀')
+                        await msg.add_reaction('⏹️')
+                        await msg.add_reaction('🔈')
+                        await msg.add_reaction('🔊')
 
             #If the song is looped
             elif self.loop == True:
@@ -948,7 +954,7 @@ class music(commands.Cog):
         """Loops the currently playing song
         Invoke this command again to unloop the song
         """
-        if looptype.lower() != 'song' or looptype.lower() != 'queue' or looptype.lower() != 'off':
+        if looptype.lower() != 'song' and looptype.lower() != 'queue' and looptype.lower() != 'off':
             return await ctx.send('Loop type must be song or queue or off')
         #await ctx.message.delete()
         if not ctx.voice_state.is_playing:
@@ -960,6 +966,8 @@ class music(commands.Cog):
             ctx.voice_state.qloop = False
             return await ctx.send(f'{ctx.author.mention}, song loop is now turned ' + ('**on**' if ctx.voice_state.loop else '**off**'))
         elif looptype.lower() == 'queue':
+            if ctx.voice_state.songs.__len__ ==0:
+                return await ctx.send('Queue is empty, cannot loop')
             ctx.voice_state.loop = False
             ctx.voice_state.qloop = True
             return await ctx.send(f'{ctx.author.mention}, queue loop is now turned ' + ('**on**' if ctx.voice_state.qloop else '**off**'))
@@ -969,7 +977,7 @@ class music(commands.Cog):
             return await ctx.send(f'{ctx.author.mention}, loop is now turned **off**')
 
     # @commands.command(name='autoplay', aliases=['a'])
-    # @commands.cooldown(1, 5, commands.BucketType.user)
+    # @commands.cooldown(1, 5, commands.BucketType.user) 
     # async def _autoplay(self, ctx):
     #     """Automatically queue a new song that is related to the song at the end of the queue.
     #     Invoke this command again to toggle autoplay the song.

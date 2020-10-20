@@ -18,6 +18,8 @@ import urllib.parse
 import urllib.request
 from typing import Optional
 import re
+import sys
+
 from discord import Embed, File, DMChannel
 import nltk
 # nltk.download('wordnet')
@@ -28,7 +30,7 @@ from time import time
 global PREFIX
 PREFIX = ';'
 intents = discord.Intents.all()
-
+sys.dont_write_bytecode = True
 bot = commands.Bot(command_prefix=PREFIX, case_insensitive=True,
                    description='Kookies FOR THE WIN', intents=intents, owner_id=587068610237693963)
 '''
