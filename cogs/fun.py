@@ -372,7 +372,7 @@ class fun(commands.Cog):
 
     @commands.command(aliases=['sa'], brief='Send a picture of someones avatar')
     @commands.cooldown(1, 5, commands.BucketType.default)
-    async def stealavatar(self, ctx, member: discord.Member):
+    async def stealavatar(self, ctx, *, member: discord.Member):
         embed = discord.Embed(title=f'{member.name}\'s avatar', color = random.randint(0, 0xffffff), url=f'{member.avatar_url}')
         embed.set_image(url = member.avatar_url)
         return await ctx.send(embed=embed)

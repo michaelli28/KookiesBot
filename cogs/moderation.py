@@ -258,7 +258,7 @@ class moderation(commands.Cog):
                         await u.add_roles(r)
                     return await ctx.send(f'Muted everyone')
                 except AttributeError:
-                    Muted = await ctx.guild.create_role(name="Muted", reason="To use for muting")
+                    Muted = await ctx.guild.create_role(name="Muted", hoist = True)
                     for channel in ctx.guild.channels:  # removes permission to view and send in the channels
                         await channel.set_permissions(Muted, send_messages=False,
                                                       read_message_history=False,
@@ -267,27 +267,28 @@ class moderation(commands.Cog):
                     for person in ctx.message.guild.members:
                         u = ctx.guild.get_member(person.id)
                         await u.add_roles(role)
-                    await ctx.send(f'Muted Everyone')
+                    return await ctx.send(f'Created Muted role and muted Everyone')
 
                 except discord.Forbidden:
                     return await ctx.send('I\'m not allowed to do that')
-        try:
-            role = get(user.guild.roles, name='Muted')
-            await user.add_roles(role)
-            await ctx.send(f'`{user.display_name}` has been muted from chat')
-        except BadArgument:
-            return await ctx.send(f'`{user.display_name}` user not found')
-        except discord.Forbidden:
-            return await ctx.send('I\'m not allowed to do that')
-        except AttributeError:
-            Muted = await ctx.guild.create_role(name="Muted", reason="To use for muting")
-            for channel in ctx.guild.channels:  # removes permission to view and send in the channels
-                await channel.set_permissions(Muted, send_messages=False,
-                                              read_message_history=False,
-                                              read_messages=False)
-            role = get(user.guild.roles, name='Muted')
-            await user.add_roles(role)
-            await ctx.send(f'`{user.display_name}` has been muted from chat')
+        else:
+            try:
+                role = get(user.guild.roles, name='Muted')
+                await user.add_roles(role)
+                await ctx.send(f'`{user.display_name}` has been muted from chat')
+            except BadArgument:
+                return await ctx.send(f'`{user.display_name}` user not found')
+            except discord.Forbidden:
+                return await ctx.send('I\'m not allowed to do that')
+            except AttributeError:
+                Muted = await ctx.guild.create_role(name="Muted", hoist = True)
+                for channel in ctx.guild.channels:  # removes permission to view and send in the channels
+                    await channel.set_permissions(Muted, send_messages=False,
+                                                read_message_history=False,
+                                                read_messages=False)
+                role = get(user.guild.roles, name='Muted')
+                await user.add_roles(role)
+                return await ctx.send(f'Created Muted role and muted `{user.display_name}`')
 
     @commands.command(aliases=['um'], brief='Unmutes someone, need manage roles')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -337,5 +338,42 @@ class moderation(commands.Cog):
         print('DELETED MESSAGE END')
         print('##############################################################################################################################################################')
 
+    @commands.command(aliases=['ba'], brief='Adds someone to a blacklist so they can\'t use commands')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def blacklistadd(self, ctx, user: discord.Member=None):
+        if user==None:
+            return await ctx.send('Input a user to add to blacklist')
+        else:
+            with open('blacklist.json', 'r') as blacklist:
+                people = json.load(blacklist)
+                if str(user.id) in people['list']:
+                    return await ctx.send('User already in blacklist')
+                else:
+                    people['list'].append(str(user.id))
+                blacklist.close()
+            with open('blacklist.json', 'w') as blacklist:
+                json.dump(people, blacklist)
+                blacklist.close()
+        return await ctx.send(f'{user.display_name} has been added to the blacklist')
+
+    @commands.command(aliases=['br'], brief='Removes someone to a blacklist so they can use commands again')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def blacklistremove(self, ctx, user: discord.Member = None):
+        if user == None:
+            return await ctx.send('Input a user to remove from blacklist')
+        else:
+            with open('blacklist.json', 'r') as blacklist:
+                people = json.load(blacklist)
+                if str(user.id) not in people['list']:
+                    return await ctx.send('User not in blacklist')
+                else:
+                    people['list'].remove(str(user.id))
+                blacklist.close()
+            with open('blacklist.json', 'w') as blacklist:
+                json.dump(people, blacklist)
+                blacklist.close()
+        return await ctx.send(f'{user.display_name} has been removed from the blacklist')
 def setup(bot):
 	bot.add_cog(moderation(bot))

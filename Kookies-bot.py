@@ -70,6 +70,21 @@ async def on_ready():
 #         new = await message.channel.fetch_message(ids)
 #         print(f'{message.guild}/{message.channel}/{new.author}>{new.content}')
 
+@bot.check
+async def blacklisted(ctx):
+    with open('blacklist.json') as thing:
+        blacklist = json.load(thing)
+        blacklist = blacklist['list']
+        thing.close()
+    if str(ctx.author.id) in blacklist:
+        await ctx.send('You have been blacklisted from this bot')
+        return False
+    else:
+        return True
+
+class blacklisterror(commands.CheckFailure):
+    pass
+
 @bot.command(brief='Deletes Kookies\' messages after a certain amount of seconds')
 async def prune(ctx, time = 60):
     with open('config.json', 'r') as config:
