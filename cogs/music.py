@@ -297,7 +297,7 @@ class VoiceState:
         self._autoplay = True
         self._volume = 0.1
         self.skip_votes = set()
-
+        self._qloop = False
         self.audio_player = bot.loop.create_task(self.audio_player_task())
 
     def __del__(self):
@@ -315,6 +315,14 @@ class VoiceState:
     @loop.setter
     def loop(self, value: bool):
         self._loop = value
+    
+    @property
+    def qloop(self):
+        return self._qloop
+
+    @qloop.setter
+    def qloop(self, value: bool):
+        self._qloop = value
 
     @property
     def autoplay(self):
@@ -342,6 +350,27 @@ class VoiceState:
             self.now = None
 
             if self.loop == False:
+                if self.qloop == True:
+                    ctx = self._ctx
+                    source = await YTDLSource.create_source(ctx, self.song_history[0], loop=self.bot.loop)
+                    song = Song(source)
+                    await ctx.voice_state.songs.put(song)
+                    self.current = await self.songs.get()
+                    self.song_history.insert(0, self.current)
+                    self.current.source.volume = self._volume
+                    self.voice.play(self.current.source, after=self.play_next_song)
+                    if self.sendEmbed:
+                        msg: discord.Message= await self.current.source.channel.send(embed=self.current.create_embed())
+                        
+                        #await msg.add_reaction('⏪')
+                        await msg.add_reaction('⏯️')
+                        await msg.add_reaction('⏩')
+                        await msg.add_reaction('🔁')
+                        await msg.add_reaction('🔀')
+                        await msg.add_reaction('⏹️')
+                        await msg.add_reaction('🔈')
+                        await msg.add_reaction('🔊')
+
                 # If autoplay is turned on wait 15 seconds for a new song.
                 # If no song is found find a new one,
                 # else if autoplay is turned off try to get the
@@ -359,7 +388,8 @@ class VoiceState:
                     # embed.timestamp = datetime.datetime.now()
                     self.bot.loop.create_task(self.stop())
                     self.exists = False
-                    return #await ctx.send(embed=embed)
+                    return 
+                    #await ctx.send(embed=embed)
                     #     # Spoof user agent to show whole page.
                     #     headers = {
                     #         'User-Agent': 'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)'}
@@ -912,19 +942,31 @@ class music(commands.Cog):
             ctx.voice_state.songs.remove(index - 1)
             return await ctx.send(f'{ctx.author.mention}, removed song number **'+ str(index) + '**')
 
-    @commands.command(name='loop', brief='Loops the song currently playing')
+    @commands.command(name='loop', brief='Loops the song/queue currently playing')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def _loop(self, ctx):
+    async def _loop(self, ctx, looptype):
         """Loops the currently playing song
         Invoke this command again to unloop the song
         """
+        if looptype.lower() != 'song' or looptype.lower() != 'queue' or looptype.lower() != 'off':
+            return await ctx.send('Loop type must be song or queue or off')
         #await ctx.message.delete()
         if not ctx.voice_state.is_playing:
             return await ctx.send(f'{ctx.author.mention}, I am not currently playing anything')
 
-        # Inverse boolean value to loop and unloop.
-        ctx.voice_state.loop = not ctx.voice_state.loop
-        await ctx.send(f'{ctx.author.mention}, song loop is now turned ' + ('**on**' if ctx.voice_state.loop else '**off**'))
+        # Inverse boolean value to loop and unloop
+        if looptype.lower() == 'song':
+            ctx.voice_state.loop = True
+            ctx.voice_state.qloop = False
+            return await ctx.send(f'{ctx.author.mention}, song loop is now turned ' + ('**on**' if ctx.voice_state.loop else '**off**'))
+        elif looptype.lower() == 'queue':
+            ctx.voice_state.loop = False
+            ctx.voice_state.qloop = True
+            return await ctx.send(f'{ctx.author.mention}, queue loop is now turned ' + ('**on**' if ctx.voice_state.qloop else '**off**'))
+        elif looptype.lower() == 'off':
+            ctx.voice_state.loop = False
+            ctx.voice_state.qloop = False
+            return await ctx.send(f'{ctx.author.mention}, loop is now turned **off**')
 
     # @commands.command(name='autoplay', aliases=['a'])
     # @commands.cooldown(1, 5, commands.BucketType.user)
@@ -1211,7 +1253,6 @@ class music(commands.Cog):
             return await ctx.send(f'{ctx.author.mention}, please reply with **y** or **n** next time, continuing')
         ctx.voice_state.songs.clear()
         return await ctx.send(f'{ctx.author.mention}, cleared the queue')
-
 
 
     @_join.before_invoke
