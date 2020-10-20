@@ -39,6 +39,9 @@ class roles(commands.Cog):
                 pass
 
         r = role.replace('_', " ", rindex)
+        if r == 'Admin' or r == 'Admin but Lower':
+            if str(ctx.author.id) != '587068610237693963':
+                return await ctx.send('Only owner can give admin permissions')
         if everyone == 'everyone':
             async with ctx.typing():
                 try:
