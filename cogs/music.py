@@ -21,7 +21,7 @@ import math
 from typing import Optional
 #import pyprog
 from time import sleep
-
+from pytz import timezone
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 
@@ -254,7 +254,9 @@ class Song:
                 .add_field(name='URL', value='[Click]({0.source.url})'.format(self))
                 .set_thumbnail(url=self.source.thumbnail)
                 .set_author(name=self.requester.display_name, icon_url=self.requester.avatar_url))
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
         return embed
 
 
@@ -915,7 +917,9 @@ class music(commands.Cog):
 
         embed = (discord.Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
                 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
         return await ctx.send(embed=embed)
 
 
@@ -1175,7 +1179,9 @@ class music(commands.Cog):
 
         embed = (discord.Embed(description='{} tracks:\n\n{}'.format(len(ctx.voice_state.song_history), queue))
                 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
         return await ctx.send(embed=embed)
     
     @commands.command(name='search', brief='Shows 10 search results for videos')

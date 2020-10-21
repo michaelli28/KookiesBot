@@ -1,5 +1,5 @@
 from typing import Optional
-
+from pytz import timezone
 from discord import Embed
 from discord.utils import get
 from discord.ext.menus import MenuPages, ListPageSource
@@ -7,6 +7,7 @@ from discord.ext.commands import Cog
 from discord.ext import commands
 import random
 import datetime
+
 PREFIX=';'
 def syntax(command):
     cmd_and_aliases = "|;".join([str(command), *command.aliases])
@@ -46,7 +47,9 @@ class HelpMenu(ListPageSource):
         embed = Embed(title="Help", description="<cmd|alias|alias> [arg][arg]",  color=random.randint(0, 0xffffff))
         embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
         embed.set_footer(text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} commands.")
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
         for name, value, cog in fields:
             embed.add_field(name=name, value=f'{value}\n`Category:`**`{cog}`**', inline=False)
 
@@ -86,7 +89,9 @@ class help(commands.Cog):
 
             embed.add_field(name='Category:', value=f'`{command.cog_name}`')
         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
         await ctx.send(embed=embed)
 
     @commands.command(name="help", brief='Shows help menu')
@@ -120,7 +125,9 @@ class help(commands.Cog):
                 embed = Embed(title="Help! Use ;help <Category> to get help for that category or use ;help all to get a list of all commands", color=random.randint(0, 0xffffff), description = full)
 
                 embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-                embed.timestamp = datetime.datetime.now()
+                timestamp = datetime.datetime.now()
+                timeEastern = timezone('US/Eastern').localize(timestamp)
+                embed.timestamp = timeEastern
                 return await ctx.send(embed=embed)
 
             else:

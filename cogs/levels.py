@@ -4,7 +4,7 @@ from discord.ext.menus import MenuPages, ListPageSource
 from discord.utils import get
 from discord import Embed
 from typing import Optional
-
+from pytz import timezone
 import discord
 from discord.ext import commands
 import datetime
@@ -15,6 +15,7 @@ import re
 import time
 import json
 import asyncio
+from pytz import timezone
 from discord.ext import tasks
 from operator import itemgetter
 
@@ -51,7 +52,9 @@ class HelpMenu(ListPageSource):
         embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
         embed.set_footer(
                 text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} users")
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
 
@@ -152,7 +155,9 @@ class levels(Cog):
 
             embed.add_field(name='Xp', value=printProgressBar(
                 result['Xp'], 100000, prefix='**'+str(result['Xp'])+"**", suffix='**100,000**'))
-            embed.timestamp = datetime.datetime.now()
+            timestamp = datetime.datetime.now()
+            timeEastern = timezone('US/Eastern').localize(timestamp)
+            embed.timestamp = timeEastern
             return await ctx.send(embed=embed)
 
     @commands.Cog.listener()

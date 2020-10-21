@@ -17,7 +17,7 @@ import time
 from collections import Counter
 import asyncio
 from discord.ext import tasks
-
+from pytz import timezone
 from discord.ext.commands.errors import BadArgument
 
 class moderation(commands.Cog):
@@ -203,7 +203,9 @@ class moderation(commands.Cog):
             title='Welcome to ' + str(member.guild.name) + " " + str(member.display_name), color=random.randint(0, 0xffffff))
 
         embed.set_author(name=member.display_name, icon_url=member.avatar_url)
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
 
         with open("guild.json", "r") as f:
             guildInfo = json.load(f)
@@ -223,7 +225,9 @@ class moderation(commands.Cog):
         embed = discord.Embed(title=str(member.display_name)+' has left ' +
                             str(member.guild.name), color=random.randint(0, 0xffffff))
         embed.set_author(name=member.display_name, icon_url=member.avatar_url)
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
 
         with open("guild.json", "r") as f:
             guildInfo = json.load(f)
@@ -409,7 +413,9 @@ class moderation(commands.Cog):
         embed.set_author(name=ctx.author.display_name,
                             icon_url=ctx.author.avatar_url)
 
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
         return await ctx.send(embed=embed)
 
     @commands.command(description="Blocks a user from chatting in current channel")
@@ -470,7 +476,6 @@ class moderation(commands.Cog):
                 check=check,
 
             )
-            a = "message" if len(deleted) else "messages"
             await ctx.message.delete()
             return await ctx.send(
                 f"Deleted `{len(deleted)}` messages by {member}", delete_after=3

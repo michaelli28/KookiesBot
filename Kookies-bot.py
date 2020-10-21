@@ -1,6 +1,5 @@
 import discord
 import random
-
 from discord.ext import commands
 from discord import Member
 from discord.ext.commands import has_permissions, MissingPermissions, CommandNotFound
@@ -13,13 +12,13 @@ import asyncio
 from os import system
 import requests
 import datetime
+from pytz import timezone
 #import spotdl
 import urllib.parse
 import urllib.request
 from typing import Optional
 import re
 import sys
-
 from discord import Embed, File, DMChannel
 import nltk
 # nltk.download('wordnet')
@@ -27,6 +26,9 @@ from nltk.corpus import wordnet
 # from googleapiclient.discovery import build
 import time
 from time import time
+
+
+
 global PREFIX
 PREFIX = ';'
 intents = discord.Intents.all()
@@ -46,6 +48,8 @@ await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.li
 # Setting `Watching ` status
 await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="a movie"))
 '''
+
+
 
 
 @bot.event
@@ -113,6 +117,7 @@ async def on_message(message):
                 except discord.errors.NotFound:
                     pass
     await bot.process_commands(message)
+    
     # if message.author.id == '740226974248730625':
     # await message.delete()
     #    await message.channel.send('MAGIC SUCKS')

@@ -14,7 +14,7 @@ from pymongo import MongoClient
 import random
 import re
 import time
-
+from pytz import timezone
 import asyncio
 from discord.ext import tasks
 
@@ -182,7 +182,7 @@ class roles(commands.Cog):
     @commands.command(aliases=['rc'], brief='Adds a role claim message, use like this: ;rc toxic pro_player noob with spaces as underscores')
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def roleclaim(self, ctx, *roles, messagea=None):
+    async def roleclaim(self, ctx, *roles, note=None):
         await ctx.message.delete()
         if 1 > len(roles) > 10:
             return await ctx.send('List of roles must be between 1 and 10')
@@ -201,8 +201,8 @@ class roles(commands.Cog):
                     '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
         message = ''
         rindex = 0
-        for r in rolesR:
 
+        for r in rolesR:
             for char in r:
                 try:
                     r.find('_')
@@ -220,11 +220,23 @@ class roles(commands.Cog):
 
             message += f'React with {reactions[index]} to receive the `{role}` role!\n'
             index += 1
+        if note == None:
+            embed = Embed(
+                title=f"Role Reactions", color=random.randint(0, 0xffffff), description = message)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            timestamp = datetime.datetime.now()
+            timeEastern = timezone('US/Eastern').localize(timestamp)
+            embed.timestamp = timeEastern
+            messagesent = await ctx.send(embed=embed)
 
-        if messagea == None:
-            messagesent = await ctx.send(message)
         else:
-            messagesent = await ctx.send(message+str(messagea))
+            embed = Embed(
+                title=f"Role Reactions", color=random.randint(0, 0xffffff), description = f'{note}\n{message}')
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            timestamp = datetime.datetime.now()
+            timeEastern = timezone('US/Eastern').localize(timestamp)
+            embed.timestamp = timeEastern
+            messagesent = await ctx.send(embed=embed)
 
         rolesjson[messagesent.id] = rolesR
 
@@ -496,7 +508,9 @@ class HelpMenu(ListPageSource):
         embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
         embed.set_footer(
                 text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} roles")
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
 

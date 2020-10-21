@@ -21,7 +21,7 @@ from discord.utils import get
 from discord import Embed
 from typing import Optional
 import random
-
+from pytz import timezone
 import asyncio
 from discord.ext import tasks
 from operator import itemgetter
@@ -59,8 +59,10 @@ class fun(commands.Cog):
             embed.set_image(url = submission.url)
             embed.set_author(name=ctx.author.display_name,
                             icon_url=ctx.author.avatar_url)
-
-            embed.timestamp = datetime.datetime.now()
+            
+            timestamp = datetime.datetime.now()
+            timeEastern = timezone('US/Eastern').localize(timestamp)
+            embed.timestamp = timeEastern
             return await ctx.send(embed=embed)
 
     
@@ -77,7 +79,9 @@ class fun(commands.Cog):
                 embed.set_author(name=ctx.author.display_name,
                                 icon_url=ctx.author.avatar_url)
 
-                embed.timestamp = datetime.datetime.now()
+                timestamp = datetime.datetime.now()
+                timeEastern = timezone('US/Eastern').localize(timestamp)
+                embed.timestamp = timeEastern
                 return await ctx.send(embed=embed)
 
             else:
@@ -122,7 +126,9 @@ class fun(commands.Cog):
                 embed.add_field(name='Answer', value='I\'m very accurate for your information. Don\'t question me!', inline=False)
                 embed.set_author(name=ctx.author.display_name,
                                 icon_url=ctx.author.avatar_url)
-                embed.timestamp = datetime.datetime.now()
+                timestamp = datetime.datetime.now()
+                timeEastern = timezone('US/Eastern').localize(timestamp)
+                embed.timestamp = timeEastern
                 return await ctx.send(embed=embed)
 
         responses = ['Maybe', 'Hmm, try again later', 'Yes sir/ma\'am', 'No sir/ma\'am', 'You can count on it!', 'Guaranteed', 'How did you know?', 'Of course', 'I believe so', 'Nope', 'Definitely NOT', 'Very much so', 'The answer is NO', 'No (u)', 'Does money grow on trees? (Nope)', 'Is Magic better than Kookies? (NOOOO)', 'Calculating chances... 0%!!!!!', 'Calculating chances... 0%!!!!!', 'Calculating chances... error%!!!!! (this isn\'t a code error btw)', 'You wish', 'Yuppie', 'Debating... I\'m very sorry but the answer is noooooo', 'This answer isn\'t available at the moment', 'Do you believe in 8ball (that\'s the answer)', 'Nah', 'Sorry but no', 'Sorry but yes', 'Great job it\'s yes!', 'Great job it\'s no!', 'Nopaty nope!', '3rd Party influence detected, try again later', 'Too many questions detected', 'Yeah!', 'You guessed it!', 'Definitely!', 'Nooooooo', 'Same as Trump\'s chance of being reelected 0%', 'Hahahahaha no', 'Hahahaha good joke but still no']
@@ -136,7 +142,9 @@ class fun(commands.Cog):
             responses), inline=False)
         embed.set_author(name=ctx.author.display_name,
                         icon_url=ctx.author.avatar_url)
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
         return await ctx.send(embed=embed)
 
 
@@ -214,7 +222,9 @@ class fun(commands.Cog):
             title=f'Sentences that {ctx.author.display_name} might say based off of a small paragraph')
         embed.set_author(name=ctx.author.display_name,
                          icon_url=ctx.author.avatar_url)
-        embed.timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
         for i in range(5):
             sentence = model.make_sentence()
             embed.add_field(name=f'Sentence {n})',
@@ -375,6 +385,10 @@ class fun(commands.Cog):
     async def stealavatar(self, ctx, *, member: discord.Member):
         embed = discord.Embed(title=f'{member.name}\'s avatar', color = random.randint(0, 0xffffff), url=f'{member.avatar_url}')
         embed.set_image(url = member.avatar_url)
+        timestamp = datetime.datetime.now()
+        timeEastern = timezone('US/Eastern').localize(timestamp)
+        embed.timestamp = timeEastern
         return await ctx.send(embed=embed)
+
 def setup(bot):
 	bot.add_cog(fun(bot))
