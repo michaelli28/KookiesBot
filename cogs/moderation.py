@@ -69,7 +69,7 @@ class moderation(commands.Cog):
             return await ctx.send('Everyone has been undeafened')
 
     @commands.command(aliases=['n'], brief='Changes someone\'s nickname')
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_nicknames=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def nick(self, ctx, member: discord.Member, *, nick):
         old = member.display_name
@@ -77,7 +77,7 @@ class moderation(commands.Cog):
         return await ctx.send(f'Nickname was changed for {member.mention} from {old} to {nick}')
 
     @commands.command(brief='Locks the server from messages')
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def serverlock(self, ctx):
         try:
@@ -89,7 +89,7 @@ class moderation(commands.Cog):
             return await ctx.send('I don\'t have the permissions to do that')
 
     @commands.command(brief='Unlocks the server')
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def serverunlock(self, ctx):
         try:
@@ -101,7 +101,7 @@ class moderation(commands.Cog):
             return await ctx.send('I don\'t have the permissions to do that')
 
     @commands.command(brief='Locks the channel from messages')
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def channellock(self, ctx):
         try:
@@ -113,7 +113,7 @@ class moderation(commands.Cog):
             return await ctx.send('I don\'t have the permissions to do that')
 
     @commands.command(brief='Unlocks the channel')
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def channelunlock(self, ctx):
         try:
@@ -125,7 +125,7 @@ class moderation(commands.Cog):
             return await ctx.send('I don\'t have the permissions to do that')
 
     @commands.command(brief='Creates a channel')
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def createchannel(self, ctx, name):
         guild = ctx.message.guild
@@ -133,7 +133,7 @@ class moderation(commands.Cog):
         return await ctx.send(f'Created text chanenl {name}')
 
     @commands.command(brief='Creates a voice channel')
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def createvoicechannel(self, ctx, name):
         guild = ctx.message.guild
@@ -141,7 +141,7 @@ class moderation(commands.Cog):
         return await ctx.send(f'Created voice channel {name}')
 
     @commands.command(brief='Edits a text channel')
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def editchannel(self, ctx, name: discord.TextChannel, nname: Optional[str] = None, slowmode: Optional[int] = None):
         if nname != None:
@@ -152,7 +152,7 @@ class moderation(commands.Cog):
             return await ctx.send(f'Set the slowmode delay for channel {name.name} to {slowmode} seconds')
 
     @commands.command(brief='Creates a category')
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def createcategory(self, ctx, name):
         guild = ctx.message.guild
@@ -161,7 +161,7 @@ class moderation(commands.Cog):
 
     @commands.command(brief='Clears messages')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_messages=True)
     async def klear(self, ctx, amount=1):
         if amount == 0:
             ctx.send("You need to delete a message")
@@ -375,5 +375,6 @@ class moderation(commands.Cog):
                 json.dump(people, blacklist)
                 blacklist.close()
         return await ctx.send(f'{user.display_name} has been removed from the blacklist')
+        
 def setup(bot):
 	bot.add_cog(moderation(bot))
