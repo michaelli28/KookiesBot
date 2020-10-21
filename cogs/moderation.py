@@ -4,7 +4,7 @@ from discord.ext.commands import Cog
 from discord.ext.menus import MenuPages, ListPageSource
 from discord.utils import get
 from discord import Embed
-from typing import Optional
+from typing import Optional, Union
 import json
 import discord
 from discord.ext import commands
@@ -14,7 +14,7 @@ from pymongo import MongoClient
 import random
 import re
 import time
-
+from collections import Counter
 import asyncio
 from discord.ext import tasks
 
@@ -375,6 +375,159 @@ class moderation(commands.Cog):
                 json.dump(people, blacklist)
                 blacklist.close()
         return await ctx.send(f'{user.display_name} has been removed from the blacklist')
-        
+    
+
+    @commands.command(aliases=["slowm"], brief="Custom Slow Mode")
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_channels=True)
+    async def slowmode(self, ctx, slowmode: int):
+        if slowmode > 21600:
+            await ctx.send("Slow Mode too long")
+        else:
+            await ctx.channel.edit(slowmode_delay=slowmode)
+            return await ctx.send(
+                f"Slow Mode set to {slowmode} seconds for {ctx.channel.mention}")
+
+    @commands.command(brief="See your or other peoples permissions", aliases=["permissions"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def perms(self, ctx, member: discord.Member = None, channel: discord.TextChannel = None):
+        channel = channel or ctx.channel
+        member = member or ctx.author
+        perms = []
+        permstr = ""
+        for i in member.permissions_in(channel):
+            perms.append(i)
+        perms = dict(perms)
+        for i in perms:
+            if perms[i]:
+                permstr += (f"✅ {i.replace('_', ' ').title()}\n")
+
+                
+        embed = discord.Embed(
+            title=f"{member.display_name}'s Permissions", description=permstr, color=0x2F3136
+        )
+        embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.avatar_url)
+
+        embed.timestamp = datetime.datetime.now()
+        return await ctx.send(embed=embed)
+
+    @commands.command(description="Blocks a user from chatting in current channel")
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def block(self, ctx, user: discord.Member):
+        try:
+            await ctx.channel.set_permissions(
+                user, send_messages=False
+            )
+            return await ctx.send(f"Blocked {user.display_name} from sending messages in {ctx.channel.name}")
+        except discord.Forbidden:
+            return await ctx.send("I don\'t have permissions to do that")
+
+    @commands.command(description="Unblocks a user from current channel")
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def unblock(self, ctx, user: discord.Member):
+        try:
+            await ctx.channel.set_permissions(
+                user, send_messages=None
+            )
+            return await ctx.send(f"Unblocked {user.display_name} from sending messages in {ctx.channel.name}")
+        except discord.Forbidden:
+            return await ctx.send("I don\'t have permissions to do that")
+
+
+    @commands.command(
+        name="clear",
+        aliases=["delete", "erase"],
+        brief="Clears a certain amount of messages"
+    )
+    @commands.has_permissions(manage_messages=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def purge(self, ctx, amount: int, member: discord.Member = None):
+        def check(message):
+            return message.author.id == member.id
+
+        if not member:
+            deleted = await ctx.channel.purge(limit=(amount+1))
+            # a = "message" if len(deleted) else "messages"
+            authors = Counter(msg.author.display_name for msg in deleted)
+            # message = 
+            deleted = sum(authors.values())
+            messages = [
+                f'{deleted} message{" was" if deleted == 1 else "s were"} removed'
+            ]
+            if deleted:
+                spammers = sorted(spammers.items(), key=lambda t: t[1], reverse=True)
+                messages.extend(
+                    f"- {count} by **{author}**" for author, count in spammers
+                )
+            await ctx.send("\n".join(messages))
+            
+        else:
+            deleted = await ctx.channel.purge(
+                limit=amount,
+                check=check,
+
+            )
+            a = "message" if len(deleted) else "messages"
+            await ctx.message.delete()
+            return await ctx.send(
+                f"Deleted `{len(deleted)}` messages by {member}", delete_after=3
+            )
+
+
+    @commands.command(brief='Deletes Kookies\' messages after a certain amount of seconds')
+    @commands.has_permissions(manage_messages=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def prune(self, ctx, time = 60):
+        with open('config.json', 'r') as config:
+            info = json.load(config)
+            info['prune'] = not info['prune']
+            info['time'] = str(time)
+            config.close()
+        with open ('config.json', 'w') as config:
+            json.dump(info, config)
+            config.close()
+        time = info['time']
+        if info['prune']:
+            message = 'Kookies\' responses will now be deleted after '+ str(time) + ' seconds'
+        else:
+            message = 'Pruning is now off'
+        return await ctx.send(message)
+
+
+    @commands.command(brief="Bans a user")
+    @commands.has_permissions(ban_members=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def ban(self, ctx, member: discord.Member, *, reason=None):
+        await member.ban(reason=reason)
+        return await ctx.send(f"Banned {member.mention}")
+
+    @commands.command(
+        brief="Unbans a previously banned user with their name and discriminator"
+    )
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(ban_members=True)
+    async def unban(self, ctx, *, member: Union[int, str]):
+        if isinstance(member, str):
+            banned_users = await ctx.guild.bans()
+            member_name, member_discriminator = member.split("#")
+            for ban_entry in banned_users:
+                user = ban_entry.user
+
+                if (user.name, user.discriminator) == (
+                    member_name,
+                    member_discriminator,
+                ):
+                    await ctx.guild.unban(user)
+                    return await ctx.send(f"Unbanned {user.mention}")
+            await ctx.send("User not found")
+
+        else:
+            await ctx.guild.unban(discord.Object(id=member))
+            return await ctx.send(f"Unbanned member with id {member}")
+            
 def setup(bot):
 	bot.add_cog(moderation(bot))

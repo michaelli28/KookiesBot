@@ -87,22 +87,6 @@ async def blacklisted(ctx):
 class blacklisterror(commands.CheckFailure):
     pass
 
-@bot.command(brief='Deletes Kookies\' messages after a certain amount of seconds')
-async def prune(ctx, time = 60):
-    with open('config.json', 'r') as config:
-        info = json.load(config)
-        info['prune'] = not info['prune']
-        info['time'] = str(time)
-        config.close()
-    with open ('config.json', 'w') as config:
-        json.dump(info, config)
-        config.close()
-    time = info['time']
-    if info['prune']:
-        message = 'Kookies\' responses will now be deleted after '+ str(time) + ' seconds'
-    else:
-        message = 'Pruning is now off'
-    return await ctx.send(message)
 
 @bot.event
 async def on_message(message):
@@ -114,7 +98,10 @@ async def on_message(message):
             return
         else:
             await asyncio.sleep(5)
-            await message.add_reaction('❌')
+            try:
+                await message.add_reaction('❌')
+            except discord.errors.NotFound:
+                pass
             with open('config.json', 'r') as config:
                 info = json.load(config)
                 config.close()
