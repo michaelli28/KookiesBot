@@ -390,7 +390,6 @@ class moderation(commands.Cog):
 
     @commands.command(brief="See your or other peoples permissions", aliases=["permissions"])
     @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.has_permissions(manage_roles=True)
     async def perms(self, ctx, member: discord.Member = None, channel: discord.TextChannel = None):
         channel = channel or ctx.channel
         member = member or ctx.author
@@ -528,6 +527,6 @@ class moderation(commands.Cog):
         else:
             await ctx.guild.unban(discord.Object(id=member))
             return await ctx.send(f"Unbanned member with id {member}")
-            
+
 def setup(bot):
 	bot.add_cog(moderation(bot))
