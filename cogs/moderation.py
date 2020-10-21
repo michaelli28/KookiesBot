@@ -415,24 +415,24 @@ class moderation(commands.Cog):
     @commands.command(description="Blocks a user from chatting in current channel")
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def block(self, ctx, user: discord.Member):
+    async def block(self, ctx, *, user: discord.Member):
         try:
             await ctx.channel.set_permissions(
                 user, send_messages=False
             )
-            return await ctx.send(f"Blocked {user.display_name} from sending messages in {ctx.channel.name}")
+            return await ctx.send(f"Blocked {user.mention} from sending messages in **{ctx.channel.name}**")
         except discord.Forbidden:
             return await ctx.send("I don\'t have permissions to do that")
 
     @commands.command(description="Unblocks a user from current channel")
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def unblock(self, ctx, user: discord.Member):
+    async def unblock(self, ctx, *, user: discord.Member):
         try:
             await ctx.channel.set_permissions(
                 user, send_messages=None
             )
-            return await ctx.send(f"Unblocked {user.display_name} from sending messages in {ctx.channel.name}")
+            return await ctx.send(f"Unblocked {user.mention} from sending messages in **{ctx.channel.name}**")
         except discord.Forbidden:
             return await ctx.send("I don\'t have permissions to do that")
 
@@ -444,7 +444,7 @@ class moderation(commands.Cog):
     )
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def purge(self, ctx, amount: int, member: discord.Member = None):
+    async def purge(self, ctx, amount: int, *, member: discord.Member = None):
         def check(message):
             return message.author.id == member.id
 
@@ -455,12 +455,12 @@ class moderation(commands.Cog):
             # message = 
             deleted = sum(authors.values())
             messages = [
-                f'{deleted} message{" was" if deleted == 1 else "s were"} removed'
+                f'**{deleted}** message{" was" if deleted == 1 else "s were"} removed'
             ]
             if deleted:
-                spammers = sorted(spammers.items(), key=lambda t: t[1], reverse=True)
+                authors = sorted(authors.items(), key=lambda t: t[1], reverse=True)
                 messages.extend(
-                    f"- {count} by **{author}**" for author, count in spammers
+                    f"- {count} by **{author}**" for author, count in authors
                 )
             await ctx.send("\n".join(messages))
             
@@ -472,7 +472,7 @@ class moderation(commands.Cog):
             )
             await ctx.message.delete()
             return await ctx.send(
-                f"Deleted `{len(deleted)}` messages by {member}", delete_after=3
+                f"Deleted **{len(deleted)}** messages by **{member}**", delete_after=10
             )
 
 
@@ -499,8 +499,8 @@ class moderation(commands.Cog):
     @commands.command(brief="Bans a user")
     @commands.has_permissions(ban_members=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def ban(self, ctx, member: discord.Member, *, reason=None):
-        await member.ban(reason=reason)
+    async def ban(self, ctx, *, member: discord.Member):
+        await member.ban()
         return await ctx.send(f"Banned {member.mention}")
 
     @commands.command(

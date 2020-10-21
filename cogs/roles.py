@@ -46,6 +46,8 @@ class roles(commands.Cog):
             async with ctx.typing():
                 try:
                     r = get(ctx.message.guild.roles, name=r)
+                    if r in user.roles:
+                        return await ctx.send(f'{user.display_name} already has role {role}')
                     for person in ctx.message.guild.members:
                         u = ctx.guild.get_member(person.id)
                         await u.add_roles(r)
@@ -83,6 +85,8 @@ class roles(commands.Cog):
             async with ctx.typing():
                 try:
                     r = get(ctx.message.guild.roles, name=r)
+                    if r not in user.roles:
+                        return await ctx.send(f'{user.display_name} doesn\'t have role {role}')
                     for person in ctx.message.guild.members:
                         u = ctx.guild.get_member(person.id)
                         await u.remove_roles(r)
@@ -148,10 +152,10 @@ class roles(commands.Cog):
             return await ctx.send('I don\'t have the permissions to do that')
 
 
-    @commands.command(aliases=['er'], brief='Edits a role;  permissions is an integer as well')
+    @commands.command(aliases=['er'], brief='Edits a role')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def editrole(self, ctx, name, newname =  None):
+    async def editrole(self, ctx, name, *, newname =  None):
         
         # if mentionable != None:
         #         await r.edit(mentionable=mentionable)
@@ -172,6 +176,8 @@ class roles(commands.Cog):
         
         r = name.replace('_', " ", rindex)
         r = get(ctx.message.guild.roles, name=r)
+        if r not in ctx.guild.roles:
+            return await ctx.send(f'Role {r} doesn\'t exist')
         try:
             await r.edit(name = newname)
             await ctx.send(f'Changed the name to `{newname}`')
