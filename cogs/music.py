@@ -254,9 +254,7 @@ class Song:
                 .add_field(name='URL', value='[Click]({0.source.url})'.format(self))
                 .set_thumbnail(url=self.source.thumbnail)
                 .set_author(name=self.requester.display_name, icon_url=self.requester.avatar_url))
-        timestamp = datetime.datetime.now()
-        timeEastern = timezone('US/Eastern').localize(timestamp)
-        embed.timestamp = timeEastern
+        embed.timestamp = datetime.datetime.utcnow()
         return embed
 
 
@@ -393,7 +391,7 @@ class VoiceState:
                     except asyncio.TimeoutError:
                         # embed = discord.Embed(color=random.randint(0, 0xffffff))
                         # embed.add_field(name='Timed Out... couldn\'t get next song within 15 seconds', value='Leaving the voice channel')
-                        # embed.timestamp = datetime.datetime.now()
+                        # embed.timestamp = datetime.datetime.utcnow()
                         self.bot.loop.create_task(self.stop())
                         self.exists = False
                         return 
@@ -917,9 +915,7 @@ class music(commands.Cog):
 
         embed = (discord.Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
                 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
-        timestamp = datetime.datetime.now()
-        timeEastern = timezone('US/Eastern').localize(timestamp)
-        embed.timestamp = timeEastern
+        embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
 
 
@@ -1179,9 +1175,7 @@ class music(commands.Cog):
 
         embed = (discord.Embed(description='{} tracks:\n\n{}'.format(len(ctx.voice_state.song_history), queue))
                 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
-        timestamp = datetime.datetime.now()
-        timeEastern = timezone('US/Eastern').localize(timestamp)
-        embed.timestamp = timeEastern
+        embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
     
     @commands.command(name='search', brief='Shows 10 search results for videos')

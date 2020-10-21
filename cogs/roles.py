@@ -224,16 +224,15 @@ class roles(commands.Cog):
             embed = Embed(
                 title=f"Role Reactions", color=random.randint(0, 0xffffff), description = message)
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            timestamp = datetime.datetime.now()
-            timeEastern = timezone('US/Eastern').localize(timestamp)
-            embed.timestamp = timeEastern
+            timestamp = datetime.datetime.utcnow()
+            embed.timestamp = timestamp
             messagesent = await ctx.send(embed=embed)
 
         else:
             embed = Embed(
                 title=f"Role Reactions", color=random.randint(0, 0xffffff), description = f'{note}\n{message}')
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            timestamp = datetime.datetime.now()
+            timestamp = datetime.datetime.utcnow()
             timeEastern = timezone('US/Eastern').localize(timestamp)
             embed.timestamp = timeEastern
             messagesent = await ctx.send(embed=embed)
@@ -508,9 +507,8 @@ class HelpMenu(ListPageSource):
         embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
         embed.set_footer(
                 text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} roles")
-        timestamp = datetime.datetime.now()
-        timeEastern = timezone('US/Eastern').localize(timestamp)
-        embed.timestamp = timeEastern
+        timestamp = datetime.datetime.utcnow()
+        embed.timestamp = timestamp
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
 

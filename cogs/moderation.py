@@ -203,9 +203,7 @@ class moderation(commands.Cog):
             title='Welcome to ' + str(member.guild.name) + " " + str(member.display_name), color=random.randint(0, 0xffffff))
 
         embed.set_author(name=member.display_name, icon_url=member.avatar_url)
-        timestamp = datetime.datetime.now()
-        timeEastern = timezone('US/Eastern').localize(timestamp)
-        embed.timestamp = timeEastern
+        embed.timestamp = datetime.datetime.utcnow()
 
         with open("guild.json", "r") as f:
             guildInfo = json.load(f)
@@ -225,9 +223,7 @@ class moderation(commands.Cog):
         embed = discord.Embed(title=str(member.display_name)+' has left ' +
                             str(member.guild.name), color=random.randint(0, 0xffffff))
         embed.set_author(name=member.display_name, icon_url=member.avatar_url)
-        timestamp = datetime.datetime.now()
-        timeEastern = timezone('US/Eastern').localize(timestamp)
-        embed.timestamp = timeEastern
+        embed.timestamp = datetime.datetime.utcnow()
 
         with open("guild.json", "r") as f:
             guildInfo = json.load(f)
@@ -240,7 +236,7 @@ class moderation(commands.Cog):
     async def on_message(self, message):
         if str(message.channel.id) == '764120247875272734' or str(message.channel.id) == '751140561255268423':
             return
-        now = datetime.datetime.now()
+        now = datetime.datetime.utcnow()
         current_time = now.strftime("%H:%M|%m/%d/%Y")
         if message.author.id != self.bot.user.id:
             print(
@@ -413,9 +409,7 @@ class moderation(commands.Cog):
         embed.set_author(name=ctx.author.display_name,
                             icon_url=ctx.author.avatar_url)
 
-        timestamp = datetime.datetime.now()
-        timeEastern = timezone('US/Eastern').localize(timestamp)
-        embed.timestamp = timeEastern
+        embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
 
     @commands.command(description="Blocks a user from chatting in current channel")

@@ -83,6 +83,6 @@ def day(y, m, d):
 
 
 timestamp = datetime.datetime.now()
-print(timestamp.tzinfo)
+print(timestamp)
 timeEastern = pytz.timezone('US/Eastern').localize(timestamp)
-print(timeEastern.tzinfo)
+print(timeEastern)

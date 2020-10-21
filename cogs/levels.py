@@ -15,7 +15,6 @@ import re
 import time
 import json
 import asyncio
-from pytz import timezone
 from discord.ext import tasks
 from operator import itemgetter
 
@@ -52,9 +51,7 @@ class HelpMenu(ListPageSource):
         embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
         embed.set_footer(
                 text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} users")
-        timestamp = datetime.datetime.now()
-        timeEastern = timezone('US/Eastern').localize(timestamp)
-        embed.timestamp = timeEastern
+        embed.timestamp = datetime.datetime.utcnow()
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
 
@@ -155,9 +152,7 @@ class levels(Cog):
 
             embed.add_field(name='Xp', value=printProgressBar(
                 result['Xp'], 100000, prefix='**'+str(result['Xp'])+"**", suffix='**100,000**'))
-            timestamp = datetime.datetime.now()
-            timeEastern = timezone('US/Eastern').localize(timestamp)
-            embed.timestamp = timeEastern
+            embed.timestamp = datetime.datetime.utcnow()
             return await ctx.send(embed=embed)
 
     @commands.Cog.listener()
@@ -175,7 +170,7 @@ class levels(Cog):
                 previous = datetime.datetime.strptime(
                     cooldowns['start'], '%Y-%m-%d %H:%M:%S.%f')
 
-            time_difference = (datetime.datetime.now() -
+            time_difference = (datetime.datetime.utcnow() -
                                previous).total_seconds()
             if time_difference < 60:
                 return
@@ -234,7 +229,7 @@ class levels(Cog):
                     cooldowns = json.load(f)
                     # del cooldowns[str(ctx.author.id)]
                     cooldowns[str(ctx.author.id)] = str(
-                        datetime.datetime.now())
+                        datetime.datetime.utcnow())
                     f.close()
 
                 with open("cooldown.json", "w") as f:

@@ -34,30 +34,19 @@ class school(commands.Cog):
         # channel = self.bot.get_channel(668863931200307248)
         channel2 = self.bot.get_channel(751142599418445824)
 
-        timestamp = datetime.datetime.now()
-        print(timestamp)
-        
-        timeEastern = timezone('US/Eastern').localize(timestamp)
-        print(timeEastern)
-        embed = discord.Embed(title='hi')
-        embed.timestamp = timeEastern
-        await channel2.send(embed=embed)
-        embed = discord.Embed(title='hi')
-        embed.timestamp = timestamp
-        await channel2.send(embed=embed)
-
-        current_time = timeEastern.strftime("%H:%M")
-        day_of_the_week = timeEastern.strftime("%A")
+        now = datetime.datetime.now() 
+        current_time = now.strftime("%H:%M")
+        day_of_the_week = now.strftime("%A")
         if day_of_the_week=='Monday' or day_of_the_week=='Tuesday' or day_of_the_week=='Wednesday' or day_of_the_week=='Thursday' or day_of_the_week=='Friday': 
-            if current_time == '7:50':
+            if current_time == '11:50':
                 # await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
                 await channel2.send("Class starts in 5 minutes!")
 
-            elif current_time == '9:30':
+            elif current_time == '13:30':
                 # await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
                 await channel2.send("Class starts in 5 minutes!")
 
-            elif current_time == '11:40':
+            elif current_time == '15:40':
                 # await channel.send("@hurb#7444 @zero2two0#5822 Class starts in 5 minutes!")
                 await channel2.send("Class starts in 5 minutes!")
             else:
