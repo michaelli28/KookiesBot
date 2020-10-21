@@ -4,6 +4,9 @@ from discord.ext import commands
 from time import sleep
 import pyprog
 from discord.ext import tasks, commands
+import datetime
+import pytz
+
 
 '''
 class MyCog(commands.Cog):
@@ -76,4 +79,10 @@ def day(y, m, d):
             'Wednesday', 'Thursday', 'Friday', 'Saturday']
     return days[int(v)]
 
-print(day(2006, 2, 3))
+#print(day(2006, 2, 3))
+
+
+timestamp = datetime.datetime.now()
+print(timestamp.tzinfo)
+timeEastern = pytz.timezone('US/Eastern').localize(timestamp)
+print(timeEastern.tzinfo)
