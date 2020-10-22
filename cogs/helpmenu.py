@@ -18,7 +18,7 @@ def syntax(command):
 
     params = " ".join(params)
 
-    return f"`<;{cmd_and_aliases}> {params}`"
+    return f"`;{cmd_and_aliases} {params}`"
 
 
 def param(command):
@@ -48,8 +48,8 @@ class HelpMenu(ListPageSource):
         embed.set_footer(text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} commands.")
         embed.timestamp = datetime.datetime.utcnow()
         for name, value, cog in fields:
-            embed.add_field(name=name, value=f'{value}\n`Category:`**`{cog}`**', inline=False)
-
+            #embed.add_field(name=name, value=f'{value}\n`Category:`**`{cog}`**', inline=False)
+            embed.add_field(name=f'Category: {cog} | {name}', value=f'{value}', inline=False)
         return embed
 
     async def format_page(self, menu, entries):
