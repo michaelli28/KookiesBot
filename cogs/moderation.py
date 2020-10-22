@@ -375,8 +375,28 @@ class moderation(commands.Cog):
                 json.dump(people, blacklist)
                 blacklist.close()
         return await ctx.send(f'{user.display_name} has been removed from the blacklist')
-    
 
+    @commands.command(aliases=['bls'], brief='Shows the people in the blacklist')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def blacklistshow(self, ctx, user: discord.Member = None):
+        with open('blacklist.json', 'r') as blacklist:
+            people = json.load(blacklist)
+            blacklist.close()
+        embed = discord.Embed(title='Blacklisted People', color = random.randint(0, 0xffffff))
+        embed.set_author(name=ctx.author.display_name,
+                        icon_url=ctx.author.avatar_url)
+
+        embed.timestamp = datetime.datetime.utcnow()
+        
+        if len(people['list']) == 0:
+            return await ctx.send('No blacklisted people!')
+        n=1
+        for userid in people['list']:
+            user = self.bot.get_user(int(userid))
+            embed.add_field(name=f'{n})', value = f'{user.display_name}')
+        return await ctx.send(embed=embed)
+                
     @commands.command(aliases=["slowm"], brief="Custom Slow Mode")
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
