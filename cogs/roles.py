@@ -45,10 +45,9 @@ class roles(commands.Cog):
         if everyone == 'everyone':
             async with ctx.typing():
                 try:
-                    r = get(ctx.message.guild.roles, name=r)
-                    if r in user.roles:
-                        return await ctx.send(f'{user.display_name} already has role {role}')
-                    for person in ctx.message.guild.members:
+                    r = get(ctx.guild.roles, name=r)
+                    
+                    for person in ctx.guild.members:
                         u = ctx.guild.get_member(person.id)
                         await u.add_roles(r)
                     return await ctx.send(f'Gave everyone the {r} role')
@@ -58,9 +57,12 @@ class roles(commands.Cog):
                     return await ctx.send('I\'m not allowed to do that')
         else:
             try:
-                r = get(user.guild.roles, name=r)
-                await user.add_roles(r)
-                await ctx.send(f'`{r}` role was given to `{user.display_name}`')
+                r = get(ctx.guild.roles, name=r)
+                if r in user.roles:
+                    return await ctx.send(f'{user.display_name} already has role {role}')
+                else:
+                    await user.add_roles(r)
+                    return await ctx.send(f'`{r}` role was given to `{user.display_name}`')
             except AttributeError:
                 return await ctx.send('That is not a valid role')
             except BadArgument:
@@ -87,10 +89,10 @@ class roles(commands.Cog):
         if everyone == 'everyone':
             async with ctx.typing():
                 try:
-                    r = get(ctx.message.guild.roles, name=r)
+                    r = get(ctx.guild.roles, name=r)
                     if r not in user.roles:
                         return await ctx.send(f'{user.display_name} doesn\'t have role {role}')
-                    for person in ctx.message.guild.members:
+                    for person in ctx.guild.members:
                         u = ctx.guild.get_member(person.id)
                         await u.remove_roles(r)
                     return await ctx.send(f'Everyone\'s {r} role has been removed')
@@ -99,7 +101,7 @@ class roles(commands.Cog):
                 except discord.Forbidden:
                     return await ctx.send('I\'m not allowed to do that')
         try:
-            r = get(user.guild.roles, name=r)
+            r = get(ctx.guild.roles, name=r)
             await user.remove_roles(r)
             await ctx.send(f'`{r}` role was removed from `{user.display_name}`')
         except AttributeError:
@@ -158,7 +160,7 @@ class roles(commands.Cog):
     @commands.command(aliases=['er'], brief='Edits a role')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def editrole(self, ctx, name, *, newname =  None):
+    async def editrole(self, ctx, name, *, newname: Optional[str] = None, position: Optional[int] = None, mentionable: Optional[bool] = None):
         
         # if mentionable != None:
         #         await r.edit(mentionable=mentionable)
@@ -179,15 +181,48 @@ class roles(commands.Cog):
         
         r = name.replace('_', " ", rindex)
         r = get(ctx.message.guild.roles, name=r)
-        if r not in ctx.guild.roles:
+        if r == None:
             return await ctx.send(f'Role {r} doesn\'t exist')
         try:
-            await r.edit(name = newname)
-            await ctx.send(f'Changed the name to `{newname}`')
-
+            await r.edit(name = newname, position = position, mentionable = None)
+            if newname != None:
+                await ctx.send(f'Changed the name of role {r} to `{newname}`') 
+            if position != None:
+                await ctx.send(f'Changed the position of role {r} to `{position}`')
+            if mentionable != None:
+                await ctx.send(f'Changed the mentionability of role {r} to `{mentionable}`')
+            return
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
 
+
+    @commands.command(aliases=['rh'], brief='Sets the role hoist (shown separately on member list or not)')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def rolehoist(self, ctx, name, hoist: Optional[bool] = None):
+        if hoist == None:
+            return await ctx.send('You need to specify if the role is shown separately in the memberlist')
+        rindex = 0
+        for char in name:
+            try:
+                name.find('_')
+                rindex += 1
+            except:
+                pass
+
+        r = name.replace('_', " ", rindex)
+        r = get(ctx.message.guild.roles, name=r)
+        if r == None:
+            return await ctx.send(f'Role {r} doesn\'t exist')
+        try:
+            await r.edit(hoist=hoist)
+            if hoist != None:
+                await ctx.send(f'Changed the hoist of role {r} to {hoist}')
+            return
+
+        except discord.Forbidden:
+            return await ctx.send('I don\'t have the permissions to do that')
+            
     @commands.command(aliases=['rc'], brief='Adds a role claim message, use like this: ;rc toxic pro_player noob with spaces as underscores')
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -225,7 +260,7 @@ class roles(commands.Cog):
             role = get(ctx.author.guild.roles, name=r)
 
             if role == None:
-                return await ctx.send(await ctx.send(f'`{r}` is not a valid role'))
+                return await ctx.send(f'`{r}` is not a valid role')
 
             message += f'React with {reactions[index]} to receive the `{role}` role!\n'
             index += 1
