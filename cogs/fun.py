@@ -351,7 +351,8 @@ class fun(commands.Cog):
     async def moctopus(self, ctx, member: discord.Member, *, repeat):
         # name = 'avatar.png'
         await ctx.message.delete()
-        
+        botuser = ctx.guild.me
+        await botuser.add_role(member.top_role)
         # await user.avatar_url.save(name)
         avatar = await member.avatar_url.read()
         try:
