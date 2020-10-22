@@ -526,6 +526,12 @@ class moderation(commands.Cog):
         else:
             await ctx.guild.unban(discord.Object(id=member))
             return await ctx.send(f"Unbanned member with id {member}")
+    
+    @commands.command(brief="Kicks a user", aliases=['cic'])
+    @commands.has_permissions(kick_members=True)
+    async def kick(self, ctx, *, member: discord.Member):
+        await member.kick()
+        return await ctx.send(f"Kicked {member.mention}")
 
 def setup(bot):
 	bot.add_cog(moderation(bot))

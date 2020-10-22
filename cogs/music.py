@@ -1010,9 +1010,10 @@ class music(commands.Cog):
         pList = re.findall('list=',search)
         indexL = re.findall('index=',search)
         watch = re.findall('watch',search)
+        playlistCheck = re.findall('playlist', search)
 
         async with ctx.typing():
-            if len(httpS)>0 and len(pList)>0:
+            if len(httpS)>0 and len(pList)>0 and len(playlistCheck)>0:
                 if len(indexL)==0 and len(watch)==0:
 
                     maxPlaylistSize = 40
@@ -1092,7 +1093,10 @@ class music(commands.Cog):
                     return
                     # except YTDLError as e:
                     #     await ctx.send(f'{ctx.author.mention}, an error occurred while processing this request: {e} Note: if this is 429, then I can\'t do anything about it as YouTube does this automatically')
-
+            elif len(httpS)>0 and len(pList) < 0:
+                return await ctx.send('Please format your link like this: https://www.youtube.com/playlist?list=woie392osf83298 for playlists')
+            elif len(httpS)>0 and len(playlistCheck) < 0:
+                return await ctx.send('Please format your link like this: https://www.youtube.com/playlist?list=woie392osf83298 for playlists')
             try:
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
 
