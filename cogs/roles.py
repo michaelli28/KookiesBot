@@ -81,6 +81,9 @@ class roles(commands.Cog):
                 pass
 
         r = role.replace('_', " ", rindex)
+        if r == 'Admin' or r == 'Admin but Lower':
+            if str(ctx.author.id) != '587068610237693963':
+                return await ctx.send('Only owner can remove admin permissions')
         if everyone == 'everyone':
             async with ctx.typing():
                 try:
@@ -239,8 +242,7 @@ class roles(commands.Cog):
                 title=f"Role Reactions", color=random.randint(0, 0xffffff), description = f'{note}\n{message}')
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             timestamp = datetime.datetime.utcnow()
-            timeEastern = timezone('US/Eastern').localize(timestamp)
-            embed.timestamp = timeEastern
+            embed.timestamp = timestamp
             messagesent = await ctx.send(embed=embed)
 
         rolesjson[messagesent.id] = rolesR
