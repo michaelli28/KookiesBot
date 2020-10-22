@@ -68,6 +68,7 @@ class CommandErrorHandler(commands.Cog):
             return await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))
             
         elif isinstance(error, commands.MissingPermissions):
+            ctx.command.reset_cooldown(ctx)
             missing = [perm.replace('_', ' ').replace(
                 'guild', 'server').title() for perm in error.missing_perms]
             if len(missing) > 2:
@@ -81,6 +82,7 @@ class CommandErrorHandler(commands.Cog):
 
 
         elif isinstance(error, commands.UserInputError):
+            ctx.command.reset_cooldown(ctx) 
             await ctx.send("Invalid input")
 
         elif isinstance(error, commands.NoPrivateMessage):
