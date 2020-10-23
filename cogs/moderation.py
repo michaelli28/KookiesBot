@@ -236,6 +236,8 @@ class moderation(commands.Cog):
     async def on_message(self, message):
         if str(message.channel.id) == '764120247875272734' or str(message.channel.id) == '751140561255268423':
             return
+        if str(message.guild.id) == '765941083254947911':
+            return
         now = datetime.datetime.utcnow()
         current_time = now.strftime("%H:%M|%m/%d/%Y")
         if message.author.id != self.bot.user.id:
@@ -394,7 +396,7 @@ class moderation(commands.Cog):
         n=1
         for userid in people['list']:
             user = self.bot.get_user(int(userid))
-            embed.add_field(name=f'{n})', value = f'{user.display_name}')
+            embed.add_field(name=f'{n})', value = f'{user.name}')
         return await ctx.send(embed=embed)
                 
     @commands.command(aliases=["slowm"], brief="Custom Slow Mode")

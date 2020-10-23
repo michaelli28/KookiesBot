@@ -202,6 +202,10 @@ class roles(commands.Cog):
     async def rolehoist(self, ctx, name, hoist: Optional[bool] = None):
         if hoist == None:
             return await ctx.send('You need to specify if the role is shown separately in the memberlist')
+        if hoist.lower() == 'true':
+            hoist = True
+        if hoist.lower() == 'false':
+            hoist = False
         rindex = 0
         for char in name:
             try:
