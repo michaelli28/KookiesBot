@@ -434,7 +434,7 @@ class moderation(commands.Cog):
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
 
-    @commands.command(description="Blocks a user from chatting in current channel")
+    @commands.command(brief="Blocks a user from chatting in current channel")
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def block(self, ctx, *, user: discord.Member):
@@ -446,7 +446,7 @@ class moderation(commands.Cog):
         except discord.Forbidden:
             return await ctx.send("I don\'t have permissions to do that")
 
-    @commands.command(description="Unblocks a user from current channel")
+    @commands.command(brief="Unblocks a user from current channel")
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def unblock(self, ctx, *, user: discord.Member):
