@@ -378,26 +378,31 @@ class fun(commands.Cog):
         embed.set_image(url = member.avatar_url)
         return await ctx.send(embed=embed)
     
-    @commands.command(aliases=['sp'], brief='Spam a message a certain number of times')
+    @commands.command(aliases=['sp'], brief='Spam a message a certain number of times, say stop or end or cancel to stop spam')
     @commands.cooldown(1, 5, commands.BucketType.default)
-    @commands.is_owner()
+    @commands.has_permissions(administrator=True)
     async def spam(self, ctx, *, message):
-        await ctx.send('How many times would you like to spam the message')
+        await ctx.message.delete()
+        await ctx.send('How many times would you like to spam the message', delete_after=3)
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
         try:
-            msg = await self.bot.wait_for('message', check=check, timeout=20)
+            msg = await self.bot.wait_for('message', check=check, timeout=10)
         except asyncio.TimeoutError:
             return await ctx.send('Please respond the number of times you would like to spam the message next time')
         try:
             times = int(msg.content)
+            if times > 50 and str(ctx.author.id) != '587068610237693963':
+                return await ctx.send('Number of messages is too high, ask owner')
         except:
             return await ctx.send('The number of times must be an integer')
         else:
             for i in range(times):
                 await ctx.send(message)
-            await ctx.send('Done!')
-            return
+            return await ctx.send('Done!', delete_after=2)
+            
+
+
 
 def setup(bot):
 	bot.add_cog(fun(bot))
