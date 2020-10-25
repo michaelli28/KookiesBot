@@ -380,6 +380,7 @@ class fun(commands.Cog):
     
     @commands.command(aliases=['sp'], brief='Spam a message a certain number of times')
     @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.is_owner()
     async def spam(self, ctx, *, message):
         await ctx.send('How many times would you like to spam the message')
         def check(m):
