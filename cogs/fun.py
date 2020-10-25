@@ -389,7 +389,7 @@ class fun(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.send('Please respond the number of times you would like to spam the message next time')
         try:
-            times = int(msg)
+            times = int(msg.content)
         except:
             return await ctx.send('The number of times must be an integer')
         else:
