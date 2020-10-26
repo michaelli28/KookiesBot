@@ -250,7 +250,7 @@ class moderation(commands.Cog):
     @commands.command(aliases=['m'], brief='Mutes someone, need manage roles')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def mute(self, ctx, user: Optional[discord.Member], everyone=None):
+    async def mute(self, ctx, user: Optional[discord.Member], everyone: Optional[str] = None, minutes: Optional[int]=0):
         if everyone == 'everyone':
             async with ctx.typing():
                 try:
@@ -278,6 +278,10 @@ class moderation(commands.Cog):
                 role = get(user.guild.roles, name='Muted')
                 await user.add_roles(role)
                 await ctx.send(f'`{user.display_name}` has been muted from chat')
+                if minutes>0:
+                    asyncio.sleep(minutes*60)
+                    await user.remove_roles(role)
+                    return await ctx.send(f'Unmuted {user.mention} after {minutes} minute(s)')
             except BadArgument:
                 return await ctx.send(f'`{user.display_name}` user not found')
             except discord.Forbidden:
@@ -488,11 +492,10 @@ class moderation(commands.Cog):
             
         else:
             deleted = await ctx.channel.purge(
-                limit=amount,
+                limit=amount+1,
                 check=check,
 
             )
-            await ctx.message.delete()
             return await ctx.send(
                 f"Deleted **{len(deleted)}** messages by **{member}**", delete_after=10
             )
