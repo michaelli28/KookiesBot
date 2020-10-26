@@ -63,7 +63,6 @@ async def on_ready():
     bot.load_extension('cogs.music copy')
     bot.load_extension('cogs.roles')
     bot.load_extension('cogs.school')
-
     print('Logged in as:\n{0.user.name}'.format(bot))
 
 
