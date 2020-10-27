@@ -21,7 +21,7 @@ from time import sleep
 from pytz import timezone
 import aiohttp
 
-
+#TODO PLAYLIST CMD
 youtube_dl.utils.bug_reports_message = lambda: ''
 ydl = youtube_dl.YoutubeDL({"format": "bestaudio/best", "restrictfilenames": True, "noplaylist": True, "nocheckcertificate": True,
                             "ignoreerrors": True, "logtostderr": False, "quiet": True, "no_warnings": True, "source_address": "0.0.0.0"})
@@ -133,12 +133,13 @@ async def get_video_data(url, search, bettersearch, loop, ctx):
         description = data["description"]
         # likes = data["like_count"]
         # dislikes = data["dislike_count"]
+        date = data['upload_date']
         views = data["view_count"]
         duration = data["duration"]
         thumbnail = data["thumbnail"]
         channel = data["uploader"]
         channel_url = data["uploader_url"]
-        return Song(source, url, title, description, views, duration, thumbnail, channel, channel_url, False, ctx)
+        return Song(source, url, title, description, views, duration, thumbnail, channel, channel_url, False, ctx, date)
     else:
         if bettersearch:
             url = await ytbettersearch(url)
@@ -147,18 +148,21 @@ async def get_video_data(url, search, bettersearch, loop, ctx):
                 data = data["entries"][0]
             except KeyError:
                 pass
+            except TypeError:
+                pass
             source = data["url"]
             url = "https://www.youtube.com/watch?v="+data["id"]
             title = data["title"]
             description = data["description"]
             # likes = data["like_count"]
             # dislikes = data["dislike_count"]
+            date = data['upload_date']
             views = data["view_count"]
             duration = data["duration"]
             thumbnail = data["thumbnail"]
             channel = data["uploader"]
             channel_url = data["uploader_url"]
-            return Song(source, url, title, description, views, duration, thumbnail, channel, channel_url, False, ctx)
+            return Song(source, url, title, description, views, duration, thumbnail, channel, channel_url, False, ctx, date)
 
         elif search:
             ytdl = youtube_dl.YoutubeDL({"format": "bestaudio/best", "restrictfilenames": True, "noplaylist": True, "nocheckcertificate": True,
@@ -166,8 +170,11 @@ async def get_video_data(url, search, bettersearch, loop, ctx):
             data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
             try:
                 data = data["entries"][0]
+                
             except TypeError:
-                print(data)
+                pass
+            except KeyError:
+                pass
             del ytdl
             source = data["url"]
             url = "https://www.youtube.com/watch?v="+data["id"]
@@ -175,12 +182,13 @@ async def get_video_data(url, search, bettersearch, loop, ctx):
             description = data["description"]
             # likes = data["like_count"]
             # dislikes = data["dislike_count"]
+            date = data['upload_date']
             views = data["view_count"]
             duration = data["duration"]
             thumbnail = data["thumbnail"]
             channel = data["uploader"]
             channel_url = data["uploader_url"]
-            return Song(source, url, title, description, views, duration, thumbnail, channel, channel_url, False, ctx)
+            return Song(source, url, title, description, views, duration, thumbnail, channel, channel_url, False, ctx, date)
 
 
 def check_queue(ctx, opts, music, after, on_play, loop, volume):
@@ -429,7 +437,7 @@ class MusicPlayer:
 
 
 class Song:
-    def __init__(self, source, url, title, description, views, duration, thumbnail, channel, channel_url, loop, ctx):
+    def __init__(self, source, url, title, description, views, duration, thumbnail, channel, channel_url, loop, ctx, date):
         self.source = source
         self.url = url
         self.title = title
@@ -442,15 +450,18 @@ class Song:
         self.channel_url = channel_url
         self.is_looping = loop
         self.ctx = ctx
+        self.date = date
         #self.volume = self.ctx.voice_client.source.volume or self.ctx.voice_client.volume
 
     def create_embed(self):
+        date = datetime.datetime.strptime(self.date, '%Y/%m/%d')
         embed = (discord.Embed(title='Now playing', description='```css\n{0.name}\n```'.format(self), color=random.randint(0, 0xffffff))
                     .add_field(name='Duration', value=parse_duration(self.duration))
                     .add_field(name='Requested by', value=self.ctx.author.mention)
                     .add_field(name='Volume', value=f'**{self.ctx.voice_client.source.volume*100}**%')
                     .add_field(name='Uploader', value='[{0.channel}]({0.channel_url})'.format(self))
                     .add_field(name='URL', value='[Click]({0.url})'.format(self))
+                    .add_field(name='Date', value=f'{date}')
                     .set_thumbnail(url=self.thumbnail)
                     .set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url))
         embed.timestamp = datetime.datetime.utcnow()
