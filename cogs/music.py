@@ -187,7 +187,7 @@ def check_queue(ctx, opts, music, after, on_play, loop, volume):
     try:
         song = music.queue[ctx.guild.id][0]
     except IndexError:
-        return await ctx.voice_client.disconnect()
+        return
     if not song.is_looping:
         try:
             music.queue[ctx.guild.id].pop(0)
@@ -198,6 +198,7 @@ def check_queue(ctx, opts, music, after, on_play, loop, volume):
                 music.queue[ctx.guild.id][0].source, **opts))
             ctx.voice_client.play(source, after=lambda error: after(
                 ctx, opts, music, after, on_play, loop))
+            ctx.voice_client.source.volume = volume
             song = music.queue[ctx.guild.id][0]
             if on_play:
                 loop.create_task(on_play(ctx, song))
