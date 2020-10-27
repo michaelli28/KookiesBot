@@ -65,7 +65,10 @@ class HelpMenu(ListPageSource):
         fields = []
         n = (menu.current_page)*10+1
         for entry in entries:
-            fields.append((f'{n})', f'[{entry.name}]({entry.url})'))
+            try:
+                fields.append((f'{n})', f'[{entry.name}]({entry.url})'))
+            except:
+                pass
             n+=1
         self.place += 1
 
@@ -170,13 +173,16 @@ async def get_video_data(url, search, bettersearch, loop, ctx):
             data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
             try:
                 data = data["entries"][0]
-                
             except TypeError:
                 pass
             except KeyError:
                 pass
             del ytdl
-            source = data["url"]
+            try:
+                source = data["url"]
+            except Exception as e:
+                print(url + '\n'+ str(e))
+                return
             url = "https://www.youtube.com/watch?v="+data["id"]
             title = data["title"]
             description = data["description"]
@@ -204,19 +210,47 @@ def check_queue(ctx, opts, music, after, on_play, loop, volume):
         if len(music.queue[ctx.guild.id]) > 0:
             source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(
                 music.queue[ctx.guild.id][0].source, **opts))
-            ctx.voice_client.play(source, after=lambda error: after(
-                ctx, opts, music, after, on_play, loop))
+            try:
+                ctx.voice_client.play(source, after=lambda error: after(
+                ctx, opts, music, after, on_play, loop, volume))
+            except TypeError:
+                pass
             ctx.voice_client.source.volume = volume
             song = music.queue[ctx.guild.id][0]
+            # if song == None:
+            #     pass
+            # else:
+            #     msg = await ctx.send(embed=song.create_embed())
+            #     await msg.add_reaction('⏯️')
+            #     await msg.add_reaction('⏩')
+            #     await msg.add_reaction('🔁')
+            #     #await msg.add_reaction('🔀')
+            #     await msg.add_reaction('⏹️')
+            #     await msg.add_reaction('🔈')
+            #     await msg.add_reaction('🔊')
             if on_play:
                 loop.create_task(on_play(ctx, song))
     else:
         source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(
             music.queue[ctx.guild.id][0].source, **opts))
-        ctx.voice_client.play(source, after=lambda error: after(
-            ctx, opts, music, after, on_play, loop))
+        try:
+            ctx.voice_client.play(source, after=lambda error: after(
+            ctx, opts, music, after, on_play, loop, volume))
+        except TypeError:
+            pass
         ctx.voice_client.source.volume = volume
         song = music.queue[ctx.guild.id][0]
+        # if song == None:
+        #     pass
+        # else:
+        #     msg = await ctx.send(embed=song.create_embed())
+        #     await msg.add_reaction('⏯️')
+        #     await msg.add_reaction('⏩')
+        #     await msg.add_reaction('🔁')
+        #     #await msg.add_reaction('🔀')
+        #     await msg.add_reaction('⏹️')
+        #     await msg.add_reaction('🔈')
+        #     await msg.add_reaction('🔊')
         if on_play:
             loop.create_task(on_play(ctx, song))
 
@@ -313,9 +347,11 @@ class MusicPlayer:
     async def play(self):
         source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(
             self.music.queue[self.ctx.guild.id][0].source, **self.ffmpeg_opts))
-        
-        self.voice.play(source, after=lambda error: self.after_func(
+        try:
+            self.voice.play(source, after=lambda error: self.after_func(
             self.ctx, self.ffmpeg_opts, self.music, self.after_func, self.on_play_func, self.loop, self.volume))
+        except TypeError:
+            pass
         self.voice.source.volume = self.volume
         song = self.music.queue[self.ctx.guild.id][0]
         if song == None:
@@ -454,7 +490,8 @@ class Song:
         #self.volume = self.ctx.voice_client.source.volume or self.ctx.voice_client.volume
 
     def create_embed(self):
-        date = datetime.datetime.strptime(self.date, '%Y/%m/%d')
+        date = datetime.datetime.strptime(self.date, '%Y%m%d')
+        date = f'{date.month}/{date.day}/{date.year}'
         embed = (discord.Embed(title='Now playing', description='```css\n{0.name}\n```'.format(self), color=random.randint(0, 0xffffff))
                     .add_field(name='Duration', value=parse_duration(self.duration))
                     .add_field(name='Requested by', value=self.ctx.author.mention)
@@ -512,21 +549,97 @@ class music(commands.Cog):
     @commands.command(name='play', brief='Plays or queues a song or playlist by link or by search')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def play(self, ctx, *, search: str=None):
+        
+        if search == None:
+            return await ctx.send(f'{ctx.author.mention}, you need to input a url or search')
         async with ctx.typing():
-            if search == None:
-                return await ctx.send(f'{ctx.author.mention}, you need to input a url or search')
-            #voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
-            # if not voiceconnect or not voiceconnect.is_connected() or not ctx.voice_client.is_connected():
-            await ctx.invoke(self._join)
+
+            voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
+            if not voiceconnect or not voiceconnect.is_connected():
+                await ctx.invoke(self._join)
+            
             player = musicstart.get_player(guild_id=ctx.guild.id)
             if not player:
                 player = musicstart.create_player(ctx, ffmpeg_error_betterfix=True)
-            if not ctx.voice_client.is_playing():
-                await player.queue(search, bettersearch=True)
-                song = await player.play()
+            httpS = re.findall('www.',search)
+            pList = re.findall('list=',search)
+            indexL = re.findall('index=',search)
+            watch = re.findall('watch',search)
+            playlistCheck = re.findall('playlist', search)
+
+            if len(httpS) > 0 and len(pList) > 0 and len(playlistCheck) > 0:
+                if len(indexL) == 0 and len(watch) == 0:
+                    maxPlaylistSize = 40
+                    showVidSize = None
+                    headers = {
+                        'User-Agent': 'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)'}
+
+                    async with httpx.AsyncClient() as client:
+                        response = await client.get(search, headers=headers)
+                        playlist_urls = re.findall(
+                        'watch\?v=(.*?)\\\\u0026list=', response.text)
+
+                    if len(playlist_urls) >= maxPlaylistSize:
+                        showVidSize = maxPlaylistSize
+                    else:
+                        showVidSize = len(playlist_urls)
+
+                    await ctx.send('Putting songs into the queue, please wait a minute or two before checking the queue')
+                    
+                    for n in range(showVidSize):
+                        await player.queue('https://www.youtube.com/watch?v=' + playlist_urls[n], search=True, bettersearch=False)
+                        if n==0:
+                            if not ctx.voice_client.is_playing():
+                                await player.play()
+                    return
+
+                elif len(watch) > 0:
+                    response = requests.get(search)
+                    soup = BeautifulSoup(response.text, 'lxml')
+                    playlistUrls = re.findall(
+                        '"url":"/watch\?v=(.*?)"', soup.prettify())
+                    playlistUrls2 = []
+
+                    for url in playlistUrls:
+                        url2 = re.findall('(.*?)\\\\u0026list=', url)
+
+                        if len(url2) > 0:
+                            playlistUrls2.append(url2[0])
+                        else:
+                            playlistUrls2.append(url)
+                    res = [i for n, i in enumerate(playlistUrls2) if i not in playlistUrls2[:n]]
+                    maxPlaylistSize = 40
+                    showVidSize = None
+
+                    if len(res) >= maxPlaylistSize:
+                        showVidSize = maxPlaylistSize
+                    else:
+                        showVidSize = len(res)
+
+
+                    await ctx.send(f'{ctx.author.mention}, putting songs into the queue, please wait a minute or two before checking the queue')
+
+                    for n in range(showVidSize):
+                        await player.queue('https://www.youtube.com/watch?v=' + res[n], search=True, bettersearch=False)
+                        if n == 0:
+                            if not ctx.voice_client.is_playing():
+                                await player.play()
+                    return
+
+                elif len(httpS)>0 and len(pList) < 0:
+                    return await ctx.send('Please format your link like this: https://www.youtube.com/playlist?list=woie392osf83298 for playlists')
+
+                elif len(httpS)>0 and len(playlistCheck) < 0:
+                    return await ctx.send('Please format your link like this: https://www.youtube.com/playlist?list=woie392osf83298 for playlists')
+
             else:
-                song = await player.queue(search, bettersearch=True)
-                await ctx.send(f"Queued {song.name}")
+                if not ctx.voice_client.is_playing():
+                    await player.queue(search, bettersearch=True)
+                    return await player.play()
+                else:
+                    song = await player.queue(search, bettersearch=True)
+                    return await ctx.send(f"Queued {song.name}")
+
 
     @commands.command(name='pause', aliases=['pau'], brief='Pauses the song playing')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -596,6 +709,7 @@ class music(commands.Cog):
                 return await ctx.send('Queue empty')
             menu = MenuPages(source=HelpMenu(ctx, songs[1:-1]),
                                 delete_message_after=True)
+
             return await menu.start(ctx)
 
     @commands.command(name='now', aliases=['current', 'playing', 'np'], brief='Shows the song that is playing')
@@ -608,7 +722,14 @@ class music(commands.Cog):
         player = musicstart.get_player(guild_id=ctx.guild.id)
         song = player.now_playing()
         embed = song.create_embed()
-        return await ctx.send(embed=embed)
+        msg = await ctx.send(embed=embed)
+        await msg.add_reaction('⏯️')
+        await msg.add_reaction('⏩')
+        await msg.add_reaction('🔁')
+        #await msg.add_reaction('🔀')
+        await msg.add_reaction('⏹️')
+        await msg.add_reaction('🔈')
+        return await msg.add_reaction('🔊')
 
     @commands.command(name='skip', brief='Skips the song playing')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -664,12 +785,13 @@ class music(commands.Cog):
     async def on_reaction_add(self, reaction, user):
         if user.bot:
             return
-        
         msg = reaction.message
         if msg.author.id != self.bot.user.id:
             return
         channel = msg.channel
-
+        if msg.embeds:
+            if str(msg.embeds[0].title) != 'Now playing':
+                return
         if reaction.emoji=='⏯️':
             ctx = self.ctx
             player = musicstart.get_player(guild_id=ctx.guild.id)

@@ -150,6 +150,9 @@ class roles(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def deleterole(self, ctx, *, role: discord.Role):
+        if role == 'Admin' or role == 'Admin but Lower':
+            if str(ctx.author.id) != '587068610237693963':
+                return await ctx.send('Only owner can delete admin roles')
         try:
             await role.delete()
             return await ctx.send(f'Deleted the role `{role.name}`')
@@ -157,10 +160,10 @@ class roles(commands.Cog):
             return await ctx.send('I don\'t have the permissions to do that')
 
 
-    @commands.command(aliases=['er'], brief='Edits a role')
+    @commands.command(aliases=['rn'], brief='Edits a role\'s name')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def editrole(self, ctx, name, *, newname: Optional[str] = None, position: Optional[int] = None, mentionable: Optional[bool] = None):
+    async def rolename(self, ctx, name, *, newname: str = None):
         
         # if mentionable != None:
         #         await r.edit(mentionable=mentionable)
@@ -184,28 +187,73 @@ class roles(commands.Cog):
         if r == None:
             return await ctx.send(f'Role {r} doesn\'t exist')
         try:
-            await r.edit(name = newname, position = position, mentionable = None)
+            await r.edit(name = newname)
             if newname != None:
                 await ctx.send(f'Changed the name of role {r} to `{newname}`') 
+            return
+        except discord.Forbidden:
+            return await ctx.send('I don\'t have the permissions to do that')
+
+    @commands.command(aliases=['rp'], brief='Edits a role\'s position')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def roleposition(self, ctx, name, position: int = None):
+        if position == None:
+            return await ctx.send('You need to specify the new position to change to')
+        rindex = 0
+        for char in name:
+            try:
+                name.find('_')
+                rindex += 1
+            except:
+                pass
+        
+        r = name.replace('_', " ", rindex)
+        r = get(ctx.message.guild.roles, name=r)
+        if r == None:
+            return await ctx.send(f'Role {r} doesn\'t exist')
+        try:
+            await r.edit(position = position)
+
             if position != None:
                 await ctx.send(f'Changed the position of role {r} to `{position}`')
+            return
+        except discord.Forbidden:
+            return await ctx.send('I don\'t have the permissions to do that')
+    @commands.command(aliases=['rm'], brief='Edits a role\'s mentionability')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def rolemention(self, ctx, name, mentionable: bool = None):
+
+        if mentionable == None:
+            return await ctx.send('You need to specify the new mentionability to change to')
+        rindex = 0
+        for char in name:
+            try:
+                name.find('_')
+                rindex += 1
+            except:
+                pass
+        
+        r = name.replace('_', " ", rindex)
+        r = get(ctx.message.guild.roles, name=r)
+        if r == None:
+            return await ctx.send(f'Role {r} doesn\'t exist')
+        try:
+            await r.edit(mentionable = mentionable)
             if mentionable != None:
                 await ctx.send(f'Changed the mentionability of role {r} to `{mentionable}`')
             return
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
 
-
     @commands.command(aliases=['rh'], brief='Sets the role hoist (shown separately on member list or not)')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def rolehoist(self, ctx, name, hoist: Optional[bool] = None):
+    async def rolehoist(self, ctx, name, hoist: bool = None):
         if hoist == None:
             return await ctx.send('You need to specify if the role is shown separately in the memberlist')
-        if hoist.lower() == 'true':
-            hoist = True
-        if hoist.lower() == 'false':
-            hoist = False
+
         rindex = 0
         for char in name:
             try:

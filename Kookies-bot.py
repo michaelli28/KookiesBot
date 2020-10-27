@@ -49,6 +49,8 @@ await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.li
 await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="a movie"))
 '''
 
+#Below is blank space for future reference
+#᲼᲼᲼᲼᲼᲼#
 
 @bot.event
 async def on_ready():

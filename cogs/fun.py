@@ -352,7 +352,7 @@ class fun(commands.Cog):
         # name = 'avatar.png'
         await ctx.message.delete()
         botuser = ctx.guild.me
-        await botuser.add_role(member.top_role)
+        await botuser.add_roles(member.top_role)
         # await user.avatar_url.save(name)
         avatar = await member.avatar_url.read()
         try:
