@@ -166,8 +166,8 @@ async def get_video_data(url, search, bettersearch, loop, ctx):
             data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=False))
             try:
                 data = data["entries"][0]
-            except KeyError:
-                pass
+            except TypeError:
+                print(data)
             del ytdl
             source = data["url"]
             url = "https://www.youtube.com/watch?v="+data["id"]
@@ -183,7 +183,7 @@ async def get_video_data(url, search, bettersearch, loop, ctx):
             return Song(source, url, title, description, views, duration, thumbnail, channel, channel_url, False, ctx)
 
 
-def check_queue(ctx, opts, music, after, on_play, loop):
+def check_queue(ctx, opts, music, after, on_play, loop, volume):
     try:
         song = music.queue[ctx.guild.id][0]
     except IndexError:
@@ -206,6 +206,7 @@ def check_queue(ctx, opts, music, after, on_play, loop):
             music.queue[ctx.guild.id][0].source, **opts))
         ctx.voice_client.play(source, after=lambda error: after(
             ctx, opts, music, after, on_play, loop))
+        ctx.voice_client.source.volume = volume
         song = music.queue[ctx.guild.id][0]
         if on_play:
             loop.create_task(on_play(ctx, song))
@@ -244,7 +245,7 @@ class MusicPlayer:
         self.voice = ctx.voice_client
         self.loop = ctx.bot.loop
         self.music = music
-        self.volume = 0.1
+        self.volume = 0.3
         if self.ctx.guild.id not in self.music.queue.keys():
             self.music.queue[self.ctx.guild.id] = []
 
@@ -305,7 +306,7 @@ class MusicPlayer:
             self.music.queue[self.ctx.guild.id][0].source, **self.ffmpeg_opts))
         
         self.voice.play(source, after=lambda error: self.after_func(
-            self.ctx, self.ffmpeg_opts, self.music, self.after_func, self.on_play_func, self.loop))
+            self.ctx, self.ffmpeg_opts, self.music, self.after_func, self.on_play_func, self.loop, self.volume))
         self.voice.source.volume = self.volume
         song = self.music.queue[self.ctx.guild.id][0]
         if song == None:
@@ -315,7 +316,7 @@ class MusicPlayer:
             await msg.add_reaction('⏯️')
             await msg.add_reaction('⏩')
             await msg.add_reaction('🔁')
-            await msg.add_reaction('🔀')
+            #await msg.add_reaction('🔀')
             await msg.add_reaction('⏹️')
             await msg.add_reaction('🔈')
             await msg.add_reaction('🔊')
@@ -463,6 +464,7 @@ class music(commands.Cog):
 
     async def cog_before_invoke(self, ctx):
         self.ctx = ctx
+
     @commands.command(name='join', aliases=['j'], brief='Makes the bot join a voice channel')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _join(self, ctx: commands.Context, channel: discord.VoiceChannel = None):
@@ -476,44 +478,43 @@ class music(commands.Cog):
 
         destination = ctx.author.voice.channel
         if ctx.voice_client:
-            await ctx.voice_state.voice.move_to(destination)
-            await ctx.send(f'{ctx.author.mention}, connected to: **{destination}**, type **;leave** to leave the channel')
-            return
-        await destination.connect()
-        return await ctx.send(f'{ctx.author.mention}, connected to: **{destination}**, type **;leave** to leave the channel')
+            await ctx.voice_client.move_to(destination)
+            return await ctx.send(f'{ctx.author.mention}, connected to: **{destination}**, type **;leave** to leave the channel')
+        else:    
+            await destination.connect()
+            return await ctx.send(f'{ctx.author.mention}, connected to: **{destination}**, type **;leave** to leave the channel')
 
     @commands.command(name='leave', aliases=['disconnect'], brief='Makes the bot leave the channel it is in')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _leave(self, ctx):
         """Clears the queue and leaves the voice channel"""
         # await ctx.message.delete()
-        try:
-            channel = ctx.author.voice.channel
-        except:
-            return await ctx.send(f'{ctx.author.mention}, join the voice channel that Kookies is in!')
         vc = ctx.voice_client
-        if not vc or not vc.is_connected:
+        if not vc or not vc.is_connected():
             return await ctx.send(f'{ctx.author.mention}, I am not currently in a voice channel!')
+        #ctx.voice_client.cleanup()
         await ctx.voice_client.disconnect()
-        return await ctx.send('Left **' + str(channel) + '**')
+        
+        return await ctx.send('Left **' + str(vc.channel.name) + '**')
 
     @commands.command(name='play', brief='Plays or queues a song or playlist by link or by search')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def play(self, ctx, *, search: str=None):
-        if search == None:
-            return await ctx.send(f'{ctx.author.mention}, you need to input a url or search')
-        voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
-        if not voiceconnect or not voiceconnect.is_connected():
+        async with ctx.typing():
+            if search == None:
+                return await ctx.send(f'{ctx.author.mention}, you need to input a url or search')
+            #voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
+            # if not voiceconnect or not voiceconnect.is_connected() or not ctx.voice_client.is_connected():
             await ctx.invoke(self._join)
-        player = musicstart.get_player(guild_id=ctx.guild.id)
-        if not player:
-            player = musicstart.create_player(ctx, ffmpeg_error_betterfix=True)
-        if not ctx.voice_client.is_playing():
-            await player.queue(search, bettersearch=True)
-            song = await player.play()
-        else:
-            song = await player.queue(search, bettersearch=True)
-            await ctx.send(f"Queued {song.name}")
+            player = musicstart.get_player(guild_id=ctx.guild.id)
+            if not player:
+                player = musicstart.create_player(ctx, ffmpeg_error_betterfix=True)
+            if not ctx.voice_client.is_playing():
+                await player.queue(search, bettersearch=True)
+                song = await player.play()
+            else:
+                song = await player.queue(search, bettersearch=True)
+                await ctx.send(f"Queued {song.name}")
 
     @commands.command(name='pause', aliases=['pau'], brief='Pauses the song playing')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -557,6 +558,8 @@ class music(commands.Cog):
             return await ctx.send(f'{ctx.author.mention}, please reply with **y** or **n** next time, continuing')
 
         player = musicstart.get_player(guild_id=ctx.guild.id)
+        #ctx.voice_client.cleanup()
+        await ctx.voice_client.disconnect()
         return await player.stop()
 
     @commands.command(name='loop', brief='Loops the song/queue currently playing')
@@ -572,18 +575,16 @@ class music(commands.Cog):
     @commands.command(name='queue', aliases=['q'], brief='Checks the queue for songs')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def queue(self, ctx):
-        player = musicstart.get_player(guild_id=ctx.guild.id)
-        songs = []
-        for song in player.current_queue():
-            songs.append(song)
-        if len(songs[1:-1]) == 0:
-            return await ctx.send('Queue empty')
-        menu = MenuPages(source=HelpMenu(ctx, songs[1:-1]),
-                            delete_message_after=True)
-        return await menu.start(ctx)
-
-
-
+        async with ctx.typing():
+            player = musicstart.get_player(guild_id=ctx.guild.id)
+            songs = []
+            for song in player.current_queue():
+                songs.append(song)
+            if len(songs[1:-1]) == 0:
+                return await ctx.send('Queue empty')
+            menu = MenuPages(source=HelpMenu(ctx, songs[1:-1]),
+                                delete_message_after=True)
+            return await menu.start(ctx)
 
     @commands.command(name='now', aliases=['current', 'playing', 'np'], brief='Shows the song that is playing')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -603,7 +604,7 @@ class music(commands.Cog):
         # await ctx.message.delete()
         vc = ctx.voice_client
         player = musicstart.get_player(guild_id=ctx.guild.id)
-        if not vc or not vc.is_connected:
+        if not vc or not vc.is_connected():
             return await ctx.send(f'{ctx.author.mention}, I am not currently in a voice channel!')
 
         else:
@@ -634,7 +635,8 @@ class music(commands.Cog):
         vc = ctx.voice_client
         player = musicstart.get_player(guild_id=ctx.guild.id)
         await player.remove_from_queue(int(index))
-        if not vc or not vc.is_connected:
+
+        if not vc or not vc.is_connected():
             return await ctx.send(f'{ctx.author.mention}, I am not currently in a voice channel!')
         if len(player.current_queue()) == 0:
             return await ctx.send(f'{ctx.author.mention}, queue is empty')
@@ -672,7 +674,7 @@ class music(commands.Cog):
         if reaction.emoji=='⏩':
             ctx = self.ctx
             await msg.remove_reaction(reaction, user)
-            if not ctx.voice_client or not ctx.voice_client.is_connected:
+            if not ctx.voice_client or not ctx.voice_client.is_connected():
                 return await channel.send(f'{user.mention}, I am not currently in a voice channel!')
             await player.skip(force=True)
             return await channel.send(f'{user.mention} has skipped the song!')
@@ -723,7 +725,7 @@ class music(commands.Cog):
             ctx = self.ctx
             await msg.remove_reaction(reaction, user)
             vc = ctx.voice_client
-            if not vc or not vc.is_connected:
+            if not vc or not vc.is_connected():
                 return await channel.send(f'{user.mention}, I am not currently in a voice channel!')
             else:
                 await channel.send(f'{user.mention}, stopping player and clearing queue')

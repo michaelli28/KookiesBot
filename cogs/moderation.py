@@ -127,15 +127,15 @@ class moderation(commands.Cog):
     @commands.command(brief='Creates a channel')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def createchannel(self, ctx, name):
+    async def createchannel(self, ctx, *, name):
         guild = ctx.message.guild
         await guild.create_text_channel(name)
-        return await ctx.send(f'Created text chanenl {name}')
+        return await ctx.send(f'Created text channel {name}')
 
     @commands.command(brief='Creates a voice channel')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def createvoicechannel(self, ctx, name):
+    async def createvoicechannel(self, ctx, *, name):
         guild = ctx.message.guild
         await guild.create_voice_channel(name)
         return await ctx.send(f'Created voice channel {name}')
@@ -143,7 +143,16 @@ class moderation(commands.Cog):
     @commands.command(brief='Edits a text channel')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def editchannel(self, ctx, name: discord.TextChannel, nname: Optional[str] = None, slowmode: Optional[int] = None):
+    async def editchannel(self, ctx, name: discord.TextChannel, *, nname: Optional[str] = None, slowmode: Optional[int] = None):
+        rindex = 0
+        for char in name:
+            try:
+                name.find('_')
+                rindex += 1
+            except:
+                pass
+
+        name = name.replace('_', " ", rindex)
         if nname != None:
             await name.edit(name=nname)
             await ctx.send(f'Changed the name of channel {name.name} to {nname}')
@@ -154,7 +163,7 @@ class moderation(commands.Cog):
     @commands.command(brief='Creates a category')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def createcategory(self, ctx, name):
+    async def createcategory(self, ctx, *, name):
         guild = ctx.message.guild
         await guild.create_category(name)
         return await ctx.send(f'Created category {name}')
