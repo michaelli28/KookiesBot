@@ -187,7 +187,7 @@ def check_queue(ctx, opts, music, after, on_play, loop, volume):
     try:
         song = music.queue[ctx.guild.id][0]
     except IndexError:
-        return
+        return await ctx.voice_client.disconnect()
     if not song.is_looping:
         try:
             music.queue[ctx.guild.id].pop(0)

@@ -487,7 +487,8 @@ class moderation(commands.Cog):
             return message.author.id == member.id
 
         if not member:
-            deleted = await ctx.channel.purge(limit=(amount+1))
+            await ctx.message.delete()
+            deleted = await ctx.channel.purge(limit=(amount))
             # a = "message" if len(deleted) else "messages"
             authors = Counter(msg.author.display_name for msg in deleted)
             # message = 
@@ -503,8 +504,9 @@ class moderation(commands.Cog):
             await ctx.send("\n".join(messages))
             
         else:
+            await ctx.message.delete()
             deleted = await ctx.channel.purge(
-                limit=amount+1,
+                limit=amount,
                 check=check,
 
             )
