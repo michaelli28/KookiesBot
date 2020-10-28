@@ -20,12 +20,13 @@ from typing import Optional
 from time import sleep
 from pytz import timezone
 import aiohttp
-
+from googleapiclient.discovery import build
 #TODO PLAYLIST CMD
 youtube_dl.utils.bug_reports_message = lambda: ''
 ydl = youtube_dl.YoutubeDL({"format": "bestaudio/best", "restrictfilenames": True, "noplaylist": True, "nocheckcertificate": True,
                             "ignoreerrors": True, "logtostderr": False, "quiet": True, "no_warnings": True, "source_address": "0.0.0.0"})
 
+APIKEY = 'AIzaSyB1cW7goiUiwUaC044lec_0hHC6ba2N-HI'
 
 class EmptyQueue(Exception):
     """Cannot skip because queue is empty"""
@@ -115,6 +116,7 @@ async def ytbettersearch(query):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as resp:
             html = await resp.text()
+            print(html)
     index = html.find('watch?v')
     url = ""
     while True:
@@ -124,8 +126,20 @@ async def ytbettersearch(query):
         url += char
         index += 1
     url = f"https://www.youtube.com/{url}"
+    print(url)
     return url
+    # headers = {
+    #     'User-Agent': 'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)'}
 
+    # async with httpx.AsyncClient() as client:
+    #     response = await client.get(f'https://www.youtube.com/results?search_query={query}', headers=headers)
+    #     playlist_urls = re.findall(
+    #     'watch\?v=(.*?)\\\\u0026list=', response.text)
+    # if len(playlist_urls)==0:
+    #     return None
+    # else:
+    #     url=f'https://www.youtube.com/watch?v={playlist_urls[0]}'
+    #     return url
 
 async def get_video_data(url, search, bettersearch, loop, ctx):
     if not search and not bettersearch:
@@ -146,6 +160,8 @@ async def get_video_data(url, search, bettersearch, loop, ctx):
     else:
         if bettersearch:
             url = await ytbettersearch(url)
+            if url ==None:
+                return await ctx.send(f'No results for search: {url}')
             data = await loop.run_in_executor(None, lambda: ydl.extract_info(url, download=False))
             try:
                 data = data["entries"][0]
@@ -288,7 +304,7 @@ class MusicPlayer:
         self.voice = ctx.voice_client
         self.loop = ctx.bot.loop
         self.music = music
-        self.volume = 0.3
+        self.volume = 0.10
         if self.ctx.guild.id not in self.music.queue.keys():
             self.music.queue[self.ctx.guild.id] = []
 
@@ -687,6 +703,51 @@ class music(commands.Cog):
         await ctx.voice_client.disconnect()
         return await player.stop()
 
+    @commands.command(name='search', brief='Searches for a video and returns the top 10 results')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def _search(self, ctx, *, query):
+        youtube = build('youtube', 'v3', developerKey=APIKEY)
+        req = youtube.search().list(part='snippet',
+        q=query,
+        type='video',
+        maxResults=10)
+        voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
+        if not voiceconnect or not voiceconnect.is_connected():
+            await ctx.invoke(self._join)
+        player = musicstart.get_player(guild_id=ctx.guild.id)
+        if not player:
+            player = musicstart.create_player(ctx, ffmpeg_error_betterfix=True)
+        res = req.execute()
+        results = re.findall("'title': '(.*?)'",str(res))
+        embed = discord.Embed(
+            color = random.randint(0, 0xffffff),
+            title=f'Search results for {query}'
+        )
+        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+        embed.timestamp = datetime.datetime.utcnow()
+        if len(results)==0:
+            return await ctx.send(f'No results for: {query}')
+        i=1
+        for result in results:
+            resultE = re.sub('&#39;','\'',result)
+            resultE = re.sub('&quot;','\"',result)
+            embed.add_field(name=str(i)+')',value=(resultE), inline=False)
+            i+=1
+        await ctx.send('Respond with the number you would like to play or stop to stop', embed=embed)
+        msg = await self.bot.wait_for('message', check=lambda message: message.author == ctx.author)
+        x=0
+        if msg.content.lower() == 'stop':
+            return await ctx.send('Stopping')
+        else: 
+            url = results[int(msg.content)-int(1)]
+
+        if not ctx.voice_client.is_playing():
+            await player.queue(url, search=True, bettersearch=False)
+            return await player.play()
+        else:
+            song = await player.queue(url, search=True, bettersearch=False)
+            return await ctx.send(f"Queued {song.name}")
+
     @commands.command(name='loop', brief='Loops the song/queue currently playing')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def loop(self, ctx):
@@ -807,6 +868,7 @@ class music(commands.Cog):
                 return await channel.send(f'{user.mention} has resumed the song!')
         if reaction.emoji=='⏩':
             ctx = self.ctx
+            player = musicstart.get_player(guild_id=ctx.guild.id)
             await msg.remove_reaction(reaction, user)
             if not ctx.voice_client or not ctx.voice_client.is_connected():
                 return await channel.send(f'{user.mention}, I am not currently in a voice channel!')
@@ -822,6 +884,7 @@ class music(commands.Cog):
         #         await channel.send(f'{user.mention} has shuffled the queue')
         if reaction.emoji == '🔁':
             ctx = self.ctx
+            player = musicstart.get_player(guild_id=ctx.guild.id)
             await msg.remove_reaction(reaction, user)
             if not ctx.voice_client.is_playing:
                 return await channel.send(f'{user.mention}, I am not currently playing anything')

@@ -7,6 +7,7 @@ import discord
 import requests
 from time import time
 import numpy as np
+import io
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.naive_bayes import MultinomialNB
@@ -40,6 +41,7 @@ class fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.df = pd.read_csv('./IMDB Dataset.csv')
+        self.client = bot.client
     @commands.command(name='reddit', aliases=['red'], brief='Gets posts from reddit')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def reddit(self, ctx, *, subreddit):
@@ -92,15 +94,6 @@ class fun(commands.Cog):
                 embed.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=embed)
 
-    @commands.command(brief='Get your ping')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def ping(self, ctx):
-        start = time()
-        message = await ctx.send(f"Pong! Latency: {self.bot.latency*1000:,.0f} ms.")
-        end = time()
-
-        return await message.edit(content=f"Pong! Latency: {self.bot.latency*1000:,.0f} ms. Response time: {(end-start)*1000:,.0f} ms")
-
 
     @commands.command(name='8ball', brief='Answer your yes/no questions')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -145,19 +138,7 @@ class fun(commands.Cog):
     async def gimme(self, ctx):
         return await ctx.send(f'{ctx.author.mention} has received {random.randint(100, 1000000)} dollars')
 
-    @commands.command(brief='Gets the time')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def time(self, ctx):
-        now = datetime.datetime.utcnow()
-        current_time = now.strftime("%H:%M:%S")
 
-        return await ctx.send(current_time)
-
-    @commands.command(brief='Get your id')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def id(self, ctx):
-        author = ctx.message.author.id
-        return await ctx.send(author)
 
 
     @commands.command(brief='Says hello')
@@ -222,50 +203,6 @@ class fun(commands.Cog):
             n += 1
         return await ctx.send(embed=embed)
 
-    @commands.command(aliases=['def'], brief='Gives the definitions of a word without using an API')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def define(self, ctx, word):
-        synsets = wordnet.synsets(word)
-        embed = discord.Embed(title=f'Definition of the word: `{word}`')
-        embed.set_author(name=ctx.author.display_name,
-                         icon_url=ctx.author.avatar_url)
-        embed.timestamp = datetime.datetime.utcnow()
-        n = 1
-        if len(synsets) == 0:
-            return await ctx.send('No definitions found (this is kind of like AI so it\'s not perfect)')
-        else:
-            pass
-        for synset in synsets:
-            definition = synset.definition()
-            embed.add_field(name=f'Definition {n})',
-                            value=definition, inline=False)
-            n += 1
-        return await ctx.send(embed=embed)
-
-    @commands.command(name='repeat', brief='Repeats your input')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def do_repeat(self, ctx, *, inp: str):
-        """A simple command which repeats your input!
-        Parameters
-        ------------
-        inp: str
-            The input you wish to repeat.
-        """
-        message = ctx.message
-        await message.delete()
-        return await ctx.send(inp)
-
-    @do_repeat.error
-    async def do_repeat_handler(self, ctx, error):
-        """A local Error Handler for our command do_repeat.
-        This will only listen for errors in do_repeat.
-        The global on_command_error will still be invoked after.
-        """
-
-        # Check if our required argument inp is missing.
-        if isinstance(error, commands.MissingRequiredArgument):
-            if error.param.name == 'inp':
-                return await ctx.send("You forgot to give me input to repeat!")
 
     @commands.command(aliases=['mood'], brief='Returns the mood of the sentence')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -371,36 +308,19 @@ class fun(commands.Cog):
             await ctx.send('Too many users have this username')
             return await ctx.send(repeat)
 
-    @commands.command(aliases=['sa'], brief='Send a picture of someones avatar')
-    @commands.cooldown(1, 5, commands.BucketType.default)
-    async def stealavatar(self, ctx, *, member: discord.Member):
-        embed = discord.Embed(title=f'{member.name}\'s avatar', color = random.randint(0, 0xffffff), url=f'{member.avatar_url}')
-        embed.set_image(url = member.avatar_url)
-        return await ctx.send(embed=embed)
-    
-    @commands.command(aliases=['sp'], brief='Spam a message a certain number of times, say stop or end or cancel to stop spam')
-    @commands.cooldown(1, 5, commands.BucketType.default)
-    @commands.has_permissions(administrator=True)
-    async def spam(self, ctx, *, message):
-        await ctx.message.delete()
-        await ctx.send('How many times would you like to spam the message', delete_after=3)
-        def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
-        try:
-            msg = await self.bot.wait_for('message', check=check, timeout=10)
-        except asyncio.TimeoutError:
-            return await ctx.send('Please respond the number of times you would like to spam the message next time')
-        try:
-            times = int(msg.content)
-            if times > 50 and str(ctx.author.id) != '587068610237693963':
-                return await ctx.send('Number of messages is too high, ask owner')
-        except:
-            return await ctx.send('The number of times must be an integer')
-        else:
-            for i in range(times):
-                await ctx.send(message)
-            return await ctx.send('Done!', delete_after=2)
-            
+    @commands.command(name='textart', aliases=['coolfont'], brief='Makes text look cool')
+    @commands.cooldown(1, 600, commands.BucketType.default)
+    async def font_generator(self, ctx, *, text: str = ""):
+        """Generate cool font"""
+        if not text:
+            return await ctx.send('Please enter text :pager:')
+
+        url = f'https://gdcolon.com/tools/gdfont/img/{text}?font=3&color=00ffff'
+        async with self.client.get(url) as r:
+            if r.status != 200:
+                return await ctx.send('Failed to generate textart :x:')
+            data = io.BytesIO(await r.read())
+        return await ctx.send(file=discord.File(data, 'textart.png'))
 
 
 

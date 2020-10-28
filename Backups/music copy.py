@@ -225,12 +225,6 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
 
 
-
-
-
-
-
-
 class VoiceError(Exception):
     pass
 
@@ -513,12 +507,6 @@ class VoiceState:
         except:
             pass
         self.voice = None
-
-
-
-
-
-
 
 
 

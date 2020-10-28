@@ -23,17 +23,18 @@ from discord import Embed, File, DMChannel
 import nltk
 # nltk.download('wordnet')
 from nltk.corpus import wordnet
-# from googleapiclient.discovery import build
+from googleapiclient.discovery import build
 import time
 from time import time
-
+from aiohttp import ClientSession
+import io
 
 
 global PREFIX
 PREFIX = ';'
 intents = discord.Intents.all()
 sys.dont_write_bytecode = True
-bot = commands.Bot(command_prefix=PREFIX, case_insensitive=True,
+bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True,
                    description='Kookies FOR THE WIN', intents=intents, owner_id=587068610237693963)
 '''
 # Setting `Playing ` status
@@ -57,14 +58,21 @@ async def on_ready():
     activity = discord.Game(name=";help")
     await bot.change_presence(activity=activity)
     # bot.load_extension('cogs.Music2')
+    bot.client = ClientSession()
     bot.load_extension('cogs.CommandErrorHandler')
     bot.load_extension('cogs.fun')
     bot.load_extension('cogs.helpmenu')
     bot.load_extension('cogs.levels')
     bot.load_extension('cogs.moderation')
-    bot.load_extension('cogs.music')
+    bot.load_extension('cogs.musicworking')
     bot.load_extension('cogs.roles')
     bot.load_extension('cogs.school')
+    bot.load_extension('cogs.server')
+    bot.load_extension('cogs.misc')
+    # channel = bot.get_channel(668863931200307248)
+    # embed = discord.Embed(title='Now Playing', url='https://stopify.co/profile.php?id=SXG05O.html')
+    # embed.timestamp=datetime.datetime.utcnow()
+    # await channel.send(embed=embed)
     print('Logged in as:\n{0.user.name}'.format(bot))
 
 

@@ -72,9 +72,12 @@ class moderation(commands.Cog):
     @commands.has_permissions(manage_nicknames=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def nick(self, ctx, member: discord.Member, *, nick):
-        old = member.display_name
-        await member.edit(nick=nick)
-        return await ctx.send(f'Nickname was changed for {member.mention} from {old} to {nick}')
+        try:
+            old = member.display_name
+            await member.edit(nick=nick)
+            return await ctx.send(f'Nickname was changed for {member.mention} from {old} to {nick}')
+        except discord.errors.HTTPException:
+            return await ctx.send('Nickname must be 32 or fewer characters in length')
 
     @commands.command(brief='Locks the server from messages')
     @commands.has_permissions(manage_channels=True)
@@ -124,49 +127,7 @@ class moderation(commands.Cog):
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
 
-    @commands.command(brief='Creates a channel')
-    @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def createchannel(self, ctx, *, name):
-        guild = ctx.message.guild
-        await guild.create_text_channel(name)
-        return await ctx.send(f'Created text channel {name}')
 
-    @commands.command(brief='Creates a voice channel')
-    @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def createvoicechannel(self, ctx, *, name):
-        guild = ctx.message.guild
-        await guild.create_voice_channel(name)
-        return await ctx.send(f'Created voice channel {name}')
-
-    @commands.command(brief='Edits a text channel')
-    @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def editchannel(self, ctx, name: discord.TextChannel, *, nname: Optional[str] = None, slowmode: Optional[int] = None):
-        rindex = 0
-        for char in name:
-            try:
-                name.find('_')
-                rindex += 1
-            except:
-                pass
-
-        name = name.replace('_', " ", rindex)
-        if nname != None:
-            await name.edit(name=nname)
-            await ctx.send(f'Changed the name of channel {name.name} to {nname}')
-        if slowmode != None:
-            await name.edit(slowmode_delay=slowmode)
-            return await ctx.send(f'Set the slowmode delay for channel {name.name} to {slowmode} seconds')
-
-    @commands.command(brief='Creates a category')
-    @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def createcategory(self, ctx, *, name):
-        guild = ctx.message.guild
-        await guild.create_category(name)
-        return await ctx.send(f'Created category {name}')
 
     @commands.command(brief='Clears messages')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -180,73 +141,19 @@ class moderation(commands.Cog):
             await ctx.send("Input a number please")
 
 
-    # allows server members to set channel for welcome messages to send to
-    @commands.command(brief='Sets the channel for welcome messages')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    @commands.has_permissions(manage_guild=True)
-    async def welcome(self, ctx):
-        with open("guild.json", "r") as f:
-            guildInfo = json.load(f)
-            f.close()
-    # sets channel to send message to as the channel the command was sent to
-        guildInfo[ctx.message.guild.id] = ctx.message.channel.id
-
-        with open("guild.json", "w") as f:
-            try:
-                json.dump(guildInfo, f)
-            except:
-                pass
-            f.close()
-        return await ctx.send('Channel set to: '+str(ctx.message.channel.id))
-
-
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
-        # role = discord.utils.get(member.server.roles, name='Member')
-        # await client.add_roles(member, role)
-        # if str(member.name) == 'zero0two2':
-        #     Muted = get(member.guild.roles, name='Muted')
-        #     u = member.guild.get_member(member.id)
-        #     await u.add_roles(Muted)
-        embed = discord.Embed(
-            title='Welcome to ' + str(member.guild.name) + " " + str(member.display_name), color=random.randint(0, 0xffffff))
-
-        embed.set_author(name=member.display_name, icon_url=member.avatar_url)
-        embed.timestamp = datetime.datetime.utcnow()
-
-        with open("guild.json", "r") as f:
-            guildInfo = json.load(f)
-            f.close()
-        channel = guildInfo[str(member.guild.id)]
-        channel = self.bot.get_channel(channel)
-        return await channel.send(embed=embed)
-
-    # @bot.event
-    # async def on_member_join(member):
-    #     channel = bot.get_channel(751137949420224645)
-    #     await channel.send(member.mention + " has entered!")
-
-
-    @commands.Cog.listener()
-    async def on_member_remove(self, member):
-        embed = discord.Embed(title=str(member.display_name)+' has left ' +
-                            str(member.guild.name), color=random.randint(0, 0xffffff))
-        embed.set_author(name=member.display_name, icon_url=member.avatar_url)
-        embed.timestamp = datetime.datetime.utcnow()
-
-        with open("guild.json", "r") as f:
-            guildInfo = json.load(f)
-            f.close()
-        channel = guildInfo[str(member.guild.id)]
-        channel = self.bot.get_channel(channel)
-        return await channel.send(embed=embed)
     
     @commands.Cog.listener()
     async def on_message(self, message):
-        if str(message.channel.id) == '764120247875272734' or str(message.channel.id) == '751140561255268423':
-            return
-        if str(message.guild.id) == '765941083254947911':
-            return
+        try:
+            if str(message.channel.id) == '764120247875272734' or str(message.channel.id) == '751140561255268423':
+                return
+        except AttributeError:
+            pass
+        try:
+            if str(message.guild.id) == '765941083254947911':
+                return
+        except AttributeError:
+            pass
         now = datetime.datetime.utcnow()
         current_time = now.strftime("%H:%M|%m/%d/%Y")
         if message.author.id != self.bot.user.id:
@@ -513,26 +420,6 @@ class moderation(commands.Cog):
             return await ctx.send(
                 f"Deleted **{len(deleted)}** messages by **{member}**", delete_after=10
             )
-
-
-    @commands.command(brief='Deletes Kookies\' messages after a certain amount of seconds')
-    @commands.has_permissions(manage_messages=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def prune(self, ctx, time = 60):
-        with open('config.json', 'r') as config:
-            info = json.load(config)
-            info['prune'] = not info['prune']
-            info['time'] = str(time)
-            config.close()
-        with open ('config.json', 'w') as config:
-            json.dump(info, config)
-            config.close()
-        time = info['time']
-        if info['prune']:
-            message = 'Kookies\' responses will now be deleted after '+ str(time) + ' seconds'
-        else:
-            message = 'Pruning is now off'
-        return await ctx.send(message)
 
 
     @commands.command(brief="Bans a user")
