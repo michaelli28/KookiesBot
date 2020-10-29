@@ -17,7 +17,7 @@ class music(commands.Cog):
             # Host, Port, Password, Region, Name
             # Host, Port, Password, Region, Name
             bot.lavalink.add_node(
-                '127.0.0.1', 80, 'youshallnotpass', 'na', 'default-node')
+                'kookieslavalink.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             bot.add_listener(bot.lavalink.voice_update_handler,
                             'on_socket_response')
 
