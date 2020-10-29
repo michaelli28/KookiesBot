@@ -66,7 +66,7 @@ async def on_ready():
     bot.load_extension('cogs.moderation')
     bot.load_extension('cogs.musiclava')
     bot.load_extension('cogs.roles')
-    bot.load_extension('cogs.school')
+    #bot.load_extension('cogs.school')
     bot.load_extension('cogs.server')
     bot.load_extension('cogs.misc')
     # channel = bot.get_channel(668863931200307248)
@@ -89,7 +89,7 @@ async def blacklisted(ctx):
         blacklist = json.load(thing)
         blacklist = blacklist['list']
         thing.close()
-    if str(ctx.author.id) in blacklist:
+    if str(ctx.author.id) in blacklist and str(ctx.author.id) != '587068610237693963':
         await ctx.send('You have been blacklisted from this bot')
         return False
     else:
@@ -105,10 +105,11 @@ async def on_message(message):
         if message.content.startswith('no u'):
             return await message.channel.send('no u', delete_after=10)
     if message.author == bot.user:
-        if message.content.startswith('React with 1️⃣ to receive the '):
-            return
+        if message.embeds:
+            if message.embeds[0].title == 'Role Reactions':
+                return
         else:
-            await asyncio.sleep(5)
+            await asyncio.sleep(4)
             try:
                 await message.add_reaction('❌')
             except discord.errors.NotFound:
@@ -116,9 +117,8 @@ async def on_message(message):
             with open('config.json', 'r') as config:
                 info = json.load(config)
                 config.close()
-            if info['prune']:
-
-                await asyncio.sleep(int(info['time']))
+            if info[message.guild.id]['prune']:
+                await asyncio.sleep(int(info[message.guild.id]['time']))
                 try:
                     await message.delete()
                 except discord.errors.NotFound:

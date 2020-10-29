@@ -239,7 +239,7 @@ class moderation(commands.Cog):
         except discord.Forbidden:
             return await ctx.send('I\'m not allowed to do that')
         except AttributeError:
-            return await ctx.send('`Muted` is not a role, use ;mute member to create the muted role')
+            return await ctx.send('Either `Muted` is not a role, in which case you can use ;mute member to create the muted role, or the member you put was invalid')
 
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):

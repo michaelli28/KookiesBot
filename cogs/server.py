@@ -129,17 +129,25 @@ class server(commands.Cog):
     @commands.command(brief='Deletes Kookies\' messages after a certain amount of seconds')
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def prune(self, ctx, time = 60):
+    async def prune(self, ctx, time = None):
         with open('config.json', 'r') as config:
             info = json.load(config)
-            info['prune'] = not info['prune']
-            info['time'] = str(time)
             config.close()
+        if ctx.guild.id not in info:
+            info[ctx.guild.id]['prune'] = True
+            info[ctx.guild.id]['time'] = 60
+        else:
+            info[ctx.guild.id]['prune'] = not info[ctx.guild.id]['prune']
+        if time == None:
+            pass
+        else:
+            info[ctx.guild.id]['prune'] = str(time)
+            
         with open ('config.json', 'w') as config:
             json.dump(info, config)
             config.close()
         time = info['time']
-        if info['prune']:
+        if info[ctx.guild.id]['prune']:
             message = 'Kookies\' responses will now be deleted after '+ str(time) + ' seconds'
         else:
             message = 'Pruning is now off'

@@ -185,7 +185,7 @@ class roles(commands.Cog):
         r = name.replace('_', " ", rindex)
         r = get(ctx.message.guild.roles, name=r)
         if r == None:
-            return await ctx.send(f'Role {r} doesn\'t exist')
+            return await ctx.send(f'{name} is not a role')
         try:
             await r.edit(name = newname)
             if newname != None:
@@ -211,7 +211,7 @@ class roles(commands.Cog):
         r = name.replace('_', " ", rindex)
         r = get(ctx.message.guild.roles, name=r)
         if r == None:
-            return await ctx.send(f'Role {r} doesn\'t exist')
+            return await ctx.send(f'{name} is not a role')
         try:
             await r.edit(position = position)
 
@@ -238,7 +238,7 @@ class roles(commands.Cog):
         r = name.replace('_', " ", rindex)
         r = get(ctx.message.guild.roles, name=r)
         if r == None:
-            return await ctx.send(f'Role {r} doesn\'t exist')
+            return await ctx.send(f'{name} is not a role')
         try:
             await r.edit(mentionable = mentionable)
             if mentionable != None:
@@ -265,7 +265,7 @@ class roles(commands.Cog):
         r = name.replace('_', " ", rindex)
         r = get(ctx.message.guild.roles, name=r)
         if r == None:
-            return await ctx.send(f'Role {r} doesn\'t exist')
+            return await ctx.send(f'{name} is not a role')
         try:
             await r.edit(hoist=hoist)
             if hoist != None:
