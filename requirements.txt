@@ -1,6 +1,6 @@
 discord
 youtube_dl
-asyncio==3.6.2
+asyncio
 git+https://github.com/Rapptz/discord-ext-menus
 async_timeout
 httpx
