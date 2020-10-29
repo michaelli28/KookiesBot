@@ -19,3 +19,4 @@ pandas
 sklearn
 google-api-python-client
 ksoftapi
+lavalink
