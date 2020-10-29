@@ -116,7 +116,7 @@ async def ytbettersearch(query):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as resp:
             html = await resp.text()
-            print(html)
+            #print(html)
     index = html.find('watch?v')
     url = ""
     while True:
@@ -126,20 +126,21 @@ async def ytbettersearch(query):
         url += char
         index += 1
     url = f"https://www.youtube.com/{url}"
-    print(url)
-    return url
-    # headers = {
-    #     'User-Agent': 'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)'}
+    # headers = {'User-Agent': 'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)'}
 
     # async with httpx.AsyncClient() as client:
     #     response = await client.get(f'https://www.youtube.com/results?search_query={query}', headers=headers)
-    #     playlist_urls = re.findall(
-    #     'watch\?v=(.*?)\\\\u0026list=', response.text)
-    # if len(playlist_urls)==0:
+    #     print(response.text)
+    #     print(url)
+    #     urlB = re.findall('"url":"/watch\?v=(.*?)\\u0026list=', response.text)
+    # if len(urlB) == 0:
     #     return None
     # else:
-    #     url=f'https://www.youtube.com/watch?v={playlist_urls[0]}'
-    #     return url
+    #     url1 = f'https://www.youtube.com/watch?v={urlB[0]}'
+    #     print('###############################################################################################3######')
+    #     print(url1)
+    return url
+
 
 async def get_video_data(url, search, bettersearch, loop, ctx):
     if not search and not bettersearch:
@@ -197,7 +198,7 @@ async def get_video_data(url, search, bettersearch, loop, ctx):
             try:
                 source = data["url"]
             except Exception as e:
-                print(url + '\n'+ str(e))
+                print(url)
                 return
             url = "https://www.youtube.com/watch?v="+data["id"]
             title = data["title"]

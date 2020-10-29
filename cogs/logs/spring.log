@@ -1443,3 +1443,301 @@ java.util.concurrent.RejectedExecutionException: XNIO007007: Thread is terminati
 	at org.xnio.nio.NioSocketConduit.forceTermination(NioSocketConduit.java:107) ~[xnio-nio-3.3.8.Final.jar!/:3.3.8.Final]
 	at org.xnio.nio.WorkerThread.run(WorkerThread.java:494) ~[xnio-nio-3.3.8.Final.jar!/:3.3.8.Final]
 
+2020-10-28 19:54:25.280  INFO 13904 --- [main] lavalink.server.Launcher                 : 
+
+[32m       .  [31m _                  _ _       _    [32m__ _ _
+[32m      /\\ [31m| | __ ___   ____ _| (_)_ __ | | __[32m\ \ \ \
+[32m     ( ( )[31m| |/ _` \ \ / / _` | | | '_ \| |/ /[32m \ \ \ \
+[32m      \\/ [31m| | (_| |\ V / (_| | | | | | |   < [32m  ) ) ) )
+[32m       '  [31m|_|\__,_| \_/ \__,_|_|_|_| |_|_|\_\[32m / / / /
+[0m    =========================================[32m/_/_/_/[0m
+
+	Version:        3.3.2
+	Build:          1122
+	Build time:     24.10.2020 09:19:26 UTC
+	Branch          master
+	Commit:         644b8c9
+	Commit time:    24.10.2020 09:14:00 UTC
+	JVM:            15.0.1
+	Lavaplayer      1.3.59
+
+2020-10-28 19:54:25.571  INFO 13904 --- [main] lavalink.server.Launcher                 : Starting Launcher on DESKTOP-5A6M5SK with PID 13904 (C:\Users\binli\Desktop\KookiesBot\cogs\Lavalink.jar started by binli in C:\Users\binli\Desktop\KookiesBot\cogs)
+2020-10-28 19:54:25.573  INFO 13904 --- [main] lavalink.server.Launcher                 : No active profile set, falling back to default profiles: default
+2020-10-28 19:54:25.842  WARN 13904 --- [background-preinit] o.s.h.c.j.Jackson2ObjectMapperBuilder    : For Jackson Kotlin classes support please add "com.fasterxml.jackson.module:jackson-module-kotlin" to the classpath
+2020-10-28 19:54:29.695  WARN 13904 --- [main] io.undertow.websockets.jsr               : UT026010: Buffer pool was not set on WebSocketDeploymentInfo, the default pool will be used
+2020-10-28 19:54:29.796  INFO 13904 --- [main] io.undertow.servlet                      : Initializing Spring embedded WebApplicationContext
+2020-10-28 19:54:29.797  INFO 13904 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 4117 ms
+2020-10-28 19:54:31.317  WARN 13904 --- [main] l.server.config.SentryConfiguration      : Turning off sentry
+2020-10-28 19:54:33.362  INFO 13904 --- [main] c.s.d.l.tools.GarbageCollectionMonitor   : GC monitoring enabled, reporting results every 2 minutes.
+2020-10-28 19:54:34.063  INFO 13904 --- [main] lavalink.server.config.KoeConfiguration  : OS: Windows 10, Arch: amd64
+2020-10-28 19:54:34.064  WARN 13904 --- [main] lavalink.server.config.KoeConfiguration  : This system and architecture appears to not support native audio sending! GC pauses may cause your bot to stutter during playback.
+2020-10-28 19:54:34.605  INFO 13904 --- [main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-10-28 19:54:35.378  INFO 13904 --- [main] org.xnio                                 : XNIO version 3.3.8.Final
+2020-10-28 19:54:35.430  INFO 13904 --- [main] org.xnio.nio                             : XNIO NIO Implementation Version 3.3.8.Final
+2020-10-28 19:54:35.578  INFO 13904 --- [main] o.s.b.w.e.u.UndertowServletWebServer     : Undertow started on port(s) 80 (http) with context path ''
+2020-10-28 19:54:35.599  INFO 13904 --- [main] lavalink.server.Launcher                 : Started Launcher in 11.711 seconds (JVM running for 13.416)
+2020-10-28 19:54:35.602  INFO 13904 --- [main] lavalink.server.Launcher                 : You can safely ignore the big red warning about illegal reflection. See https://github.com/Frederikam/Lavalink/issues/295
+2020-10-28 19:54:54.096  INFO 13904 --- [XNIO-1 task-1] io.undertow.servlet                      : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-10-28 19:54:54.098  INFO 13904 --- [XNIO-1 task-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-10-28 19:54:54.111  INFO 13904 --- [XNIO-1 task-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 13 ms
+2020-10-28 19:54:54.199  INFO 13904 --- [XNIO-1 task-1] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:65177
+2020-10-28 19:54:54.485  INFO 13904 --- [XNIO-1 task-1] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:65177
+2020-10-28 19:54:54.541  INFO 13904 --- [XNIO-1 I/O-2] lavalink.server.io.SocketServer          : {"op": "configureResuming", "key": "default-node", "timeout": 60}
+2020-10-28 19:55:23.863  INFO 13904 --- [XNIO-1 I/O-2] lavalink.server.io.SocketServer          : {"op": "voiceUpdate", "guildId": "668863930692665345", "sessionId": "b366414f76b670fb49e268ef322c1381", "event": {"token": "5d03338878cf31c9", "guild_id": "668863930692665345", "endpoint": "us-central8097.discord.media:443"}}
+2020-10-28 19:55:23.897  INFO 13904 --- [XNIO-1 task-2] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:bay breeze fourtythr33"
+2020-10-28 19:55:27.625  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: bay breeze fourtythr33
+2020-10-28 19:55:27.871  INFO 13904 --- [XNIO-1 I/O-2] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAfwIAHU11c2ljIEJheSBCcmVlemUgICBGb3J0eVRocjMzAAhOaGFjIGhheQAAAAAAA7U4AAtXRERLRHM2YWktZwABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVdEREtEczZhaS1nAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 19:55:27.992  INFO 13904 --- [XNIO-1 I/O-2] lavalink.server.io.SocketServer          : {"op": "equalizer", "guildId": "668863930692665345", "bands": [{"band": 0, "gain": 0.0}, {"band": 1, "gain": 0.0}, {"band": 2, "gain": 0.0}, {"band": 3, "gain": 0.0}, {"band": 4, "gain": 0.0}, {"band": 5, "gain": 0.0}, {"band": 6, "gain": 0.0}, {"band": 7, "gain": 0.0}, {"band": 8, "gain": 0.0}, {"band": 9, "gain": 0.0}, {"band": 10, "gain": 0.0}, {"band": 11, "gain": 0.0}, {"band": 12, "gain": 0.0}, {"band": 13, "gain": 0.0}, {"band": 14, "gain": 0.0}]}
+2020-10-28 19:57:13.865  INFO 13904 --- [XNIO-1 task-4] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:white man sings indian music"
+2020-10-28 19:57:14.521  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: white man sings indian music
+2020-10-28 19:59:31.477  INFO 13904 --- [XNIO-1 I/O-2] lavalink.server.io.SocketServer          : {"op": "stop", "guildId": "668863930692665345"}
+2020-10-28 20:00:46.463  INFO 13904 --- [XNIO-1 I/O-2] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:65177 with status CloseStatus[code=1006, reason=] -- Session can be resumed within the next 60 seconds with key default-node
+2020-10-28 20:00:57.654  INFO 13904 --- [XNIO-1 task-6] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:49196
+2020-10-28 20:01:15.480  INFO 13904 --- [XNIO-1 task-6] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:49196
+2020-10-28 20:01:15.481  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "configureResuming", "key": "default-node", "timeout": 60}
+2020-10-28 20:01:46.484  INFO 13904 --- [pool-1-thread-1] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
+2020-10-28 20:02:58.701  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "voiceUpdate", "guildId": "668863930692665345", "sessionId": "279f4a4583fe54e68ace8d77a344472f", "event": {"token": "c1393b5b0aa3e9fb", "guild_id": "668863930692665345", "endpoint": "us-central8097.discord.media:443"}}
+2020-10-28 20:02:58.858  INFO 13904 --- [XNIO-1 task-7] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:white man sings indian music"
+2020-10-28 20:02:59.683  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: white man sings indian music
+2020-10-28 20:03:00.037  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAKVdISVRFIE1BTiBJTUlUQVRFUyBJTkRJQU4gLSBQVU5KQUJJIFNPTkchAAptYWdpY2lhbnMzAAAAAAAAgOgACzE0SDRRMXFzTjhvAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9MTRINFExcXNOOG8AB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:03:00.219  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "equalizer", "guildId": "668863930692665345", "bands": [{"band": 0, "gain": 0.0}, {"band": 1, "gain": 0.0}, {"band": 2, "gain": 0.0}, {"band": 3, "gain": 0.0}, {"band": 4, "gain": 0.0}, {"band": 5, "gain": 0.0}, {"band": 6, "gain": 0.0}, {"band": 7, "gain": 0.0}, {"band": 8, "gain": 0.0}, {"band": 9, "gain": 0.0}, {"band": 10, "gain": 0.0}, {"band": 11, "gain": 0.0}, {"band": 12, "gain": 0.0}, {"band": 13, "gain": 0.0}, {"band": 14, "gain": 0.0}]}
+2020-10-28 20:03:02.370  INFO 13904 --- [lava-daemon-pool-playback-1-thread-1] c.s.l.c.natives.NativeLibraryLoader      : Native library libmpg123-0: loading with filter com.sedmelluq.discord.lavaplayer.natives.ConnectorNativeLibLoader$$Lambda$572/0x0000000801220658@7cdaafbe
+2020-10-28 20:03:02.575  INFO 13904 --- [lava-daemon-pool-playback-1-thread-1] c.s.l.c.natives.NativeLibraryLoader      : Native library libmpg123-0: successfully loaded.
+2020-10-28 20:03:02.578  INFO 13904 --- [lava-daemon-pool-playback-1-thread-1] c.s.l.c.natives.NativeLibraryLoader      : Native library connector: loading with filter null
+2020-10-28 20:03:02.750  INFO 13904 --- [lava-daemon-pool-playback-1-thread-1] c.s.l.c.natives.NativeLibraryLoader      : Native library connector: successfully loaded.
+2020-10-28 20:03:27.288  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAKVdISVRFIE1BTiBJTUlUQVRFUyBJTkRJQU4gLSBQVU5KQUJJIFNPTkchAAptYWdpY2lhbnMzAAAAAAAAgOgACzE0SDRRMXFzTjhvAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9MTRINFExcXNOOG8AB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:03:34.446  INFO 13904 --- [XNIO-1 task-9] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:sketchers"
+2020-10-28 20:03:34.999  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: sketchers
+2020-10-28 20:03:41.003  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAnQIAOURyaXBSZXBvcnQgLSBTa2VjaGVycyAoT2ZmaWNpYWwgTXVzaWMgVmlkZW8pIFByb2QuIE9VSEJPWQAKRHJpcFJlcG9ydAAAAAAAAa2wAAtmZXE2TU9nM3FwQQABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PWZlcTZNT2czcXBBAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 20:03:52.205  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "stop", "guildId": "668863930692665345"}
+2020-10-28 20:04:06.639  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "voiceUpdate", "guildId": "668863930692665345", "sessionId": "279f4a4583fe54e68ace8d77a344472f", "event": {"token": "91984d9d338d6abd", "guild_id": "668863930692665345", "endpoint": "us-central8097.discord.media:443"}}
+2020-10-28 20:04:06.649  INFO 13904 --- [XNIO-1 task-11] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:skyl1nk the wizard"
+2020-10-28 20:04:07.119  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: skyl1nk the wizard
+2020-10-28 20:04:07.290  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAIlNLWUwxTksgLSBUaGUgV2l6YXJkIFtOQ1MgUmVsZWFzZV0AEU5vQ29weXJpZ2h0U291bmRzAAAAAAACxvAAC3lRWUZOZHlTM2ZjAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9eVFZRk5keVMzZmMAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:04:07.445  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "equalizer", "guildId": "668863930692665345", "bands": [{"band": 0, "gain": 0.0}, {"band": 1, "gain": 0.0}, {"band": 2, "gain": 0.0}, {"band": 3, "gain": 0.0}, {"band": 4, "gain": 0.0}, {"band": 5, "gain": 0.0}, {"band": 6, "gain": 0.0}, {"band": 7, "gain": 0.0}, {"band": 8, "gain": 0.0}, {"band": 9, "gain": 0.0}, {"band": 10, "gain": 0.0}, {"band": 11, "gain": 0.0}, {"band": 12, "gain": 0.0}, {"band": 13, "gain": 0.0}, {"band": 14, "gain": 0.0}]}
+2020-10-28 20:04:53.945  INFO 13904 --- [XNIO-1 task-13] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:block clutch montage bamsi"
+2020-10-28 20:04:54.494  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: block clutch montage bamsi
+2020-10-28 20:07:09.220  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAIlNLWUwxTksgLSBUaGUgV2l6YXJkIFtOQ1MgUmVsZWFzZV0AEU5vQ29weXJpZ2h0U291bmRzAAAAAAACxvAAC3lRWUZOZHlTM2ZjAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9eVFZRk5keVMzZmMAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:08:10.531  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "volume", "guildId": "668863930692665345", "volume": 50}
+2020-10-28 20:10:11.222  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAIlNLWUwxTksgLSBUaGUgV2l6YXJkIFtOQ1MgUmVsZWFzZV0AEU5vQ29weXJpZ2h0U291bmRzAAAAAAACxvAAC3lRWUZOZHlTM2ZjAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9eVFZRk5keVMzZmMAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:10:13.046  INFO 13904 --- [XNIO-1 task-15] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:time hans zimmer"
+2020-10-28 20:10:13.742  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: time hans zimmer
+2020-10-28 20:10:15.773  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAnwIANVRpbWUgLSBIYW5zIFppbW1lciAoSW5jZXB0aW9uIFNvdW5kdHJhY2spIEhRIFsxIEhvdXJdABBWaXJhbFRhbGVudE11c2ljAAAAAAA4eQgAC1U1SWFpbEl6cWRjAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9VTVJYWlsSXpxZGMAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:10:29.549  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAIlNLWUwxTksgLSBUaGUgV2l6YXJkIFtOQ1MgUmVsZWFzZV0AEU5vQ29weXJpZ2h0U291bmRzAAAAAAACxvAAC3lRWUZOZHlTM2ZjAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9eVFZRk5keVMzZmMAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:10:37.825  INFO 13904 --- [XNIO-1 task-17] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:hans zimmer time"
+2020-10-28 20:10:38.405  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: hans zimmer time
+2020-10-28 20:10:52.643  INFO 13904 --- [XNIO-1 task-19] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:hans zimmer time inception"
+2020-10-28 20:10:53.170  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: hans zimmer time inception
+2020-10-28 20:10:56.407  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAfwIAHkhhbnMgWmltbWVyIC0gVGltZSAoSW5jZXB0aW9uKQAHQ3Jpc3l0YQAAAAAABDI4AAtSeGFiTEE3VVE5awABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVJ4YWJMQTdVUTlrAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 20:13:59.443  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "volume", "guildId": "668863930692665345", "volume": 25}
+2020-10-28 20:14:05.705  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "volume", "guildId": "668863930692665345", "volume": 15}
+2020-10-28 20:14:19.008  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "volume", "guildId": "668863930692665345", "volume": 1}
+2020-10-28 20:14:24.875  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "volume", "guildId": "668863930692665345", "volume": 15}
+2020-10-28 20:14:31.051  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "volume", "guildId": "668863930692665345", "volume": 10}
+2020-10-28 20:14:34.883  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "volume", "guildId": "668863930692665345", "volume": 15}
+2020-10-28 20:15:31.919  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAIlNLWUwxTksgLSBUaGUgV2l6YXJkIFtOQ1MgUmVsZWFzZV0AEU5vQ29weXJpZ2h0U291bmRzAAAAAAACxvAAC3lRWUZOZHlTM2ZjAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9eVFZRk5keVMzZmMAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:18:35.181  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAfwIAHkhhbnMgWmltbWVyIC0gVGltZSAoSW5jZXB0aW9uKQAHQ3Jpc3l0YQAAAAAABDI4AAtSeGFiTEE3VVE5awABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVJ4YWJMQTdVUTlrAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 20:18:35.717  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAIlNLWUwxTksgLSBUaGUgV2l6YXJkIFtOQ1MgUmVsZWFzZV0AEU5vQ29weXJpZ2h0U291bmRzAAAAAAACxvAAC3lRWUZOZHlTM2ZjAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9eVFZRk5keVMzZmMAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:18:35.832 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-6] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of RxabLA7UQ9k
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "key" is null
+	at java.base/java.util.concurrent.ConcurrentHashMap.get(ConcurrentHashMap.java:936) ~[na:na]
+	at com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSignatureCipherManager.getCipherKeyFromScript(YoutubeSignatureCipherManager.java:136) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSignatureCipherManager.resolveFormatUrl(YoutubeSignatureCipherManager.java:103) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack.loadBestFormatWithUrl(YoutubeAudioTrack.java:87) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack.process(YoutubeAudioTrack.java:42) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:105) ~[lavaplayer-1.3.59.jar!/:na]
+	... 4 common frames omitted
+
+2020-10-28 20:18:35.836  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAfwIAHkhhbnMgWmltbWVyIC0gVGltZSAoSW5jZXB0aW9uKQAHQ3Jpc3l0YQAAAAAABDI4AAtSeGFiTEE3VVE5awABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVJ4YWJMQTdVUTlrAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 20:23:11.477  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAIlNLWUwxTksgLSBUaGUgV2l6YXJkIFtOQ1MgUmVsZWFzZV0AEU5vQ29weXJpZ2h0U291bmRzAAAAAAACxvAAC3lRWUZOZHlTM2ZjAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9eVFZRk5keVMzZmMAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:24:09.139  INFO 13904 --- [XNIO-1 task-21] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:sub urban cradles"
+2020-10-28 20:24:09.803  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: sub urban cradles
+2020-10-28 20:24:29.056  INFO 13904 --- [XNIO-1 task-23] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "https://www.youtube.com/playlist?list=PL1cf7V1pT1U3aqfnslXO9fefWZCVueHJo"
+2020-10-28 20:24:29.433  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist legendary music
+2020-10-28 20:26:13.298  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAewIAE1N0ZXBoZW4gLSBDcm9zc2ZpcmUADk1yU3VpY2lkZVNoZWVwAAAAAAAEJoAAC2VINEYxVGRiMDQwAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9ZUg0RjFUZGIwNDAAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:30:45.735  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAIlNLWUwxTksgLSBUaGUgV2l6YXJkIFtOQ1MgUmVsZWFzZV0AEU5vQ29weXJpZ2h0U291bmRzAAAAAAACxvAAC3lRWUZOZHlTM2ZjAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9eVFZRk5keVMzZmMAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:30:46.436 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-6] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of yQYFNdyS3fc
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: Cannot invoke "Object.hashCode()" because "key" is null
+	at java.base/java.util.concurrent.ConcurrentHashMap.get(ConcurrentHashMap.java:936) ~[na:na]
+	at com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSignatureCipherManager.getCipherKeyFromScript(YoutubeSignatureCipherManager.java:136) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSignatureCipherManager.resolveFormatUrl(YoutubeSignatureCipherManager.java:103) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack.loadBestFormatWithUrl(YoutubeAudioTrack.java:87) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioTrack.process(YoutubeAudioTrack.java:42) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:105) ~[lavaplayer-1.3.59.jar!/:na]
+	... 4 common frames omitted
+
+2020-10-28 20:30:46.441  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAggIAHFBFVElUIEJJU0NVSVQgLSBTdW5zZXQgTG92ZXIADENoaWxsIE5hdGlvbgAAAAAAA5ngAAtISmpMOTJaQlJpbwABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PUhKakw5MlpCUmlvAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 20:34:42.396  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAApAIAOUpQQiAmIE1ZUk5FIC0gRmVlbHMgUmlnaHQgKGZ0LiBZdW5nIEZ1c2lvbikgW05DUyBSZWxlYXNlXQARTm9Db3B5cmlnaHRTb3VuZHMAAAAAAAMNQAALZFhZRkstakVyOFkAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kWFlGSy1qRXI4WQAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 20:38:03.116  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAuAIATiJXSE8gV0lMTCBSRU1FTUJFUiBNRSIgYnkgVHdlbHZlIFRpdGFucyBNdXNpYyDigKIgV29ybGQncyBNb3N0IEVtb3Rpb25hbCBNdXNpYwAQRXBpYyBNdXNpYyBXb3JsZAAAAAAABgb4AAtxX0U5cDZLTjcxbwABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PXFfRTlwNktONzFvAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 20:44:38.515  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAdgIAEVZhbGVzY28gLSBDbG91ZCA5AAtUcmFwIE5hdGlvbgAAAAAAA/O4AAt2UHhmOG05M0dnWQABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PXZQeGY4bTkzR2dZAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 20:44:39.553 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-6] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of vPxf8m93GgY
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: null
+
+2020-10-28 20:44:39.556  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAmwIAOFNrcmlsbGV4ICYgRGlwbG8gLSBUbyDDnCAoTWVhdXggR3JlZW4gJiBNYWduaWZpY28gUmVtaXgpAAlUcmFwIENpdHkAAAAAAANTkAALREF3b182Z2tqQjQAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1EQXdvXzZna2pCNAAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 20:44:39.697  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAApAIAOUpQQiAmIE1ZUk5FIC0gRmVlbHMgUmlnaHQgKGZ0LiBZdW5nIEZ1c2lvbikgW05DUyBSZWxlYXNlXQARTm9Db3B5cmlnaHRTb3VuZHMAAAAAAAMNQAALZFhZRkstakVyOFkAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kWFlGSy1qRXI4WQAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 20:44:40.354 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-8] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of dXYFK-jEr8Y
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: null
+
+2020-10-28 20:44:40.357  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAKlN1YiBVcmJhbiAtIENyYWRsZXMgW09GRklDSUFMIE1VU0lDIFZJREVPXQAJU3ViIFVyYmFuAAAAAAADV3gAC0tCdGs1RlVlSmJrAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9S0J0azVGVWVKYmsAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:48:20.214  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAcgIAEklOWk8gLSBPdmVydGhpbmtlcgAGTG93bHkuAAAAAAAEMjgAC2x1UVNRdUNIdGNJAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9bHVRU1F1Q0h0Y0kAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:52:55.394  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAegIAElRhcnJvIC0gV2F2ZSBCb2FyZAAOTXJTdWljaWRlU2hlZXAAAAAAAALG8AALSlZSZ3FfQnU4V2sAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1KVlJncV9CdThXawAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 20:55:57.695  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAcgIAEklOWk8gLSBPdmVydGhpbmtlcgAGTG93bHkuAAAAAAAEMjgAC2x1UVNRdUNIdGNJAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9bHVRU1F1Q0h0Y0kAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 20:55:58.388 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-8] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of luQSQuCHtcI
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: null
+
+2020-10-28 20:55:58.394  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAdwIAEVN1YnRhY3QgLSBGYWxsaW5nAAxDaGlsbCBOYXRpb24AAAAAAASMEAALczlSM1hJSExxZ3MAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1zOVIzWElITHFncwAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 21:00:56.156  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAApAIAOUpQQiAmIE1ZUk5FIC0gRmVlbHMgUmlnaHQgKGZ0LiBZdW5nIEZ1c2lvbikgW05DUyBSZWxlYXNlXQARTm9Db3B5cmlnaHRTb3VuZHMAAAAAAAMNQAALZFhZRkstakVyOFkAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kWFlGSy1qRXI4WQAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 21:00:56.791 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-8] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of dXYFK-jEr8Y
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: null
+
+2020-10-28 21:00:56.794  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAdgIAEVZhbGVzY28gLSBDbG91ZCA5AAtUcmFwIE5hdGlvbgAAAAAAA/O4AAt2UHhmOG05M0dnWQABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PXZQeGY4bTkzR2dZAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 21:05:15.574  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAfwIAHkhhbnMgWmltbWVyIC0gVGltZSAoSW5jZXB0aW9uKQAHQ3Jpc3l0YQAAAAAABDI4AAtSeGFiTEE3VVE5awABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVJ4YWJMQTdVUTlrAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 21:05:16.213 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-8] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of RxabLA7UQ9k
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: null
+
+2020-10-28 21:05:16.216  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAfwIAHkhhbnMgWmltbWVyIC0gVGltZSAoSW5jZXB0aW9uKQAHQ3Jpc3l0YQAAAAAABDI4AAtSeGFiTEE3VVE5awABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVJ4YWJMQTdVUTlrAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 21:05:16.774 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-8] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of RxabLA7UQ9k
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: null
+
+2020-10-28 21:05:16.775  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAegIAElRhcnJvIC0gV2F2ZSBCb2FyZAAOTXJTdWljaWRlU2hlZXAAAAAAAALG8AALSlZSZ3FfQnU4V2sAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1KVlJncV9CdThXawAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 21:05:16.919  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAmwIAOU1vc3QgRW1vdGlvbmFsIE11c2ljIEV2ZXI6ICJOaWdodHNreSIgYnkgVHJhY2V5IENoYXR0YXdheQAISERTb3VuREkAAAAAAATiAAALOERTZVpqaTJ4LVkAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj04RFNlWmppMngtWQAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 21:10:37.435  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAmwIAOU1vc3QgRW1vdGlvbmFsIE11c2ljIEV2ZXI6ICJOaWdodHNreSIgYnkgVHJhY2V5IENoYXR0YXdheQAISERTb3VuREkAAAAAAATiAAALOERTZVpqaTJ4LVkAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj04RFNlWmppMngtWQAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 21:15:57.994  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAKlN1YiBVcmJhbiAtIENyYWRsZXMgW09GRklDSUFMIE1VU0lDIFZJREVPXQAJU3ViIFVyYmFuAAAAAAADV3gAC0tCdGs1RlVlSmJrAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9S0J0azVGVWVKYmsAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 21:19:37.795  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAdgIAEVZhbGVzY28gLSBDbG91ZCA5AAtUcmFwIE5hdGlvbgAAAAAAA/O4AAt2UHhmOG05M0dnWQABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PXZQeGY4bTkzR2dZAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 21:19:44.902  INFO 13904 --- [XNIO-1 task-25] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:dam boy he thicc"
+2020-10-28 21:19:44.974  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "voiceUpdate", "guildId": "751137949420224642", "sessionId": "279f4a4583fe54e68ace8d77a344472f", "event": {"token": "b96a37f9a19957ca", "guild_id": "751137949420224642", "endpoint": "us-central4528.discord.media:443"}}
+2020-10-28 21:19:45.438  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: dam boy he thicc
+2020-10-28 21:19:45.588  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "751137949420224642", "track": "QAAAkAIAK0RhbW4gQm95LCBIZSBUSElDQyBCT0kgfCBUaWtUb2sgQ29tcGlsYXRpb24AC1Rpa1RvayBNYWlsAAAAAAAKNUgACzlHdlhXbTN1MEdzAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9OUd2WFdtM3UwR3MAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 21:19:45.746  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "equalizer", "guildId": "751137949420224642", "bands": [{"band": 0, "gain": 0.0}, {"band": 1, "gain": 0.0}, {"band": 2, "gain": 0.0}, {"band": 3, "gain": 0.0}, {"band": 4, "gain": 0.0}, {"band": 5, "gain": 0.0}, {"band": 6, "gain": 0.0}, {"band": 7, "gain": 0.0}, {"band": 8, "gain": 0.0}, {"band": 9, "gain": 0.0}, {"band": 10, "gain": 0.0}, {"band": 11, "gain": 0.0}, {"band": 12, "gain": 0.0}, {"band": 13, "gain": 0.0}, {"band": 14, "gain": 0.0}]}
+2020-10-28 21:20:32.291  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "stop", "guildId": "751137949420224642"}
+2020-10-28 21:20:40.805  INFO 13904 --- [XNIO-1 task-27] l.server.player.AudioLoaderRestHandler   : Got request to load for identifier "ytsearch:I flooded the toilet in chipotle"
+2020-10-28 21:20:40.892  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "voiceUpdate", "guildId": "751137949420224642", "sessionId": "279f4a4583fe54e68ace8d77a344472f", "event": {"token": "8ef90325adc7d0de", "guild_id": "751137949420224642", "endpoint": "us-central4528.discord.media:443"}}
+2020-10-28 21:20:41.315  INFO 13904 --- [lava-daemon-pool-info-loader-2-thread-1] lavalink.server.player.AudioLoader       : Loaded playlist Search results for: I flooded the toilet in chipotle
+2020-10-28 21:20:41.474  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "751137949420224642", "track": "QAAAigIAKEVEUDQ0NTogSSBmbG9vZGVkIHRoZSB0b2lsZXQgYXQgQ2hpcG90bGUACHNvZnRmbG9wAAAAAAABdwAAC3J5Uk5teHphbFdzAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9cnlSTm14emFsV3MAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 21:20:41.671  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "equalizer", "guildId": "751137949420224642", "bands": [{"band": 0, "gain": 0.0}, {"band": 1, "gain": 0.0}, {"band": 2, "gain": 0.0}, {"band": 3, "gain": 0.0}, {"band": 4, "gain": 0.0}, {"band": 5, "gain": 0.0}, {"band": 6, "gain": 0.0}, {"band": 7, "gain": 0.0}, {"band": 8, "gain": 0.0}, {"band": 9, "gain": 0.0}, {"band": 10, "gain": 0.0}, {"band": 11, "gain": 0.0}, {"band": 12, "gain": 0.0}, {"band": 13, "gain": 0.0}, {"band": 14, "gain": 0.0}]}
+2020-10-28 21:22:17.713  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "stop", "guildId": "751137949420224642"}
+2020-10-28 21:23:58.224  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAKlN1YiBVcmJhbiAtIENyYWRsZXMgW09GRklDSUFMIE1VU0lDIFZJREVPXQAJU3ViIFVyYmFuAAAAAAADV3gAC0tCdGs1RlVlSmJrAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9S0J0azVGVWVKYmsAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 21:23:59.036 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-9] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of KBtk5FUeJbk
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: null
+
+2020-10-28 21:23:59.055  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAfwIAHkhhbnMgWmltbWVyIC0gVGltZSAoSW5jZXB0aW9uKQAHQ3Jpc3l0YQAAAAAABDI4AAtSeGFiTEE3VVE5awABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVJ4YWJMQTdVUTlrAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 21:23:59.178  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAmwIAOFNrcmlsbGV4ICYgRGlwbG8gLSBUbyDDnCAoTWVhdXggR3JlZW4gJiBNYWduaWZpY28gUmVtaXgpAAlUcmFwIENpdHkAAAAAAANTkAALREF3b182Z2tqQjQAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1EQXdvXzZna2pCNAAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 21:23:59.906 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-11] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of DAwo_6gkjB4
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: null
+
+2020-10-28 21:23:59.908  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAKlN1YiBVcmJhbiAtIENyYWRsZXMgW09GRklDSUFMIE1VU0lDIFZJREVPXQAJU3ViIFVyYmFuAAAAAAADV3gAC0tCdGs1RlVlSmJrAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9S0J0azVGVWVKYmsAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 21:27:39.534  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAgwIAG1RvbSBEYXkgLSBXaG8gV2UgV2FudCBUbyBCZQAOTXJTdWljaWRlU2hlZXAAAAAAAAYOyAALQlZvbVF0cnRNVE0AAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1CVm9tUXRydE1UTQAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 21:34:16.696  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAmwIANCdIZWxpb3MnIFtDaW5lbWF0aWMgT3JjaGVzdHJhIENDLUJZXSAtIFNjb3R0IEJ1Y2tsZXkADVNjb3R0IEJ1Y2tsZXkAAAAAAAV6WAALQktqSkg3aWtDY00AAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1CS2pKSDdpa0NjTQAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 21:40:15.856  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAuAIATiJXSE8gV0lMTCBSRU1FTUJFUiBNRSIgYnkgVHdlbHZlIFRpdGFucyBNdXNpYyDigKIgV29ybGQncyBNb3N0IEVtb3Rpb25hbCBNdXNpYwAQRXBpYyBNdXNpYyBXb3JsZAAAAAAABgb4AAtxX0U5cDZLTjcxbwABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PXFfRTlwNktONzFvAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 21:46:51.037  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAeQIAHEFKUiAtIEthcm1hIChPZmZpY2lhbCBBdWRpbykAA0FKUgAAAAAAA8DwAAtWeTFKd2lYSHdJNAABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVZ5MUp3aVhId0k0AAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 21:50:57.537  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAdgIAEVZhbGVzY28gLSBDbG91ZCA5AAtUcmFwIE5hdGlvbgAAAAAAA/O4AAt2UHhmOG05M0dnWQABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PXZQeGY4bTkzR2dZAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 21:55:16.595  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAmwIAOFNrcmlsbGV4ICYgRGlwbG8gLSBUbyDDnCAoTWVhdXggR3JlZW4gJiBNYWduaWZpY28gUmVtaXgpAAlUcmFwIENpdHkAAAAAAANTkAALREF3b182Z2tqQjQAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1EQXdvXzZna2pCNAAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 21:55:17.478 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-11] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of DAwo_6gkjB4
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: null
+
+2020-10-28 21:55:18.943  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAfwIAHkhhbnMgWmltbWVyIC0gVGltZSAoSW5jZXB0aW9uKQAHQ3Jpc3l0YQAAAAAABDI4AAtSeGFiTEE3VVE5awABACtodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PVJ4YWJMQTdVUTlrAAd5b3V0dWJlAAAAAAAAAAA="}
+2020-10-28 21:55:19.504 ERROR 13904 --- [lava-daemon-pool-playback-1-thread-11] c.s.d.l.t.p.LocalAudioTrackExecutor      : Error in playback of RxabLA7UQ9k
+
+com.sedmelluq.discord.lavaplayer.tools.FriendlyException: Something broke when playing the track.
+	at com.sedmelluq.discord.lavaplayer.tools.ExceptionTools.wrapUnfriendlyExceptions(ExceptionTools.java:43) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.track.playback.LocalAudioTrackExecutor.execute(LocalAudioTrackExecutor.java:117) ~[lavaplayer-1.3.59.jar!/:na]
+	at com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager.lambda$executeTrack$1(DefaultAudioPlayerManager.java:349) ~[lavaplayer-1.3.59.jar!/:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+Caused by: java.lang.NullPointerException: null
+
+2020-10-28 21:55:19.508  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAjQIAIlNLWUwxTksgLSBUaGUgV2l6YXJkIFtOQ1MgUmVsZWFzZV0AEU5vQ29weXJpZ2h0U291bmRzAAAAAAACxvAAC3lRWUZOZHlTM2ZjAAEAK2h0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9eVFZRk5keVMzZmMAB3lvdXR1YmUAAAAAAAAAAA=="}
+2020-10-28 21:58:21.715  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAmwIANCdIZWxpb3MnIFtDaW5lbWF0aWMgT3JjaGVzdHJhIENDLUJZXSAtIFNjb3R0IEJ1Y2tsZXkADVNjb3R0IEJ1Y2tsZXkAAAAAAAV6WAALQktqSkg3aWtDY00AAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1CS2pKSDdpa0NjTQAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 22:03:33.937  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "pause", "guildId": "668863930692665345", "pause": true}
+2020-10-28 22:03:36.203  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "pause", "guildId": "668863930692665345", "pause": false}
+2020-10-28 22:04:23.156  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : {"op": "play", "guildId": "668863930692665345", "track": "QAAAdwIAEVN1YnRhY3QgLSBGYWxsaW5nAAxDaGlsbCBOYXRpb24AAAAAAASMEAALczlSM1hJSExxZ3MAAQAraHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1zOVIzWElITHFncwAHeW91dHViZQAAAAAAAAAA"}
+2020-10-28 22:05:04.935  INFO 13904 --- [XNIO-1 I/O-1] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:49196 with status CloseStatus[code=1006, reason=] -- Session can be resumed within the next 60 seconds with key default-node
