@@ -117,12 +117,16 @@ async def on_message(message):
             with open('config.json', 'r') as config:
                 info = json.load(config)
                 config.close()
-            if info[message.guild.id]['prune']:
+            if ctx.guild.id not in info:
+                return
+            elif info[ctx.guild.id]['prune']:
                 await asyncio.sleep(int(info[message.guild.id]['time']))
                 try:
                     await message.delete()
                 except discord.errors.NotFound:
                     pass
+            else:
+                return
     await bot.process_commands(message)
     
     # if message.author.id == '740226974248730625':
