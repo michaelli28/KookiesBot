@@ -117,9 +117,11 @@ async def on_message(message):
             with open('config.json', 'r') as config:
                 info = json.load(config)
                 config.close()
-            if ctx.guild.id not in info:
+            if message.guild == None:
                 return
-            elif info[ctx.guild.id]['prune']:
+            if message.guild.id not in info:
+                return
+            elif info[message.guild.id]['prune']:
                 await asyncio.sleep(int(info[message.guild.id]['time']))
                 try:
                     await message.delete()

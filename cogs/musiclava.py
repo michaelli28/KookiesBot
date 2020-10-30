@@ -8,7 +8,8 @@ from discord import Embed
 import datetime
 import asyncio
 from discord.ext.menus import MenuPages, ListPageSource
-
+from discord.utils import get
+from typing import Optional
 kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsbCwgIm8iOiAiNTg3MDY4NjEwMjM3NjkzOTYzIiwgImMiOiA3NTczNDQ4fQ.bdb3a6d6f99d566327126abc55fdbd969b04c877ccd7cd5c5df316a343e80355')
 
 #TODO skipto cmd
@@ -77,10 +78,53 @@ class music(commands.Cog):
     async def track_hook(self, event):
         if isinstance(event, lavalink.events.QueueEndEvent):
             guild_id = int(event.player.guild_id)
-            await self.ctx.send('Queue ended, leaving channel')
+            player = event.player
+            channel = self.bot.get_channel(player.fetch(guild_id))
+            player.delete(guild_id)
+            await channel.send('Queue ended, leaving channel')
             return await self.connect_to(guild_id, None)
         if isinstance(event, lavalink.events.TrackStartEvent):
-            return await self.now(self.ctx)
+            guild_id = int(event.player.guild_id)
+            player = event.player
+            channel = self.bot.get_channel(player.fetch(guild_id))
+            guild = self.bot.get_guild(guild_id)
+            song = 'Nothing'
+            if player.current.stream:
+                dur = 'LIVE'
+                pos = ''
+                count = total = 1
+            else:
+                count = player.position
+                pos = lavalink.format_time(count)
+                total = player.current.duration
+                dur = lavalink.format_time(total)
+                if pos == dur:  # When called immediatly after enqueue
+                    count = 0
+                    pos = '00:00:00'
+                dur = dur.lstrip('00:')
+                pos = pos[-len(dur):]
+            bar_len = 30  # bar length
+            filled_len = int(bar_len * count // float(total))
+            bar = '═' * filled_len + '◈' + '─' * (bar_len - filled_len)
+            song = f'[{player.current.title}]({player.current.uri})\n`{pos} {bar} {dur}`'
+
+            em = discord.Embed(color=random.randint(0,0xffffff), description=song)
+            em.add_field(name='Author', value=f'{player.current.author}')
+            if player.repeat:
+                em.add_field(name='Queue Loop', value=f'On')
+            else:
+                em.add_field(name='Queue Loop', value=f'Off')
+            em.add_field(name='Volume', value=f'{player.volume}%')
+            em.set_author(name="Now Playing 🎵",
+                        icon_url="https://i.ibb.co/DGsmTvh/star.gif")
+            em.set_thumbnail(
+                url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
+            requester = guild.get_member(player.current.requester)
+            em.set_footer(
+                text=f"Requested by: {requester}", icon_url=requester.avatar_url)
+            em.timestamp = datetime.datetime.utcnow()
+            await channel.send(embed=em)
+            return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
             
     async def cog_before_invoke(self, ctx):
         """ Command before-invoke handler. """
@@ -102,9 +146,9 @@ class music(commands.Cog):
         if not ctx.author.voice or not ctx.author.voice.channel:
             return await ctx.send('Join a voice channel first :loud_sound:')
 
-        if not player.is_connected:
-            if not should_connect:
-                return await ctx.send('Not connected :mute:')
+        # if not player.is_connected:
+        #     if not should_connect:
+        #         return await ctx.send('Not connected :mute:')
 
             permissions = ctx.author.voice.channel.permissions_for(ctx.me)
 
@@ -114,20 +158,41 @@ class music(commands.Cog):
             player.store('channel', ctx.channel.id)
             await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
         else:
-            if int(player.channel_id) != ctx.author.voice.channel.id:
-                return await ctx.send('You need to be in my voice channel :loud_sound:')
+            pass
+            # if int(player.channel_id) != ctx.author.voice.channel.id:
+            #     return await ctx.send('You need to be in my voice channel :loud_sound:')
 
     async def connect_to(self, guild_id: int, channel_id: str):
         """ Connects to the given voicechannel ID. A channel_id of `None` means disconnect. """
         ws = self.bot._connection._get_websocket(guild_id)
         return await ws.voice_state(str(guild_id), channel_id)
 
-    @commands.command(name='play', brief='Plays or queues a song or playlist by link or by search')
+    @commands.command(name='play', brief='Plays or queues a song or playlist by link or by search, to insert song at an index, search using # as a separator, songnamehere#3 will search for songnamehere and will insert at the 3rd position in the queue')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def play(self, ctx, *, query: str=None):
         # try:
+        query.strip()
+
+        if int(query.find('#')) != -1:
+            query = query.split('#',1)
+            try:
+                index = int(query[1])
+            except ValueError:
+                index = None
+            query = query[0]
+        else:
+            index = None
+
+        if query == None:
+            return await ctx.send('You need to input a search')
+
         async with ctx.typing():
             player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+
+            if index != None:
+
+                if int(index) > len(player.queue):
+                    return await ctx.send('Index is larger than queue size')
 
             query = query.strip('<>')
 
@@ -152,17 +217,18 @@ class music(commands.Cog):
 
                 em.title = 'Playlist Enqueued!'
                 em.description = f'{results["playlistInfo"]["name"]} - {len(tracks)} tracks'
+
             else:
                 track = results['tracks'][0]
-                print(track)
                 em.title = 'Track Enqueued'
                 em.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
                 em.set_thumbnail(
                     url=f"http://i.ytimg.com/vi/{track['info']['identifier']}/hqdefault.jpg")
+                em.add_field(name='Author', value=track['info']['author'])
 
-                em.add_field(name='Channel', value=track['info']['author'])
                 if track['info']['isStream']:
                     duration = 'Live'
+
                 else:
                     duration = lavalink.format_time(
                         track['info']['length']).lstrip('00:')
@@ -170,10 +236,17 @@ class music(commands.Cog):
 
                 track = lavalink.models.AudioTrack(
                     track, ctx.author.id, recommended=True)
-                player.add(requester=ctx.author.id, track=track)
+
+                if index != None:
+                    player.add(requester=ctx.author.id, track=track, index=(index-1))
+
+                else:
+                    player.add(requester=ctx.author.id, track=track)
 
             msg = await ctx.send(embed=em)
             await player.set_volume(self.volume)
+            player.store(ctx.message.guild.id, ctx.message.channel.id)
+
             if not player.is_playing:
                 await player.play()
                 await player.reset_equalizer()
@@ -219,7 +292,7 @@ class music(commands.Cog):
             em.set_thumbnail(
                 url=f"http://i.ytimg.com/vi/{track['info']['identifier']}/hqdefault.jpg")
 
-            em.add_field(name='Channel', value=track['info']['author'])
+            em.add_field(name='Author', value=track['info']['author'])
             if track['info']['isStream']:
                 duration = 'Live'
             else:
@@ -257,7 +330,7 @@ class music(commands.Cog):
         return await ctx.send(f'Moved track to **{lavalink.format_time(track_time)}**')
 
     @commands.command(name='skip', brief='Skips the song playing')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def _skip(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -306,7 +379,7 @@ class music(commands.Cog):
             song = f'[{player.current.title}]({player.current.uri})\n`{pos} {bar} {dur}`'
 
             em = discord.Embed(color=random.randint(0,0xffffff), description=song)
-            em.add_field(name='Channel', value=f'{player.current.author}')
+            em.add_field(name='Author', value=f'{player.current.author}')
             if player.repeat:
                 em.add_field(name='Queue Loop', value=f'On')
             else:
@@ -342,7 +415,7 @@ class music(commands.Cog):
                           icon_url="https://i.ibb.co/DGsmTvh/star.gif")
             em.set_thumbnail(
                 url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
-            em.add_field(name='Channel', value=player.current.author)
+            em.add_field(name='Author', value=player.current.author)
             em.add_field(name='Duration', value=dur)
             em.timestamp = datetime.datetime.utcnow()
             user = ctx.author
@@ -359,7 +432,6 @@ class music(commands.Cog):
             
             if not player.queue:
                 return await ctx.send('Queue empty! :cd:')
-            print(player.queue)
             menu = MenuPages(source=HelpMenu(ctx, player.queue))
 
             return await menu.start(ctx)
@@ -413,7 +485,7 @@ class music(commands.Cog):
     async def _volume(self, ctx, volume: int = None):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
-        if not volume:
+        if volume == None:
             return await ctx.send(f'🔈 The volume is at {player.volume}%')
         if volume > 100 and str(ctx.author.id) != '587068610237693963':
             return await ctx.send('Saving eardrums, ask owner for override over 100 percent volume')
@@ -466,11 +538,11 @@ class music(commands.Cog):
     async def disconnect(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
-        if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
-            return await ctx.send('You\'re not in my voice channel :loud_sound:')
+        # if not ctx.author.voice or (player.is_connected and ctx.author.voice.channel.id != int(player.channel_id)):
+        #     return await ctx.send('You\'re not in my voice channel :loud_sound:')
 
-        if not player.is_connected:
-            return await ctx.send('Not connected :mute:')
+        # if not player.is_connected:
+        #     return await ctx.send('Not connected :mute:')
 
         player.queue.clear()
         # Stop the current track so Lavalink consumes less resources.
