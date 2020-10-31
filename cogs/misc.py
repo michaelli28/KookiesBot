@@ -33,7 +33,7 @@ class misc(commands.Cog):
 
     @commands.command(aliases=['def'], brief='Gives the definitions of a word without using an API')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def define(self, ctx, word):
+    async def define(self, ctx, *, word):
         synsets = wordnet.synsets(word)
         embed = discord.Embed(title=f'Definition of the word: `{word}`')
         embed.set_author(name=ctx.author.display_name,

@@ -14,7 +14,7 @@ kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsb
 
 #TODO skipto cmd
 #TODO lavalink errors
-
+#TODO make sure when errors happen, things dont keep going on
 
 class HelpMenu(ListPageSource):
     def __init__(self, ctx, data):
@@ -71,9 +71,9 @@ class music(commands.Cog):
         """ Cog unload handler. This removes any event hooks that were registered. """
         self.bot.lavalink._event_hooks.clear()
 
-    # async def cog_command_error(self, ctx, error):
-    #     if isinstance(error, commands.CommandInvokeError):
-    #         return await ctx.send(error.original)
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandInvokeError):
+            return await ctx.send(error.original)
 
     async def track_hook(self, event):
         if isinstance(event, lavalink.events.QueueEndEvent):
@@ -144,23 +144,23 @@ class music(commands.Cog):
         should_connect = ctx.command.name in ('play',)
 
         if not ctx.author.voice or not ctx.author.voice.channel:
-            return await ctx.send('Join a voice channel first :loud_sound:')
+            raise commands.CommandInvokeError('Join a voice channel first :loud_sound:')
 
-        # if not player.is_connected:
-        #     if not should_connect:
-        #         return await ctx.send('Not connected :mute:')
+        if not player.is_connected:
+            if not should_connect:
+                raise commands.CommandInvokeError('Not connected :mute:')
 
             permissions = ctx.author.voice.channel.permissions_for(ctx.me)
 
             if not permissions.connect or not permissions.speak:  # Check user limit too?
-                return await ctx.send('I need the `CONNECT` and `SPEAK` permissions :disappointed_relieved:')
+                raise commands.CommandInvokeError('I need the `CONNECT` and `SPEAK` permissions. :disappointed_relieved:')
 
             player.store('channel', ctx.channel.id)
             await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
         else:
             pass
             # if int(player.channel_id) != ctx.author.voice.channel.id:
-            #     return await ctx.send('You need to be in my voice channel :loud_sound:')
+            #     raise commands.CommandInvokeError('You need to be in my voice channel :loud_sound:')
 
     async def connect_to(self, guild_id: int, channel_id: str):
         """ Connects to the given voicechannel ID. A channel_id of `None` means disconnect. """
@@ -170,147 +170,149 @@ class music(commands.Cog):
     @commands.command(name='play', brief='Plays or queues a song or playlist by link or by search, to insert song at an index, search using # as a separator, songnamehere#3 will search for songnamehere and will insert at the 3rd position in the queue')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def play(self, ctx, *, query: str=None):
-        # try:
-        query.strip()
+        try:
+            query.strip()
 
-        if int(query.find('#')) != -1:
-            query = query.split('#',1)
-            try:
-                index = int(query[1])
-            except ValueError:
-                index = None
-            query = query[0]
-        else:
-            index = None
-
-        if query == None:
-            return await ctx.send('You need to input a search')
-
-        async with ctx.typing():
-            player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-
-            if index != None:
-
-                if int(index) > len(player.queue):
-                    return await ctx.send('Index is larger than queue size')
-
-            query = query.strip('<>')
-
-            if not query.startswith('http'):
-                query = f'ytsearch:{query}'
-
-            results = await player.node.get_tracks(query)
-
-            if not results or not results['tracks']:
-                return await ctx.send('Song not found :x: please try again :mag_right:')
-
-            em = discord.Embed(color = random.randint(0,0xffffff))
-            em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-            em.timestamp = datetime.datetime.utcnow()
-
-            if results['loadType'] == 'PLAYLIST_LOADED':
-                tracks = results['tracks']
-
-                for track in tracks:
-                    # Add all of the tracks from the playlist to the queue.
-                    player.add(requester=ctx.author.id, track=track)
-
-                em.title = 'Playlist Enqueued!'
-                em.description = f'{results["playlistInfo"]["name"]} - {len(tracks)} tracks'
-
+            if int(query.find('#')) != -1:
+                query = query.split('#',1)
+                try:
+                    index = int(query[1])
+                except ValueError:
+                    index = None
+                query = query[0]
             else:
-                track = results['tracks'][0]
-                em.title = 'Track Enqueued'
-                em.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
-                em.set_thumbnail(
-                    url=f"http://i.ytimg.com/vi/{track['info']['identifier']}/hqdefault.jpg")
-                em.add_field(name='Author', value=track['info']['author'])
+                index = None
 
-                if track['info']['isStream']:
-                    duration = 'Live'
+            if query == None:
+                return await ctx.send('You need to input a search')
 
-                else:
-                    duration = lavalink.format_time(
-                        track['info']['length']).lstrip('00:')
-                em.add_field(name='Duration', value=duration)
-
-                track = lavalink.models.AudioTrack(
-                    track, ctx.author.id, recommended=True)
+            async with ctx.typing():
+                player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
                 if index != None:
-                    player.add(requester=ctx.author.id, track=track, index=(index-1))
+
+                    if int(index) > len(player.queue):
+                        return await ctx.send('Index is larger than queue size')
+
+                query = query.strip('<>')
+
+                if not query.startswith('http'):
+                    query = f'ytsearch:{query}'
+
+                results = await player.node.get_tracks(query)
+
+                if not results or not results['tracks']:
+                    return await ctx.send('Song not found :x: please try again :mag_right:')
+
+                em = discord.Embed(color = random.randint(0,0xffffff))
+                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                em.timestamp = datetime.datetime.utcnow()
+
+                if results['loadType'] == 'PLAYLIST_LOADED':
+                    tracks = results['tracks']
+
+                    for track in tracks:
+                        # Add all of the tracks from the playlist to the queue.
+                        player.add(requester=ctx.author.id, track=track)
+
+                    em.title = 'Playlist Enqueued!'
+                    em.description = f'{results["playlistInfo"]["name"]} - {len(tracks)} tracks'
 
                 else:
-                    player.add(requester=ctx.author.id, track=track)
+                    track = results['tracks'][0]
+                    em.title = 'Track Enqueued'
+                    em.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
+                    em.set_thumbnail(
+                        url=f"http://i.ytimg.com/vi/{track['info']['identifier']}/hqdefault.jpg")
+                    em.add_field(name='Author', value=track['info']['author'])
 
-            msg = await ctx.send(embed=em)
-            await player.set_volume(self.volume)
-            player.store(ctx.message.guild.id, ctx.message.channel.id)
+                    if track['info']['isStream']:
+                        duration = 'Live'
 
-            if not player.is_playing:
-                await player.play()
-                await player.reset_equalizer()
-                await msg.delete(delay=1)
-                # await self.now(ctx)
-                return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                    else:
+                        duration = lavalink.format_time(
+                            track['info']['length']).lstrip('00:')
+                    em.add_field(name='Duration', value=duration)
 
-        # except lavalink.exceptions.NodeException:
-        #     return await ctx.send('Node not found, contact owner for support')
+                    track = lavalink.models.AudioTrack(
+                        track, ctx.author.id, recommended=True)
+
+                    if index != None:
+                        player.add(requester=ctx.author.id, track=track, index=(index-1))
+
+                    else:
+                        player.add(requester=ctx.author.id, track=track)
+
+                msg = await ctx.send(embed=em)
+                await player.set_volume(self.volume)
+                player.store(ctx.message.guild.id, ctx.message.channel.id)
+
+                if not player.is_playing:
+                    await player.play()
+                    await player.reset_equalizer()
+                    await msg.delete(delay=1)
+                    # await self.now(ctx)
+                    return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+
+        except lavalink.exceptions.NodeException:
+            return await ctx.send('Node not found, contact owner for support')
 
     @commands.command(name='search', brief='Searches for a song a returns the top 10 results')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def search(self, ctx, *, query):
-        async with ctx.typing():
-            player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-            query = f'ytsearch:{query}'
-            results = await player.node.get_tracks(query)
-            tracks = results['tracks'][0:10]
-            i = 0
-            query_result = ''
-            embed = discord.Embed()
-            
-            embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-            embed.timestamp = datetime.datetime.utcnow()
-            for track in tracks:
-                i = i + 1
-                query_result = query_result + f'{i}) {track["info"]["title"]}\n{track["info"]["uri"]}\n'
+        try:
+            async with ctx.typing():
+                player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+                query = f'ytsearch:{query}'
+                results = await player.node.get_tracks(query)
+                tracks = results['tracks'][0:10]
+                i = 0
+                query_result = ''
+                embed = discord.Embed()
+                
+                embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                embed.timestamp = datetime.datetime.utcnow()
+                for track in tracks:
+                    i = i + 1
+                    query_result = query_result + f'{i}) {track["info"]["title"]}\n{track["info"]["uri"]}\n'
 
-            embed.description = query_result
-            await ctx.channel.send(embed=embed)
+                embed.description = query_result
+                await ctx.channel.send(embed=embed)
 
-            em = discord.Embed(color=random.randint(0, 0xffffff))
-            def check(m):
-                return m.author.id == ctx.author.id
-            
-            response = await self.bot.wait_for('message', check=check)
-            track = tracks[int(response.content)-1]
+                em = discord.Embed(color=random.randint(0, 0xffffff))
+                def check(m):
+                    return m.author.id == ctx.author.id
+                
+                response = await self.bot.wait_for('message', check=check)
+                track = tracks[int(response.content)-1]
 
-            player.add(requester=ctx.author.id, track=track)
-            
-            em.title = 'Track Enqueued'
-            em.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
-            em.set_thumbnail(
-                url=f"http://i.ytimg.com/vi/{track['info']['identifier']}/hqdefault.jpg")
+                player.add(requester=ctx.author.id, track=track)
+                
+                em.title = 'Track Enqueued'
+                em.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
+                em.set_thumbnail(
+                    url=f"http://i.ytimg.com/vi/{track['info']['identifier']}/hqdefault.jpg")
 
-            em.add_field(name='Author', value=track['info']['author'])
-            if track['info']['isStream']:
-                duration = 'Live'
-            else:
-                duration = lavalink.format_time(
-                    track['info']['length']).lstrip('00:')
+                em.add_field(name='Author', value=track['info']['author'])
+                if track['info']['isStream']:
+                    duration = 'Live'
+                else:
+                    duration = lavalink.format_time(
+                        track['info']['length']).lstrip('00:')
 
-            em.add_field(name='Duration', value=duration)
-            em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-            em.timestamp = datetime.datetime.utcnow()
-            msg = await ctx.send(embed=em)
-            await player.set_volume(self.volume)
-            if not player.is_playing:
-                await player.play()
-                await player.reset_equalizer()
-                await msg.delete(delay=1)
-                # await self.now(ctx)
-                return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
-
+                em.add_field(name='Duration', value=duration)
+                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                em.timestamp = datetime.datetime.utcnow()
+                msg = await ctx.send(embed=em)
+                await player.set_volume(self.volume)
+                if not player.is_playing:
+                    await player.play()
+                    await player.reset_equalizer()
+                    await msg.delete(delay=1)
+                    # await self.now(ctx)
+                    return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+        except lavalink.exceptions.NodeException:
+            return await ctx.send('Node not found, contact owner for support')
     @commands.command(name='seek', brief='Seeks to a point in the song (positive seconds moves the song forward that much while negative seconds moves the song backward that much')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def seek(self, ctx, seconds: int=None):
