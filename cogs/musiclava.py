@@ -58,10 +58,10 @@ class music(commands.Cog):
             bot.lavalink = lavalink.Client(bot.user.id)
             # Host, Port, Password, Region, Name
             # Host, Port, Password, Region, Name
-            bot.lavalink.add_node(
-                'kookieslavalink.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             # bot.lavalink.add_node(
-            # 'localhost', 80, 'youshallnotpass', 'us', 'default-node')
+            #     'kookieslavalink.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            bot.lavalink.add_node(
+            'localhost', 80, 'youshallnotpass', 'us', 'default-node')
             bot.add_listener(bot.lavalink.voice_update_handler,
                             'on_socket_response')
 
@@ -88,6 +88,10 @@ class music(commands.Cog):
             player = event.player
             channel = self.bot.get_channel(player.fetch(guild_id))
             guild = self.bot.get_guild(guild_id)
+            # if player.shuffle:
+            #     await channel.send('Shuffling...')
+            #     await asyncio.sleep(5)
+        
             song = 'Nothing'
             if player.current.stream:
                 dur = 'LIVE'
@@ -124,8 +128,9 @@ class music(commands.Cog):
                 text=f"Requested by: {requester}", icon_url=requester.avatar_url)
             em.timestamp = datetime.datetime.utcnow()
             await channel.send(embed=em)
-            return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
-            
+            await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+            return 
+
     async def cog_before_invoke(self, ctx):
         """ Command before-invoke handler. """
         guild_check = ctx.guild is not None
@@ -198,7 +203,7 @@ class music(commands.Cog):
 
                 if not query.startswith('http'):
                     query = f'ytsearch:{query}'
-
+                print(query)
                 results = await player.node.get_tracks(query)
 
                 if not results or not results['tracks']:
@@ -331,17 +336,6 @@ class music(commands.Cog):
 
         return await ctx.send(f'Moved track to **{lavalink.format_time(track_time)}**')
 
-    @commands.command(name='skip', brief='Skips the song playing')
-    @commands.cooldown(1, 1, commands.BucketType.user)
-    async def _skip(self, ctx):
-        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-
-        if not player.is_playing:
-            return await ctx.send('Not playing anything :mute:')
-
-        await ctx.send('⏭ Skipped')
-        return await player.skip()
-
     # @commands.command(name='skipto', brief='Skips to a song in the queue')
     # @commands.cooldown(1, 5, commands.BucketType.user)
     # async def _skipto(self, ctx, index: int):
@@ -353,7 +347,19 @@ class music(commands.Cog):
     #     for i in range(index-1):
     #         await player.skip()
     #     return await ctx.send(f"⏭ Skipped to {track['info']['title']}")
-        
+
+    @commands.command(name='skip', brief='Skips the song playing')
+    @commands.cooldown(1, 1, commands.BucketType.user)
+    async def _skip(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+
+        if not player.is_playing:
+            return await ctx.send('Not playing anything :mute:')
+
+        await ctx.send('⏭ Skipped')
+        await player.skip()
+        return
+
     @commands.command(name='now', aliases=['current', 'playing', 'np'], brief='Shows the song that is playing')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def now(self, ctx):
