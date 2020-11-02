@@ -42,6 +42,7 @@ class fun(commands.Cog):
         self.bot = bot
         self.df = pd.read_csv('./IMDB Dataset.csv')
         self.client = bot.client
+
     @commands.command(name='reddit', aliases=['red'], brief='Gets posts from reddit')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def reddit(self, ctx, *, subreddit):
@@ -57,15 +58,16 @@ class fun(commands.Cog):
                 return await ctx.send(f'Subreddit {subreddit} not found')
             if submission == None:
                 return await ctx.send(f'Subreddit {subreddit} not found')
-            embed = discord.Embed(color = random.randint(0, 0xffffff), description = f'[Click here if image isn\'t loading]({submission.url})')
-            embed.set_image(url = submission.url)
+            embed = discord.Embed(color=random.randint(
+                0, 0xffffff), description=f'[Click here if image isn\'t loading]({submission.url})')
+            embed.set_image(url=submission.url)
             embed.set_author(name=ctx.author.display_name,
                             icon_url=ctx.author.avatar_url)
 
             embed.timestamp = datetime.datetime.utcnow()
             return await ctx.send(embed=embed)
 
-    
+
     @commands.command(brief='Gets a meme')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def meme(self, ctx):
@@ -138,9 +140,6 @@ class fun(commands.Cog):
     async def gimme(self, ctx):
         return await ctx.send(f'{ctx.author.mention} has received {random.randint(100, 1000000)} dollars')
 
-
-
-
     @commands.command(brief='Says hello')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def hello(self, ctx):
@@ -189,7 +188,7 @@ class fun(commands.Cog):
         msg = await self.bot.wait_for('message', check=check)
 
         model = markovify.Text(msg.content)
-        #generate 5 random sentences
+        # generate 5 random sentences
         n = 1
         embed = discord.Embed(
             title=f'Sentences that {ctx.author.display_name} might say based off of a small paragraph')
@@ -212,7 +211,7 @@ class fun(commands.Cog):
 
             # df.sentiment.value_counts().plot(kind='bar')
 
-            #cleaning up the text
+            # cleaning up the text
             self.df["review"] = self.df["review"].replace(
                 r'[^A-Za-z0-9 ]+', '')
             self.df['review'] = self.df['review'].apply(lambda x: re.sub(
@@ -231,19 +230,19 @@ class fun(commands.Cog):
                 X, Y, test_size=0.001, random_state=88
             )
 
-            #tokenize each document into a vector of numbers
+            # tokenize each document into a vector of numbers
             X_vect = vectorizer.fit_transform(X_train)
 
-            #training the model
+            # training the model
             await ctx.send('Training the model now...')
             nb = MultinomialNB()
             nb.fit(X_vect, y_train)
 
-            #gauging accuracy
+            # gauging accuracy
             # y_pred = nb.predict(vectorizer.transform(X_test))
             # print(accuracy_score(y_test, y_pred))
 
-            #function to predict on arbitrary text
+            # function to predict on arbitrary text
 
             def text_predict(review):
                 text_vector = vectorizer.transform([review])

@@ -118,6 +118,10 @@ class music(commands.Cog):
                 em.add_field(name='Queue Loop', value=f'On')
             else:
                 em.add_field(name='Queue Loop', value=f'Off')
+            if player.shuffle:
+                em.add_field(name='Shuffle', value='On')
+            else:
+                em.add_field(name='Shuffle', value='Off')
             em.add_field(name='Volume', value=f'{player.volume}%')
             em.set_author(name="Now Playing 🎵",
                         icon_url="https://i.ibb.co/DGsmTvh/star.gif")
@@ -146,7 +150,7 @@ class music(commands.Cog):
         """ This check ensures that the bot and command author are in the same voicechannel. """
         player = self.bot.lavalink.player_manager.create(
             ctx.guild.id, endpoint=str(ctx.guild.region))
-        should_connect = ctx.command.name in ('play',)
+        should_connect = ctx.command.name in ('play', 'search')
 
         if not ctx.author.voice or not ctx.author.voice.channel:
             raise commands.CommandInvokeError('Join a voice channel first :loud_sound:')
@@ -250,7 +254,11 @@ class music(commands.Cog):
 
                 msg = await ctx.send(embed=em)
                 await player.set_volume(self.volume)
+
+                if player.fetch(ctx.message.guild.id) != None:
+                    player.delete(ctx.message.guild.id)
                 player.store(ctx.message.guild.id, ctx.message.channel.id)
+                await ctx.send(f'Sending now playing messages in **{ctx.channel.name}**')
 
                 if not player.is_playing:
                     await player.play()
@@ -578,6 +586,7 @@ class music(commands.Cog):
             await ctx.send(f'No lyrics found for `{query}`')
         else:
             lyrics = results[0].lyrics
+            print(lyrics)
             result = results[0]
             embed = discord.Embed(title=f'{result.name} - {result.artist}',
                                   color=random.randint(0,0xffffff), description=lyrics[:2048])

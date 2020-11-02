@@ -218,8 +218,8 @@ class roles(commands.Cog):
             if position != None:
                 await ctx.send(f'Changed the position of role {r} to `{position}`')
             return
-        except discord.Forbidden:
-            return await ctx.send('I don\'t have the permissions to do that')
+        except discord.errors.HTTPException:
+            return await ctx.send('Missing permissions')
     @commands.command(aliases=['rm'], brief='Edits a role\'s mentionability')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
