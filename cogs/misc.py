@@ -1,3 +1,9 @@
+import inspect
+from contextlib import redirect_stdout
+import aiohttp
+import traceback
+import textwrap
+import io
 import ast
 from discord.ext.commands import command
 from discord.ext.commands import Cog
@@ -24,27 +30,16 @@ import nltk
 # nltk.download('wordnet')
 from nltk.corpus import wordnet
 import ksoftapi
-import ast
+import inspect
+import io
+import textwrap
+import traceback
+import aiohttp
+from contextlib import redirect_stdout
 
 kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsbCwgIm8iOiAiNTg3MDY4NjEwMjM3NjkzOTYzIiwgImMiOiA3NTczNDQ4fQ.bdb3a6d6f99d566327126abc55fdbd969b04c877ccd7cd5c5df316a343e80355')
 
 
-
-
-def insert_returns(body):
-    # insert return stmt if the last expression is a expression statement
-    if isinstance(body[-1], ast.Expr):
-        body[-1] = ast.Return(body[-1].value)
-        ast.fix_missing_locations(body[-1])
-
-    # for if statements, we insert returns into the body and the orelse
-    if isinstance(body[-1], ast.If):
-        insert_returns(body[-1].body)
-        insert_returns(body[-1].orelse)
-
-    # for with blocks, again we insert returns into the body
-    if isinstance(body[-1], ast.With):
-        insert_returns(body[-1].body)
 
 class misc(commands.Cog):
     def __init__(self, bot):
@@ -306,61 +301,103 @@ class misc(commands.Cog):
             embed = discord.Embed(title=":satellite_orbital: IP information:", color=random.randint(0,0xffffff), description="\n".join(description))
             embed.set_footer(text=ip, icon_url=ctx.author.avatar_url)
             embed.set_author(name=ctx.author.display_name,
-                          icon_url=ctx.author.avatar_url)
+                             icon_url=ctx.author.avatar_url)
             embed.timestamp = datetime.datetime.utcnow()
             return await ctx.send(embed=embed)
 
     @commands.command(name='eval', brief='Eval command')
     @commands.is_owner()
-    async def eval_fn(self, ctx, *, cmd):
+    async def _eval(ctx, *, body):
+        """Evaluates python code"""
+        env = {
+            'ctx': ctx,
+            'bot': bot,
+            'channel': ctx.channel,
+            'author': ctx.author,
+            'guild': ctx.guild,
+            'message': ctx.message,
+            'source': inspect.getsource
+        }
+
+        def cleanup_code(content):
+            """Automatically removes code blocks from the code."""
+            # remove ```py\n```
+            if content.startswith('```') and content.endswith('```'):
+                return '\n'.join(content.split('\n')[1:-1])
+
+            # remove `foo`
+            return content.strip('` \n')
+
+        def get_syntax_error(e):
+            if e.text is None:
+                return f'```py\n{e.__class__.__name__}: {e}\n```'
+            return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
+
+        env.update(globals())
+
+        body = cleanup_code(body)
+        stdout = io.StringIO()
+        err = out = None
+
+        to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
+
+        def paginate(text: str):
+            '''Simple generator that paginates text.'''
+            last = 0
+            pages = []
+            for curr in range(0, len(text)):
+                if curr % 1980 == 0:
+                    pages.append(text[last:curr])
+                    last = curr
+                    appd_index = curr
+            if appd_index != len(text)-1:
+                pages.append(text[last:curr])
+            return list(filter(lambda a: a != '', pages))
+
         try:
-            """Evaluates input.
-            Input is interpreted as newline seperated statements.
-            If the last statement is an expression, that is the return value.
-            Usable globals:
-            - `bot`: the bot instance
-            - `discord`: the discord module
-            - `commands`: the discord.ext.commands module
-            - `ctx`: the invokation context
-            - `__import__`: the builtin `__import__` function
-            Such that `>eval 1 + 1` gives `2` as the result.
-            The following invokation will cause the bot to send the text '9'
-            to the channel of invokation and return '3' as the result of evaluating
-            >eval ```
-            a = 1 + 2
-            b = a * 2
-            await ctx.send(a + b)
-            a
-            ```
-            """
-            fn_name = "_eval_expr"
-
-            cmd = cmd.strip("` ")
-
-            # add a layer of indentation
-            cmd = "\n".join(f"    {i}" for i in cmd.splitlines())
-
-            # wrap in async def body
-            body = f"async def {fn_name}():\n{cmd}"
-
-            parsed = ast.parse(body)
-            body = parsed.body[0].body
-
-            insert_returns(body)
-
-            env = {
-                'bot': ctx.bot,
-                'discord': discord,
-                'commands': commands,
-                'ctx': ctx,
-                '__import__': __import__
-            }
-            exec(compile(parsed, filename="<ast>", mode="exec"), env)
-
-            result = (await eval(f"{fn_name}()", env))
-            return await ctx.send(result)
+            exec(to_compile, env)
         except Exception as e:
-            return await ctx.send(e)
+            err = await ctx.send(f'```py\n{e.__class__.__name__}: {e}\n```')
+            return await ctx.message.add_reaction('\u2049')
+
+        func = env['func']
+        try:
+            with redirect_stdout(stdout):
+                ret = await func()
+        except Exception as e:
+            value = stdout.getvalue()
+            err = await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+        else:
+            value = stdout.getvalue()
+            if ret is None:
+                if value:
+                    try:
+
+                        out = await ctx.send(f'```py\n{value}\n```')
+                    except:
+                        paginated_text = paginate(value)
+                        for page in paginated_text:
+                            if page == paginated_text[-1]:
+                                out = await ctx.send(f'```py\n{page}\n```')
+                                break
+                            await ctx.send(f'```py\n{page}\n```')
+            else:
+                try:
+                    out = await ctx.send(f'```py\n{value}{ret}\n```')
+                except:
+                    paginated_text = paginate(f"{value}{ret}")
+                    for page in paginated_text:
+                        if page == paginated_text[-1]:
+                            out = await ctx.send(f'```py\n{page}\n```')
+                            break
+                        await ctx.send(f'```py\n{page}\n```')
+
+        if out:
+            await ctx.message.add_reaction('\u2705')  # tick
+        elif err:
+            await ctx.message.add_reaction('\u2049')  # x
+        else:
+            await ctx.message.add_reaction('\u2705')
 
 def setup(bot):
     bot.add_cog(misc(bot))
