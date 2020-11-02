@@ -337,6 +337,21 @@ class music(commands.Cog):
     @commands.command(name='seek', brief='Seeks to a point in the song (positive seconds moves the song forward that much while negative seconds moves the song backward that much')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def seek(self, ctx, seconds: int=None):
+        is1 = seconds.find(':')
+        if str(is1) == '-1':
+            second = seconds
+        else:
+            secondsplit = seconds.split(":")
+            types = len(secondsplit)
+            if types == 2:
+                second = int(secondsplit[0]) * 60
+                second += int(secondsplit[1])
+            elif types == 3:
+                second = int(secondsplit[0]) * 3600
+                second += int(secondsplit[1]) * 60
+                second += int(secondsplit[2])
+            else:
+                return await ctx.send('Please format your time like this 1:35:54 for 1 hour, 35 minutes and 54 seconds or 35:54 for 35 minutes and 54 seconds, or 54 for 54 seconds')
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
         if not player.is_playing:
@@ -345,7 +360,7 @@ class music(commands.Cog):
         if not seconds:
             return await ctx.send('You need to specify the amount of seconds to seek :fast_forward:')
         try:
-            track_time = player.position + int(seconds) * 1000
+            track_time = player.position + int(second) * 1000
             await player.seek(track_time)
         except ValueError:
             return await ctx.send('Specify valid amount of seconds :clock3:')
