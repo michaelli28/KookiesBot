@@ -83,6 +83,8 @@ class music(commands.Cog):
             channel = self.bot.get_channel(player.fetch(guild_id))
             player.delete(guild_id)
             await channel.send('Queue ended, leaving channel')
+            activity = discord.Game(name=";help")
+            await bot.change_presence(activity=activity)
             return await self.connect_to(guild_id, None)
         if isinstance(event, lavalink.events.TrackStartEvent):
             guild_id = int(event.player.guild_id)
@@ -571,6 +573,8 @@ class music(commands.Cog):
         await player.stop()
         # Disconnect from the voice channel.
         await ctx.send('Stopping :mute:')
+        activity = discord.Game(name=";help")
+        await bot.change_presence(activity=activity)
         return await self.connect_to(ctx.guild.id, None)
         
 
