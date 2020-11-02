@@ -307,11 +307,11 @@ class misc(commands.Cog):
 
     @commands.command(name='eval', brief='Eval command')
     @commands.is_owner()
-    async def _eval(ctx, *, body):
+    async def _eval(self, ctx, *, body):
         """Evaluates python code"""
         env = {
             'ctx': ctx,
-            'bot': bot,
+            'bot': self.bot,
             'channel': ctx.channel,
             'author': ctx.author,
             'guild': ctx.guild,
@@ -372,7 +372,6 @@ class misc(commands.Cog):
             if ret is None:
                 if value:
                     try:
-
                         out = await ctx.send(f'```py\n{value}\n```')
                     except:
                         paginated_text = paginate(value)

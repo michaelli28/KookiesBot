@@ -72,12 +72,12 @@ class moderation(commands.Cog):
     @commands.has_permissions(manage_nicknames=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def nick(self, ctx, member: discord.Member, *, nick):
-        try:
-            old = member.display_name
-            await member.edit(nick=nick)
-            return await ctx.send(f'Nickname was changed for {member.mention} from {old} to {nick}')
-        except discord.errors.HTTPException:
-            return await ctx.send('Nickname must be 32 or fewer characters in length')
+        # try:
+        old = member.display_name
+        await member.edit(nick=nick)
+        return await ctx.send(f'Nickname was changed for {member.mention} from {old} to {nick}')
+        # except discord.errors.HTTPException:
+        #     return await ctx.send('Nickname must be 32 or fewer characters in length')
 
     @commands.command(brief='Locks the server from messages')
     @commands.has_permissions(manage_channels=True)
