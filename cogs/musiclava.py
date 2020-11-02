@@ -298,11 +298,11 @@ class music(commands.Cog):
                     return m.author.id == ctx.author.id
                 try:
                     response = await self.bot.wait_for('message', check=check, timeout=30)
-                except Asyncio.TimeoutError:
+                except asyncio.TimeoutError:
                     return await ctx.send('Please respond with a number between one through ten to select a song or stop to cancel')
                 if response.lower() == 'cancel' or response.lower() == 'stop':
                     return await ctx.send('Stopping')
-                    
+
                 track = tracks[int(response.content)-1]
 
                 player.add(requester=ctx.author.id, track=track)

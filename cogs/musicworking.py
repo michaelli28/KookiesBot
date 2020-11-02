@@ -736,7 +736,6 @@ class music(commands.Cog):
             i+=1
         await ctx.send('Respond with the number you would like to play or stop to stop', embed=embed)
         msg = await self.bot.wait_for('message', check=lambda message: message.author == ctx.author)
-        x=0
         if msg.content.lower() == 'stop':
             return await ctx.send('Stopping')
         else: 
