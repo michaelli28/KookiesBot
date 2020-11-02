@@ -10,6 +10,7 @@ import asyncio
 from discord.ext.menus import MenuPages, ListPageSource
 from discord.utils import get
 from typing import Optional
+import asyncio
 kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsbCwgIm8iOiAiNTg3MDY4NjEwMjM3NjkzOTYzIiwgImMiOiA3NTczNDQ4fQ.bdb3a6d6f99d566327126abc55fdbd969b04c877ccd7cd5c5df316a343e80355')
 
 #TODO skipto cmd
@@ -295,8 +296,13 @@ class music(commands.Cog):
                 em = discord.Embed(color=random.randint(0, 0xffffff))
                 def check(m):
                     return m.author.id == ctx.author.id
-                
-                response = await self.bot.wait_for('message', check=check)
+                try:
+                    response = await self.bot.wait_for('message', check=check, timeout=30)
+                except Asyncio.TimeoutError:
+                    return await ctx.send('Please respond with a number between one through ten to select a song or stop to cancel')
+                if response.lower() == 'cancel' or response.lower() == 'stop':
+                    return await ctx.send('Stopping')
+                    
                 track = tracks[int(response.content)-1]
 
                 player.add(requester=ctx.author.id, track=track)
