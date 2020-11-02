@@ -98,7 +98,7 @@ class fun(commands.Cog):
 
 
     @commands.command(name='8ball', brief='Answer your yes/no questions')
-    @commands.cooldown(1, 30, commands.BucketType.user)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def _8ball(self, ctx, *, question=None):
         if (question) == None:
             return await ctx.send("Ask a question sir or ma\'am")
