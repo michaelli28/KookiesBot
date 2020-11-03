@@ -302,7 +302,7 @@ class music(commands.Cog):
                     response = await self.bot.wait_for('message', check=check, timeout=30)
                 except asyncio.TimeoutError:
                     return await ctx.send('Please respond with a number between one through ten to select a song or stop to cancel')
-                if response.lower() == 'cancel' or response.lower() == 'stop':
+                if response.content.lower() == 'cancel' or response.content.lower() == 'stop':
                     return await ctx.send('Stopping')
 
                 track = tracks[int(response.content)-1]
