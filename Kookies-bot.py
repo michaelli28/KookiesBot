@@ -66,9 +66,12 @@ async def on_ready():
     bot.load_extension('cogs.moderation')
     bot.load_extension('cogs.musiclava')
     bot.load_extension('cogs.roles')
-    #bot.load_extension('cogs.school')
     bot.load_extension('cogs.server')
     bot.load_extension('cogs.misc')
+    bot.load_extension('cogs.utility')
+    #bot.load_extension('cogs.school')
+
+
     # channel = bot.get_channel(668863931200307248)
     # embed = discord.Embed(title='Now Playing', url='https://stopify.co/profile.php?id=SXG05O.html')
     # embed.timestamp=datetime.datetime.utcnow()

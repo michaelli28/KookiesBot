@@ -148,38 +148,6 @@ class fun(commands.Cog):
         return await ctx.send("Hello " + ctx.message.author.mention)
 
 
-    @commands.command(brief='Gets news from CNN')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def news(self, ctx, *, search):
-        num_query = search.split(',', 1)
-        number_of_results = num_query[0]
-
-        try:
-            searchq = num_query[1]
-        except:
-            number_of_results = 1
-            searchq = num_query
-
-        query_string1 = urllib.parse.urlencode({'q': searchq})
-        query_string1 = query_string1.encode('utf-8')
-
-        req1 = urllib.request.Request(
-            'https://news.google.com/', query_string1,
-            headers={
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
-            }
-        )
-
-        resp1 = urllib.request.urlopen(req1)
-        respData1 = resp1.read()
-
-        search_results1 = re.findall(
-            '"https://www\.cnn\.com/(.*?)"', str(respData1))
-        results = {}
-        for n in range(int(number_of_results)):
-            results[n+1] = ('https://www.cnn.com/search?' + search_results1[n])
-        return await ctx.send(results)
-
     @commands.command(name='mimic', aliases=['mm'], brief='Mimics how you talk')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def mimicsentence(self, ctx):
@@ -309,22 +277,8 @@ class fun(commands.Cog):
             await ctx.send('Too many users have this username')
             return await ctx.send(repeat)
 
-    @commands.command(name='textart', aliases=['coolfont'], brief='Makes text look cool')
-    @commands.cooldown(1, 5, commands.BucketType.default)
-    async def font_generator(self, ctx, *, text: str = ""):
-        """Generate cool font"""
-        if not text:
-            return await ctx.send('Please enter text :pager:')
-
-        url = f'https://gdcolon.com/tools/gdfont/img/{text}?font=3&color=00ffff'
-        async with self.client.get(url) as r:
-            if r.status != 200:
-                return await ctx.send('Failed to generate textart :x:')
-            data = io.BytesIO(await r.read())
-        return await ctx.send(file=discord.File(data, 'textart.png'))
-
     @commands.command(name='insult', aliases=['roast'], brief='Insults people')
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.is_owner()
     async def insult(self, ctx):
         """Insult generator"""
         url = 'https://www.rappad.co/api/battles/random_insult'
@@ -354,7 +308,7 @@ class fun(commands.Cog):
         while True:
             try:
                 params = {'message': 'message'}
-                msg = await self.bot.wait_for('message', check=check, timeout=120.0)
+                msg = await self.bot.wait_for('message', check=check, timeout=30)
             except asyncio.TimeoutError:
                 return await ctx.send("Bye :wave:")
             else:
