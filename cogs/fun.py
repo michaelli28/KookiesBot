@@ -31,6 +31,8 @@ import nltk
 # nltk.download('wordnet')
 from nltk.corpus import wordnet
 
+
+
 client_secret = '5E8IY8h100TBQjMuU2OMHfum5v4'
 
 client_id = 'Vca7Chk3l3eAuQ'
@@ -308,7 +310,7 @@ class fun(commands.Cog):
             return await ctx.send(repeat)
 
     @commands.command(name='textart', aliases=['coolfont'], brief='Makes text look cool')
-    @commands.cooldown(1, 600, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.default)
     async def font_generator(self, ctx, *, text: str = ""):
         """Generate cool font"""
         if not text:
@@ -321,7 +323,53 @@ class fun(commands.Cog):
             data = io.BytesIO(await r.read())
         return await ctx.send(file=discord.File(data, 'textart.png'))
 
+    @commands.command(name='insult', aliases=['roast'], brief='Insults people')
+    @commands.cooldown(1, 3, commands.BucketType.default)
+    async def insult(self, ctx):
+        """Insult generator"""
+        url = 'https://www.rappad.co/api/battles/random_insult'
+        try:
+            user = ctx.message.mentions[0]
+        except IndexError:
+            return await ctx.send("Mention the person you want to insult")
+        async with ctx.typing():
+            async with self.client.get(url) as r:
+                if r.status != 200:
+                    return await ctx.send('Failed to insult :disappointed_relieved:')
+                data = await r.json()
 
+        insult_text = '. '.join(
+            map(lambda s: s.strip().capitalize(), data['insult'].split('.')))
+        return await ctx.send(f"{user.mention} {insult_text}")
 
+    @commands.command(name='chat', aliases=['aichat'], brief = 'Starts ai chat mode, type bye to stop')
+    @commands.cooldown(1, 30, commands.BucketType.default)
+    async def _aichat(self, ctx):
+        """Start AI chat mode"""
+        def check(m):
+            return m.author == ctx.author and not m.content.startswith(';')
+
+        await ctx.send("Let's chat")
+        url = 'https://some-random-api.ml/chatbot'
+        while True:
+            try:
+                params = {'message': 'message'}
+                msg = await self.bot.wait_for('message', check=check, timeout=120.0)
+            except asyncio.TimeoutError:
+                return await ctx.send("Bye :wave:")
+            else:
+                if 'bye' in msg.content.lower():
+                    return await ctx.send("Bye :wave:")
+                else:
+                    params['message'] = msg.content
+                    try:
+                        async with ctx.typing():
+                            async with self.client.get(url, params=params) as r:
+                                response = await r.json()
+                                response = response['response']
+                    except:
+                        await ctx.send('Please repeat')
+                        continue
+                    await ctx.send(response)
 def setup(bot):
 	bot.add_cog(fun(bot))

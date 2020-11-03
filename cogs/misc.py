@@ -18,6 +18,7 @@ import datetime
 import pymongo
 from pymongo import MongoClient
 import random
+import requests
 import re
 import time
 from collections import Counter
@@ -36,7 +37,8 @@ import textwrap
 import traceback
 import aiohttp
 from contextlib import redirect_stdout
-
+from textwrap import TextWrapper
+from googletrans import Translator, LANGUAGES
 kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsbCwgIm8iOiAiNTg3MDY4NjEwMjM3NjkzOTYzIiwgImMiOiA3NTczNDQ4fQ.bdb3a6d6f99d566327126abc55fdbd969b04c877ccd7cd5c5df316a343e80355')
 
 
@@ -46,6 +48,7 @@ class misc(commands.Cog):
         self.bot = bot
         self.client = bot.client
         self.kclient = kclient
+        self.trans = Translator()
 
     @commands.command(aliases=['def'], brief='Gives the definitions of a word without using an API')
     @commands.cooldown(1, 5, commands.BucketType.user)
@@ -226,7 +229,7 @@ class misc(commands.Cog):
     @commands.command(name='userinfo', aliases=['user', 'uinfo', 'ui'], brief='Gets info about a user')
     @commands.cooldown(1, 5, commands.BucketType.default)
     async def userinfo(self, ctx, *, name=""):
-        """Get user info. Ex: ~user @user"""
+        """Get user info. Ex: ;user @user"""
         if name:
             try:
                 user = ctx.message.mentions[0]
@@ -397,6 +400,103 @@ class misc(commands.Cog):
             await ctx.message.add_reaction('\u2049')  # x
         else:
             await ctx.message.add_reaction('\u2705')
+        return
+
+    @commands.command(name='ascii', brief='Ascii art of avatar or image')
+    @commands.cooldown(1, 5, commands.BucketType.default)
+    async def ascii(self, ctx, image_link: str=""):
+        """Ascii art of avatar"""
+        if not image_link:
+            user = ctx.message.author
+            image_link = user.avatar_url_as(size=1024)
+        try:
+            user = ctx.message.mentions[0]
+            image_link = user.avatar_url_as(size=1024)
+        except IndexError:
+            pass
+        try:
+            result = requests.get(f'https://useless-api--vierofernando.repl.co/imagetoascii?image={image_link}').text.replace('<br>','\n')
+        except:
+            return await ctx.send("Failed :x:\nMaybe url is wrong :link:")
+
+        ascii_file = open("ascii.txt", "w")
+        n = ascii_file.write(result)
+        ascii_file.close()
+
+        file = discord.File('ascii.txt')
+        em = discord.Embed(color=discord.Colour(0xFFFF66))
+        em.set_thumbnail(url=image_link)
+        return await ctx.send(file=file, embed=em)
+
+    @commands.command(name='translate', brief='Translates text, use --list to see list of languages')
+    @commands.cooldown(1, 5, commands.BucketType.default)
+    async def translate(self, ctx, *args):
+        """Translator"""
+        if len(args) > 0:
+            if args[0] == '--list':
+                lang = ''
+                for l in LANGUAGES:
+                    lang = lang+str(l)+' ('+str(LANGUAGES[l]).title()+')\n'
+                embed = discord.Embed(title='List of supported languages', description=str(
+                    lang), color=discord.Color(0x5DADEC))
+                await ctx.send(embed=embed)
+            elif len(args) > 1:
+                destination = args[0]
+                try:
+                    toTrans = ' '.join(args[1:len(args)])
+                except IndexError:
+                    await ctx.send('No text to translate :x:')
+                try:
+                    async with ctx.typing():
+                        translation = self.trans.translate(toTrans, dest=destination)
+                    embed = discord.Embed(description=translation.text,
+                                            color=random.randint(0,0xffffff))
+                    embed.set_author(name=ctx.author.display_name,
+                        icon_url=ctx.author.avatar_url)
+                    embed.timestamp = datetime.datetime.utcnow()
+                    embed.set_footer(
+                        text=f'Translated {LANGUAGES[translation.src]} to {LANGUAGES[translation.dest]}.', icon_url='https://i.ibb.co/1np1s8P/translate.png')
+                    await ctx.send(embed=embed)
+                except: #Exception as e:
+                    return await ctx.send('Unable to translate :x:\nMaybe language id was wrong')
+            else:
+                return await ctx.send(content='Please add a language id\nType `~translate --list` for the list')
+        else:
+            return await ctx.send(content='Please add translations\neg.`~translate en Hola`\nType `~translate --list` for supported languages.')
+
+    @commands.command(name='advice', brief='Generates advice')
+    @commands.cooldown(1, 3, commands.BucketType.default)
+    async def advice(self, ctx):
+        """Random Advice generator"""
+        url = 'https://api.adviceslip.com/advice'
+        async with ctx.typing():
+            async with self.client.get(url) as r:
+                if r.status != 200:
+                    return ctx.send('Unable to generate advice :disappointed_relieved')
+                data = await r.json(content_type='text/html')
+
+        return await ctx.send(data['slip']['advice'])
+
+    @commands.command(name='rhyme', brief='Rhymes a word')
+    @commands.cooldown(1, 3, commands.BucketType.default)
+    async def rhyme(self, ctx, word=""):
+        if not word:
+            return await ctx.send("Specify a word :thought_balloon:")
+
+        url = 'https://rhymebrain.com/talk'
+        params = {'function': 'getRhymes',
+                    'word': word.strip()}
+        async with ctx.typing():
+            async with self.client.get(url, params=params) as r:
+                if r.status != 200:
+                    return ctx.send('Failed to get rhymes :x:')
+                data = await r.json()
+            result = []
+            for i in data[:30]:
+                result.append(i['word'])
+        return await ctx.send(f'Word(s) that rhyme with **{word}**\n' + f"`{', '.join(result)}`")
+
+
 
 def setup(bot):
     bot.add_cog(misc(bot))
