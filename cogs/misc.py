@@ -224,7 +224,7 @@ class misc(commands.Cog):
         try:
             result = requests.get(f'https://useless-api--vierofernando.repl.co/imagetoascii?image={image_link}').text.replace('<br>','\n')
         except:
-            return await ctx.send("Failed :x:\nMaybe url is wrong :link:")
+            return await ctx.send("Failed :x:\nMaybe the url is wrong")
 
         ascii_file = open("ascii.txt", "w")
         n = ascii_file.write(result)
@@ -245,7 +245,7 @@ class misc(commands.Cog):
         async with ctx.typing():
             async with self.client.get(url) as r:
                 if r.status != 200:
-                    return ctx.send('Unable to generate advice :disappointed_relieved')
+                    return ctx.send('API error, try again later')
                 data = await r.json(content_type='text/html')
 
         return await ctx.send(data['slip']['advice'])
@@ -262,7 +262,7 @@ class misc(commands.Cog):
         async with ctx.typing():
             async with self.client.get(url, params=params) as r:
                 if r.status != 200:
-                    return ctx.send('Failed to get rhymes :x:')
+                    return ctx.send('API error, try again later')
                 data = await r.json()
             result = []
             for i in data[:30]:

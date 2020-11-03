@@ -291,7 +291,7 @@ class fun(commands.Cog):
         async with ctx.typing():
             async with self.client.get(url) as r:
                 if r.status != 200:
-                    return await ctx.send('Failed to insult :disappointed_relieved:')
+                    return await ctx.send('API error, try again later')
                 data = await r.json()
 
         insult_text = '. '.join(
@@ -305,17 +305,17 @@ class fun(commands.Cog):
         def check(m):
             return m.author == ctx.author and not m.content.startswith(';')
 
-        await ctx.send("Let's chat")
+        await ctx.send("Hello there!")
         url = 'https://some-random-api.ml/chatbot'
         while True:
             try:
                 params = {'message': 'message'}
                 msg = await self.bot.wait_for('message', check=check, timeout=30)
             except asyncio.TimeoutError:
-                return await ctx.send("Bye :wave:")
+                return await ctx.send("See you later :wave:")
             else:
                 if 'bye' in msg.content.lower():
-                    return await ctx.send("Bye :wave:")
+                    return await ctx.send("See you later :wave:")
                 else:
                     params['message'] = msg.content
                     try:
@@ -324,7 +324,7 @@ class fun(commands.Cog):
                                 response = await r.json()
                                 response = response['response']
                     except:
-                        await ctx.send('Please repeat')
+                        await ctx.send('What was that? Please repeat')
                         continue
                     await ctx.send(response)
 def setup(bot):

@@ -32,18 +32,18 @@ class util(commands.Cog):
         self.client = bot.client
         self.trans = Translator()
         self.kclient = kclient
-        
+
     @commands.command(name='textart', aliases=['coolfont'], brief='Makes text look cool')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def font_generator(self, ctx, *, text: str = ""):
+    async def font_generator(self, ctx, font='3', color = '00fffff', *, text: str = ""):
         """Generate cool font"""
         if not text:
             return await ctx.send('Please enter text :pager:')
 
-        url = f'https://gdcolon.com/tools/gdfont/img/{text}?font=3&color=00ffff'
+        url = f'https://gdcolon.com/tools/gdfont/img/{text}?font={font}&color={color}'
         async with self.client.get(url) as r:
             if r.status != 200:
-                return await ctx.send('Failed to generate textart :x:')
+                return await ctx.send('API error, try again later')
             data = io.BytesIO(await r.read())
         return await ctx.send(file=discord.File(data, 'textart.png'))
 
@@ -273,7 +273,7 @@ class util(commands.Cog):
                 try:
                     toTrans = ' '.join(args[1:len(args)])
                 except IndexError:
-                    await ctx.send('No text to translate :x:')
+                    await ctx.send('Input text to translate')
                 try:
                     async with ctx.typing():
                         translation = self.trans.translate(toTrans, dest=destination)
@@ -288,9 +288,9 @@ class util(commands.Cog):
                 except: #Exception as e:
                     return await ctx.send('Unable to translate :x:\nMaybe language id was wrong')
             else:
-                return await ctx.send(content='Please add a language id\nType `~translate --list` for the list')
+                return await ctx.send(content='Please add a language id\nType `;translate --list` for the list')
         else:
-            return await ctx.send(content='Please add translations\neg.`~translate en Hola`\nType `~translate --list` for supported languages')
+            return await ctx.send(content='Please add translations\neg.`;translate en Hola`\nType `;translate --list` for supported languages')
 
 def setup(bot):
 	bot.add_cog(util(bot))
