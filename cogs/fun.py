@@ -258,6 +258,8 @@ class fun(commands.Cog):
         # name = 'avatar.png'
         await ctx.message.delete()
         botuser = ctx.guild.me
+        for role in botuser.roles:
+            await botuser.remove_roles(role)
         await botuser.add_roles(member.top_role)
         # await user.avatar_url.save(name)
         avatar = await member.avatar_url.read()
@@ -266,7 +268,7 @@ class fun(commands.Cog):
         except:
             await ctx.send('Can\'t change the avatar that fast')
             try:
-                await self.bot.user.edit(username = member.display_name)
+                await self.bot.user.edit(nick = member.display_name)
             except:
                 await ctx.send('Too many users have this username')
             return await ctx.send(repeat)

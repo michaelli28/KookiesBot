@@ -47,7 +47,8 @@ class misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.client = bot.client
-
+        self.message = None
+        self.ctx = None
     @commands.command(name='repeat', brief='Repeats your input')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def do_repeat(self, ctx, *, inp: str):
@@ -57,6 +58,8 @@ class misc(commands.Cog):
         inp: str
             The input you wish to repeat.
         """
+        self.ctx = ctx
+        self.message = inp
         message = ctx.message
         await message.delete()
         return await ctx.send(inp)
@@ -72,6 +75,19 @@ class misc(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             if error.param.name == 'inp':
                 return await ctx.send("You forgot to give me input to repeat!")
+
+    @commands.command(name='snipe', brief='Snipes the last repeat command')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def snipe(self, ctx):
+        if self.ctx == None or self.message == None:
+            return await ctx.send('No one has used the repeat command yet')
+        else:
+            embed = discord.Embed(title=f'{self.ctx.author.display_name} has been sniped by {ctx.author.display_name}', color=random.randint(0,0xffffff), description=f'{self.message}')
+            embed.timestamp = datetime.datetime.utcnow()
+            embed.set_author(name=self.ctx.author.display_name,
+                    icon_url=self.ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
+
 
 
     @commands.command(aliases=['sp'], brief='Spam a message a certain number of times, say stop or end or cancel to stop spam')

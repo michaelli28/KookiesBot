@@ -195,7 +195,7 @@ class moderation(commands.Cog):
                 await user.add_roles(role)
                 
                 if minutes>0:
-                    await ctx.send(f'`{user.display_name}` has been muted from chat (will be unmuted in {minutes} minutes)')
+                    await ctx.send(f'`{user.display_name}` has been muted from chat and will be unmuted in {minutes} minute(s))')
                     await asyncio.sleep(int(minutes*60))
                     await user.remove_roles(role)
                     return await ctx.send(f'Unmuted {user.mention} after {minutes} minute(s)')

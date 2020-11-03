@@ -223,7 +223,7 @@ class util(commands.Cog):
             em.add_field(
                 name='Join Date', value=f"`{user.joined_at.__format__('%A, %d %B %Y @ %H:%M:%S')}`", inline=False)
         em.set_thumbnail(url=user.avatar_url)
-        em.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        em.set_author(name=user, icon_url=user.avatar_url)
         em.timestamp = datetime.datetime.utcnow()
 
         return await ctx.send(embed=em)

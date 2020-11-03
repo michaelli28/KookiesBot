@@ -154,12 +154,12 @@ class music(commands.Cog):
         player = self.bot.lavalink.player_manager.create(
             ctx.guild.id, endpoint=str(ctx.guild.region))
         should_connect = ctx.command.name in ('play', 'search')
-
+        
         if not ctx.author.voice or not ctx.author.voice.channel:
             raise commands.CommandInvokeError('Join a voice channel first :loud_sound:')
-
+        not_connect = ctx.command.name in ('volume', 'disconnect',)
         if not player.is_connected:
-            if not should_connect:
+            if not should_connect or not not_connect:
                 raise commands.CommandInvokeError('Not connected :mute:')
 
             permissions = ctx.author.voice.channel.permissions_for(ctx.me)
