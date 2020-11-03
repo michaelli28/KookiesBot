@@ -210,7 +210,7 @@ class misc(commands.Cog):
         return
 
     @commands.command(name='ascii', brief='Ascii art of avatar or image')
-    @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def ascii(self, ctx, image_link: str=""):
         """Ascii art of avatar"""
         if not image_link:
@@ -238,7 +238,7 @@ class misc(commands.Cog):
 
 
     @commands.command(name='advice', brief='Generates advice')
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def advice(self, ctx):
         """Random Advice generator"""
         url = 'https://api.adviceslip.com/advice'
@@ -251,7 +251,7 @@ class misc(commands.Cog):
         return await ctx.send(data['slip']['advice'])
 
     @commands.command(name='rhyme', brief='Rhymes a word')
-    @commands.cooldown(1, 3, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def rhyme(self, ctx, word=""):
         if not word:
             return await ctx.send("Specify a word :thought_balloon:")

@@ -32,8 +32,9 @@ class util(commands.Cog):
         self.client = bot.client
         self.trans = Translator()
         self.kclient = kclient
+        
     @commands.command(name='textart', aliases=['coolfont'], brief='Makes text look cool')
-    @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def font_generator(self, ctx, *, text: str = ""):
         """Generate cool font"""
         if not text:
@@ -90,7 +91,7 @@ class util(commands.Cog):
         return await ctx.send(author)
 
     @commands.command(aliases=['sa'], brief='Send a picture of someones avatar')
-    @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def stealavatar(self, ctx, *, member: discord.Member):
         embed = discord.Embed(title=f'{member.name}\'s avatar', color=random.randint(
             0, 0xffffff), url=f'{member.avatar_url}')
@@ -101,7 +102,7 @@ class util(commands.Cog):
         return await ctx.send(embed=embed)
 
     @commands.command(name='serverinfo', aliases=['server', 'sinfo'], brief='Gets info about the server')
-    @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def serverinfo(self, ctx, *, name: str = ""):
         """Get server info"""
         if name:
@@ -158,7 +159,7 @@ class util(commands.Cog):
 
 
     @commands.command(name='url', aliases=['shorten'], brief='Shortens a url')
-    @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def url_shorten(self, ctx, *, url):
         if not url:
             return await ctx.send('Please specify the url :link:')
@@ -174,7 +175,7 @@ class util(commands.Cog):
             return await ctx.send('Failed to shorten url :x:')
 
     @commands.command(name='userinfo', aliases=['user', 'uinfo', 'ui'], brief='Gets info about a user')
-    @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def userinfo(self, ctx, *, name=""):
         """Get user info. Ex: ;user @user"""
         if name:
@@ -229,7 +230,7 @@ class util(commands.Cog):
         return await ctx.send(embed=em)
 
     @commands.command(name='trace', aliases=['ip'], brief='Traces your ip')
-    @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def trace(self, ctx, ip: str = ""):
         """Trace ip"""
         if ip == "":
@@ -256,7 +257,7 @@ class util(commands.Cog):
             return await ctx.send(embed=embed)
 
     @commands.command(name='translate', brief='Translates text, use --list to see list of languages')
-    @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def translate(self, ctx, *args):
         """Translator"""
         if len(args) > 0:

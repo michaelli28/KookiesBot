@@ -159,7 +159,7 @@ class music(commands.Cog):
             raise commands.CommandInvokeError('Join a voice channel first :loud_sound:')
         not_connect = ctx.command.name in ('volume', 'disconnect',)
         if not player.is_connected:
-            if not should_connect or not not_connect:
+            if not should_connect and not not_connect:
                 raise commands.CommandInvokeError('Not connected :mute:')
 
             permissions = ctx.author.voice.channel.permissions_for(ctx.me)
@@ -304,7 +304,8 @@ class music(commands.Cog):
                     return await ctx.send('Please respond with a number between one through ten to select a song or stop to cancel')
                 if response.content.lower() == 'cancel' or response.content.lower() == 'stop':
                     return await ctx.send('Stopping')
-
+                elif int(response.content) > 10:
+                    return await ctx.send('Please list a number from 1 to 10')
                 track = tracks[int(response.content)-1]
 
                 player.add(requester=ctx.author.id, track=track)
@@ -334,6 +335,7 @@ class music(commands.Cog):
                     return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
         except lavalink.exceptions.NodeException:
             return await ctx.send('Node not found, contact owner for support')
+
     @commands.command(name='seek', brief='Seeks to a point in the song (positive seconds moves the song forward that much while negative seconds moves the song backward that much')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def seek(self, ctx, seconds: int=None):
