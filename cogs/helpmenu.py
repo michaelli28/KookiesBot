@@ -44,7 +44,7 @@ class HelpMenu(ListPageSource):
         len_data = len(self.entries)
 
         embed = Embed(title="Help", description="<cmd|alias|alias> [arg][arg]",  color=random.randint(0, 0xffffff))
-        embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
+        embed.set_thumbnail(url=self.ctx.author.avatar_url)
         embed.set_footer(text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} commands.")
         embed.timestamp = datetime.datetime.utcnow()
         for name, value, cog in fields:

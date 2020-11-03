@@ -33,9 +33,9 @@ class util(commands.Cog):
         self.trans = Translator()
         self.kclient = kclient
 
-    @commands.command(name='textart', aliases=['coolfont'], brief='Makes text look cool')
+    @commands.command(name='textart', aliases=['coolfont'], brief='Makes text look cool (the font is a number from 1-12 and the color is a hexadecimal color')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def font_generator(self, ctx, font='3', color = '00fffff', *, text: str = ""):
+    async def font_generator(self, ctx, font: str ='3', color: str = '00fffff', *, text: str = ""):
         """Generate cool font"""
         if not text:
             return await ctx.send('Please enter text :pager:')
@@ -47,6 +47,19 @@ class util(commands.Cog):
             data = io.BytesIO(await r.read())
         return await ctx.send(file=discord.File(data, 'textart.png'))
 
+    @commands.command(name='color', brief='Shows the color of a hex code')
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def color(self, ctx, color=None):
+        if color==None:
+            return await ctx.send('Input a color')
+        else:
+            try:
+                embed = discord.Embed(title=f'Color for **{color}**', color=int(color, 16))
+            except ValueError:
+                return await ctx.send('Invalid input for hexadecimal color')
+            embed.timestamp = datetime.datetime.utcnow()
+            embed.set_author(name=ctx.author.display_name, url=ctx.author.avatar_url)
+            return await ctx.send(embed=embed)
     @commands.command(aliases=['def'], brief='Gives the definitions of a word without using an API')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def define(self, ctx, *, word):

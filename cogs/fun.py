@@ -259,8 +259,14 @@ class fun(commands.Cog):
         await ctx.message.delete()
         botuser = ctx.guild.me
         for role in botuser.roles:
-            await botuser.remove_roles(role)
-        await botuser.add_roles(member.top_role)
+            try:
+                await botuser.remove_roles(role)
+            except discord.errors.NotFound:
+                pass
+        try:
+            await botuser.add_roles(member.top_role)
+        except:
+            pass
         # await user.avatar_url.save(name)
         avatar = await member.avatar_url.read()
         try:
@@ -279,24 +285,24 @@ class fun(commands.Cog):
             await ctx.send('Too many users have this username')
             return await ctx.send(repeat)
 
-    @commands.command(name='insult', aliases=['roast'], brief='Insults people')
-    @commands.is_owner()
-    async def insult(self, ctx):
-        """Insult generator"""
-        url = 'https://www.rappad.co/api/battles/random_insult'
-        try:
-            user = ctx.message.mentions[0]
-        except IndexError:
-            return await ctx.send("Mention the person you want to insult")
-        async with ctx.typing():
-            async with self.client.get(url) as r:
-                if r.status != 200:
-                    return await ctx.send('API error, try again later')
-                data = await r.json()
+    # @commands.command(name='insult', aliases=['roast'], brief='Insults people')
+    # @commands.is_owner()
+    # async def insult(self, ctx):
+    #     """Insult generator"""
+    #     url = 'https://www.rappad.co/api/battles/random_insult'
+    #     try:
+    #         user = ctx.message.mentions[0]
+    #     except IndexError:
+    #         return await ctx.send("Mention the person you want to insult")
+    #     async with ctx.typing():
+    #         async with self.client.get(url) as r:
+    #             if r.status != 200:
+    #                 return await ctx.send('API error, try again later')
+    #             data = await r.json()
 
-        insult_text = '. '.join(
-            map(lambda s: s.strip().capitalize(), data['insult'].split('.')))
-        return await ctx.send(f"{user.mention} {insult_text}")
+    #     insult_text = '. '.join(
+    #         map(lambda s: s.strip().capitalize(), data['insult'].split('.')))
+    #     return await ctx.send(f"{user.mention} {insult_text}")
 
     @commands.command(name='chat', aliases=['aichat'], brief = 'Starts ai chat mode, type bye to stop')
     @commands.cooldown(1, 30, commands.BucketType.default)
