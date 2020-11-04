@@ -7,6 +7,7 @@ import discord
 import requests
 from time import time
 import numpy as np
+import aiohttp
 import io
 import pandas as pd
 from sklearn.metrics import accuracy_score
@@ -329,8 +330,8 @@ class fun(commands.Cog):
                             async with self.client.get(url, params=params) as r:
                                 response = await r.json()
                                 response = response['response']
-                    except:
-                        await ctx.send('What was that? Please repeat')
+                    except (aiohttp.client_exceptions.ContentTypeError, KeyError):
+                        await ctx.send('The ai can\'t understand your response, try changing it')
                         continue
                     await ctx.send(response)
 def setup(bot):
