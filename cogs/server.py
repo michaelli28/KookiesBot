@@ -134,19 +134,21 @@ class server(commands.Cog):
             info = json.load(config)
             config.close()
         if ctx.guild.id not in info:
-            info[ctx.guild.id]['prune'] = True
-            info[ctx.guild.id]['time'] = 60
+            info[ctx.guild.id] = {'prune': True, 'time': 60}
         else:
-            info[ctx.guild.id]['prune'] = not info[ctx.guild.id]['prune']
+            if info[ctx.guild.id]['prune'] == True:
+                info[ctx.guild.id]['prune'] = False
+            else:
+                info[ctx.guild.id]['prune'] = True
         if time == None:
             pass
         else:
-            info[ctx.guild.id]['prune'] = str(time)
+            info[ctx.guild.id]['time'] = int(time)
             
-        with open ('config.json', 'w') as config:
+        with open('config.json', 'w') as config:
             json.dump(info, config)
             config.close()
-        time = info['time']
+        time = info[ctx.guild.id]['time']
         if info[ctx.guild.id]['prune']:
             message = 'Kookies\' responses will now be deleted after '+ str(time) + ' seconds'
         else:
