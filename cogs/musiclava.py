@@ -11,6 +11,8 @@ from discord.ext.menus import MenuPages, ListPageSource
 from discord.utils import get
 from typing import Optional
 import asyncio
+import sys
+import traceback
 kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsbCwgIm8iOiAiNTg3MDY4NjEwMjM3NjkzOTYzIiwgImMiOiA3NTczNDQ4fQ.bdb3a6d6f99d566327126abc55fdbd969b04c877ccd7cd5c5df316a343e80355')
 
 #TODO skipto cmd
@@ -75,6 +77,72 @@ class music(commands.Cog):
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.CommandInvokeError):
             return await ctx.send(error.original)
+
+        error = getattr(error, 'original', error)
+        if isinstance(error, commands.CommandNotFound):
+            if ctx.message.content.startswith(';)'):
+                return
+            await ctx.send(f'`{ctx.message.content}` is not a valid command')
+
+        elif isinstance(error, commands.BotMissingPermissions):
+            missing = [perm.replace('_', ' ').replace(
+                'guild', 'server').title() for perm in error.missing_perms]
+            if len(missing) > 2:
+                fmt = '{}, and {}'.format(
+                    "**, **".join(missing[:-1]), missing[-1])
+            else:
+                fmt = ' and '.join(missing)
+            _message = 'I need the **{}** permission(s) to run this command.'.format(
+                fmt)
+            await ctx.send(_message)
+            return
+
+        elif isinstance(error, discord.errors.Forbidden):
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send('I don\'t have permissions to do that')
+        elif isinstance(error, commands.CommandOnCooldown):
+            try:
+                await ctx.message.delete()
+            except:
+                pass
+            await ctx.send('{}, That command is on cooldown! Try again in {:.2f}s!'.format(ctx.author.mention, error.retry_after))
+
+        elif isinstance(error, commands.NotOwner):
+            try:
+                await ctx.message.delete()
+            except:
+                pass
+            return await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))
+            
+        elif isinstance(error, commands.MissingPermissions):
+            ctx.command.reset_cooldown(ctx)
+            missing = [perm.replace('_', ' ').replace(
+                'guild', 'server').title() for perm in error.missing_perms]
+            if len(missing) > 2:
+                fmt = '{}, and {}'.format(
+                    "**, **".join(missing[:-1]), missing[-1])
+            else:
+                fmt = ' and '.join(missing)
+            _message = 'You need the **{}** permission(s) to use this command.'.format(
+                fmt)
+            return await ctx.send(_message)
+
+        elif isinstance(error, commands.UserInputError):
+            ctx.command.reset_cooldown(ctx) 
+            await ctx.send("Invalid input")
+
+        elif isinstance(error, commands.NoPrivateMessage):
+            try:
+                await ctx.author.send('This command cannot be used in direct messages.')
+            except discord.Forbidden:
+                pass
+            return
+            
+        print('Ignoring exception in command {}:'.format(
+            ctx.command), file=sys.stderr)
+
+        traceback.print_exception(
+            type(error), error, error.__traceback__, file=sys.stderr)
 
     async def track_hook(self, event):
         if isinstance(event, lavalink.events.QueueEndEvent):
@@ -289,7 +357,7 @@ class music(commands.Cog):
                 embed.timestamp = datetime.datetime.utcnow()
                 for track in tracks:
                     i = i + 1
-                    query_result = query_result + f'{i}) {track["info"]["title"]}\n{track["info"]["uri"]}\n'
+                    query_result = query_result + f'{i}) {track["info"]["title"]}\n{track["info"]["uri"]}\n\n'
 
                 embed.description = query_result
                 await ctx.channel.send(embed=embed)
