@@ -250,6 +250,8 @@ class music(commands.Cog):
     @commands.command(name='play', brief='Plays or queues a song or playlist by link or by search, to insert song at an index, search using # as a separator, songnamehere#3 will search for songnamehere and will insert at the 3rd position in the queue')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def play(self, ctx, *, query: str=None):
+        if query == None:
+            return await ctx.send('You need to input a search')
         try:
             query.strip()
 
@@ -262,9 +264,6 @@ class music(commands.Cog):
                 query = query[0]
             else:
                 index = None
-
-            if query == None:
-                return await ctx.send('You need to input a search')
 
             async with ctx.typing():
                 player = self.bot.lavalink.player_manager.get(ctx.guild.id)
