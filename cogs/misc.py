@@ -64,17 +64,17 @@ class misc(commands.Cog):
         await message.delete()
         return await ctx.send(inp)
 
-    @do_repeat.error
-    async def do_repeat_handler(self, ctx, error):
-        """A local Error Handler for our command do_repeat.
-        This will only listen for errors in do_repeat.
-        The global on_command_error will still be invoked after.
-        """
+    # @do_repeat.error
+    # async def do_repeat_handler(self, ctx, error):
+    #     """A local Error Handler for our command do_repeat.
+    #     This will only listen for errors in do_repeat.
+    #     The global on_command_error will still be invoked after.
+    #     """
 
-        # Check if our required argument inp is missing.
-        if isinstance(error, commands.MissingRequiredArgument):
-            if error.param.name == 'inp':
-                return await ctx.send("You forgot to give me input to repeat!")
+    #     # Check if our required argument inp is missing.
+    #     if isinstance(error, commands.MissingRequiredArgument):
+    #         if error.param.name == 'inp':
+    #             return await ctx.send("You forgot to give me input to repeat!")
 
     @commands.command(name='snipe', brief='Snipes the last repeat command')
     @commands.cooldown(1, 5, commands.BucketType.user)

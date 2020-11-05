@@ -341,7 +341,9 @@ class music(commands.Cog):
 
     @commands.command(name='search', brief='Searches for a song a returns the top 10 results')
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def search(self, ctx, *, query):
+    async def search(self, ctx, *, query = None):
+        if query == None:
+            return await ctx.send('You need to input a search')
         try:
             async with ctx.typing():
                 player = self.bot.lavalink.player_manager.get(ctx.guild.id)
