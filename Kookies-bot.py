@@ -123,7 +123,7 @@ async def on_message(message):
                 config.close()
             if message.guild == None:
                 return
-            if message.guild.id not in info:
+            if str(message.guild.id) not in info:
                 return
             elif info[message.guild.id]['prune']:
                 await asyncio.sleep(int(info[message.guild.id]['time']))

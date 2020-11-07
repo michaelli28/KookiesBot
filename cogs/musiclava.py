@@ -159,6 +159,12 @@ class music(commands.Cog):
             player = event.player
             channel = self.bot.get_channel(player.fetch(guild_id))
             guild = self.bot.get_guild(guild_id)
+            try:
+                members = guild.voice_client.channel.members
+                if len(members)==0:
+                    return await channel.send('The voice channel that the bot is in has no members, leaving voice channel.')
+            except:
+                pass
             # if player.shuffle:
             #     await channel.send('Shuffling...')
             #     await asyncio.sleep(5)
@@ -223,9 +229,9 @@ class music(commands.Cog):
             ctx.guild.id, endpoint=str(ctx.guild.region))
         should_connect = ctx.command.name in ('play', 'search')
         
-        if not ctx.author.voice or not ctx.author.voice.channel:
-            raise commands.CommandInvokeError('Join a voice channel first :loud_sound:')
-        not_connect = ctx.command.name in ('volume', 'disconnect',)
+        # if not ctx.author.voice or not ctx.author.voice.channel:
+        #     raise commands.CommandInvokeError('Join a voice channel first :loud_stop'sound:')
+        not_connect = ctx.command.name in ('volume', 'disconnect', 'stop')
         if not player.is_connected:
             if not should_connect and not not_connect:
                 raise commands.CommandInvokeError('Not connected :mute:')
@@ -303,7 +309,7 @@ class music(commands.Cog):
                     em.set_thumbnail(
                         url=f"http://i.ytimg.com/vi/{track['info']['identifier']}/hqdefault.jpg")
                     em.add_field(name='Author', value=track['info']['author'])
-
+                    
                     if track['info']['isStream']:
                         duration = 'Live'
 
@@ -317,9 +323,12 @@ class music(commands.Cog):
 
                     if index != None:
                         player.add(requester=ctx.author.id, track=track, index=(index-1))
+                        em.add_field(name='Position in queue', value=index)
 
                     else:
+                        em.add_field(name='Position in queue', value=len(player.queue)+1)
                         player.add(requester=ctx.author.id, track=track)
+                        
 
                 msg = await ctx.send(embed=em)
                 await player.set_volume(self.volume)
