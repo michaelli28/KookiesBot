@@ -18,6 +18,8 @@ kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsb
 #TODO skipto cmd
 #TODO lavalink errors
 #TODO make sure when errors happen, things dont keep going on
+#TODO make volume guild based
+
 
 class HelpMenu(ListPageSource):
     def __init__(self, ctx, data):

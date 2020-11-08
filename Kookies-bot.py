@@ -34,7 +34,7 @@ import io
 global PREFIX
 PREFIX = ';'
 intents = discord.Intents.all()
-sys.dont_write_bytecode = True
+#sys.dont_write_bytecode = True
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True,
                    description='Kookies FOR THE WIN', intents=intents, owner_id=587068610237693963)
 '''

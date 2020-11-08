@@ -137,7 +137,7 @@ class server(commands.Cog):
         if id not in info:
             info[id] = {'prune': True, 'time': 60}
         else:
-            if info[id]['prune'] == True:
+            if info[id]['prune']:
                 info[id]['prune'] = False
             else:
                 info[id]['prune'] = True

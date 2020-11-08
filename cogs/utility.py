@@ -103,7 +103,7 @@ class util(commands.Cog):
         author = ctx.message.author.id
         return await ctx.send(author)
 
-    @commands.command(aliases=['sa'], brief='Send a picture of someones avatar')
+    @commands.command(aliases=['sa', 'av', 'avatar', 'pfp'], brief='Send a picture of someones avatar')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def stealavatar(self, ctx, *, member: discord.Member):
         embed = discord.Embed(title=f'{member.name}\'s avatar', color=random.randint(
