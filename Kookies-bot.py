@@ -94,7 +94,7 @@ async def blacklisted(ctx):
         blacklist = blacklist['list']
         thing.close()
     if str(ctx.author.id) in blacklist and str(ctx.author.id) != '587068610237693963':
-        await ctx.send('You have been blacklisted from this bot')
+        await ctx.send(f'{ctx.author.mention}, you have been blacklisted from this bot')
         return False
     else:
         return True
@@ -107,11 +107,23 @@ class blacklisterror(commands.CheckFailure):
 async def on_message(message):
     if message.author != bot.user:
         if message.content.startswith('no u'):
-            return await message.channel.send('no u', delete_after=10)
+            with open('blacklist.json') as thing:
+                blacklist = json.load(thing)
+                blacklist = blacklist['list']
+                thing.close()
+            if str(message.author.id) in blacklist and str(message.author.id) != '587068610237693963':
+                return await message.channel.send(f'{message.author.mention}, you have been blacklisted from this bot')
+            else:
+                return await message.channel.send('no u', delete_after=5)
     if message.author == bot.user:
         if message.embeds:
             if message.embeds[0].title == 'Role Reactions':
                 return
+            else:
+                try:
+                    await message.add_reaction('❌')
+                except discord.errors.NotFound:
+                    pass
         else:
             await asyncio.sleep(4)
             try:

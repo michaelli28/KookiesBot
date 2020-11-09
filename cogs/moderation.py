@@ -266,7 +266,7 @@ class moderation(commands.Cog):
     @commands.command(aliases=['ba'], brief='Adds someone to a blacklist so they can\'t use commands')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def blacklistadd(self, ctx, user: discord.Member=None):
+    async def blacklistadd(self, ctx, *, user: discord.Member=None):
         if user==None:
             return await ctx.send('Input a user to add to blacklist')
         else:
@@ -285,7 +285,7 @@ class moderation(commands.Cog):
     @commands.command(aliases=['br'], brief='Removes someone to a blacklist so they can use commands again')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def blacklistremove(self, ctx, user: discord.Member = None):
+    async def blacklistremove(self, ctx, *, user: discord.Member = None):
         if user == None:
             return await ctx.send('Input a user to remove from blacklist')
         else:
@@ -304,7 +304,7 @@ class moderation(commands.Cog):
     @commands.command(aliases=['bls'], brief='Shows the people in the blacklist')
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def blacklistshow(self, ctx, user: discord.Member = None):
+    async def blacklistshow(self, ctx):
         with open('blacklist.json', 'r') as blacklist:
             people = json.load(blacklist)
             blacklist.close()
@@ -319,7 +319,8 @@ class moderation(commands.Cog):
         n=1
         for userid in people['list']:
             user = self.bot.get_user(int(userid))
-            embed.add_field(name=f'{n})', value = f'{user.name}')
+            embed.add_field(name=f'{n})', value = f'{user.name}', inline=False)
+            n+=1
         return await ctx.send(embed=embed)
                 
     @commands.command(aliases=["slowm"], brief="Custom Slow Mode")
