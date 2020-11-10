@@ -119,32 +119,27 @@ async def on_message(message):
         if message.embeds:
             if message.embeds[0].title == 'Role Reactions':
                 return
-            else:
-                try:
-                    await message.add_reaction('❌')
-                except discord.errors.NotFound:
-                    pass
-        else:
-            await asyncio.sleep(4)
+                
+        await asyncio.sleep(4)
+        try:
+            await message.add_reaction('❌')
+        except discord.errors.NotFound:
+            pass
+        with open('config.json', 'r') as config:
+            info = json.load(config)
+            config.close()
+        if message.guild == None:
+            return
+        elif str(message.guild.id) not in info:
+            return
+        elif info[str(message.guild.id)]['prune']:
+            await asyncio.sleep(int(info[str(message.guild.id)]['time']))
             try:
-                await message.add_reaction('❌')
+                await message.delete()
             except discord.errors.NotFound:
                 pass
-            with open('config.json', 'r') as config:
-                info = json.load(config)
-                config.close()
-            if message.guild == None:
-                return
-            elif str(message.guild.id) not in info:
-                return
-            elif info[str(message.guild.id)]['prune']:
-                await asyncio.sleep(int(info[str(message.guild.id)]['time']))
-                try:
-                    await message.delete()
-                except discord.errors.NotFound:
-                    pass
-            else:
-                return
+        else:
+            return
     await bot.process_commands(message)
     
     # if message.author.id == '740226974248730625':

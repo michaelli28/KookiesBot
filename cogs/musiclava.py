@@ -150,6 +150,7 @@ class music(commands.Cog):
 
     async def track_hook(self, event):
         if isinstance(event, lavalink.events.QueueEndEvent):
+            await asyncio.sleep(5)
             guild_id = int(event.player.guild_id)
             player = event.player
             channel = self.bot.get_channel(player.fetch(guild_id))
