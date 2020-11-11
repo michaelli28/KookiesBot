@@ -166,7 +166,8 @@ class music(commands.Cog):
             guild = self.bot.get_guild(guild_id)
             try:
                 members = guild.voice_client.channel.members
-                if len(members)==0:
+                if len(members)==1:
+                    await self.connect_to(guild_id, None)
                     return await channel.send('The voice channel that the bot is in has no members, leaving voice channel.')
             except:
                 pass
