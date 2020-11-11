@@ -91,7 +91,7 @@ class misc(commands.Cog):
 
 
     @commands.command(aliases=['sp'], brief='Spam a message a certain number of times, say stop or end or cancel to stop spam')
-    @commands.cooldown(1, 5, commands.BucketType.default)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(administrator=True)
     async def spam(self, ctx, *, message):
         await ctx.message.delete()

@@ -306,7 +306,7 @@ class fun(commands.Cog):
     #     return await ctx.send(f"{user.mention} {insult_text}")
 
     @commands.command(name='chat', aliases=['aichat'], brief = 'Starts ai chat mode, type bye to stop')
-    @commands.cooldown(1, 30, commands.BucketType.default)
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def _aichat(self, ctx):
         """Start AI chat mode"""
         def check(m):
