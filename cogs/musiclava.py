@@ -13,12 +13,21 @@ from typing import Optional
 import asyncio
 import sys
 import traceback
+import json
 kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsbCwgIm8iOiAiNTg3MDY4NjEwMjM3NjkzOTYzIiwgImMiOiA3NTczNDQ4fQ.bdb3a6d6f99d566327126abc55fdbd969b04c877ccd7cd5c5df316a343e80355')
 
 #TODO skipto cmd
 #TODO lavalink errors
 #TODO make sure when errors happen, things dont keep going on
 #TODO make volume guild based
+
+
+with open('config.json', 'r') as config:
+        configfile = json.load(config)
+        config.close()
+cooldown = int(configfile['cooldown'])
+times = int(configfile['numberoftimes'])
+
 
 
 class HelpMenu(ListPageSource):
@@ -65,10 +74,10 @@ class music(commands.Cog):
             # Host, Port, Password, Region, Name
             # bot.lavalink.add_node(
             #     'kookieslavalink.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
-            # bot.lavalink.add_node(
-            # 'localhost', 80, 'youshallnotpass', 'us', 'default-node')
             bot.lavalink.add_node(
-                'lavalinkforkookies.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            'localhost', 80, 'youshallnotpass', 'us', 'default-node')
+            # bot.lavalink.add_node(
+            #     'lavalinkforkookies.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             bot.add_listener(bot.lavalink.voice_update_handler,
                             'on_socket_response')
 
@@ -260,7 +269,7 @@ class music(commands.Cog):
         return await ws.voice_state(str(guild_id), channel_id)
 
     @commands.command(name='play', brief='Plays or queues a song or playlist by link or by search, to insert song at an index, search using # as a separator, songnamehere#3 will search for songnamehere and will insert at the 3rd position in the queue')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def play(self, ctx, *, query: str=None):
         if query == None:
             return await ctx.send('You need to input a search')
@@ -355,7 +364,7 @@ class music(commands.Cog):
             return await ctx.send('Node not found, contact owner for support')
 
     @commands.command(name='search', brief='Searches for a song a returns the top 10 results')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def search(self, ctx, *, query = None):
         if query == None:
             return await ctx.send('You need to input a search')
@@ -420,7 +429,7 @@ class music(commands.Cog):
             return await ctx.send('Node not found, contact owner for support')
 
     @commands.command(name='seek', brief='Seeks to a point in the song (positive seconds moves the song forward that much while negative seconds moves the song backward that much')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def seek(self, ctx, seconds: str=None):
         is1 = seconds.find(':')
         if str(is1) == '-1':
@@ -457,7 +466,7 @@ class music(commands.Cog):
         return await ctx.send(f'Moved track to **{lavalink.format_time(track_time)}**')
 
     # @commands.command(name='skipto', brief='Skips to a song in the queue')
-    # @commands.cooldown(1, 5, commands.BucketType.user)
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
     # async def _skipto(self, ctx, index: int):
     #     player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -481,7 +490,7 @@ class music(commands.Cog):
         return
 
     @commands.command(name='now', aliases=['current', 'playing', 'np'], brief='Shows the song that is playing')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def now(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         song = 'Nothing'
@@ -527,7 +536,7 @@ class music(commands.Cog):
             return await ctx.send('Not playing anything :mute:')
 
     @commands.command(name='save', aliases=['star'], brief='Saves the song playing to your dm')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def savetodm(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         if player.current:
@@ -553,7 +562,7 @@ class music(commands.Cog):
             await ctx.send('Not playing anything :mute:')
 
     @commands.command(name='queue', aliases=['q'], brief='Checks the queue for songs')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def queue(self, ctx, page: int = 1):
         async with ctx.typing():
             player = self.bot.lavalink.player_manager.get(ctx.guild.id)
@@ -582,7 +591,7 @@ class music(commands.Cog):
             # return await ctx.send(embed=embed)
 
     @commands.command(name='resume', aliases=['r'], brief='Resumes the song')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def resume(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -596,7 +605,7 @@ class music(commands.Cog):
             return await ctx.send('Already playing')
 
     @commands.command(name='pause', aliases=['pau'], brief='Pauses the song playing')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def pause(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -622,7 +631,7 @@ class music(commands.Cog):
         return await ctx.send(f'🔈 Set to {player.volume}%')
 
     @commands.command(name='shuffle', brief='Shuffles the queue')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def shuffle(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -634,7 +643,7 @@ class music(commands.Cog):
         return await ctx.send('🔀 Shuffle ' + ('enabled' if player.shuffle else 'disabled'))
 
     @commands.command(name='loop', brief='Loops/repeats the current queue')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def loop(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -646,7 +655,7 @@ class music(commands.Cog):
         return await ctx.send('Queue Loop ' + ('enabled' if player.repeat else 'disabled'))
 
     @commands.command(name='remove', brief='Removes a song from a queue')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def remove(self, ctx, index: int):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -662,7 +671,7 @@ class music(commands.Cog):
         return await ctx.send('Removed **' + removed.title + '** from the queue.')
 
     @commands.command(name='leave', aliases=['stop'], brief='Makes the bot leave the channel it is in')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def disconnect(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -684,7 +693,7 @@ class music(commands.Cog):
 
 
     @commands.command(name='lyrics', aliases=['ly'], brief='Get the lyrics of a song')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def get_lyrics(self, ctx, *, query: str = ""):
         if not query:
             player = self.bot.lavalink.player_manager.get(ctx.guild.id)
@@ -722,7 +731,7 @@ class music(commands.Cog):
             return
 
     @commands.command(name='equalizer', aliases=['eq'], brief='Change frequencies')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def equalizer(self, ctx, *args):
         """Equalizer"""
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)

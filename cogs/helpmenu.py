@@ -7,7 +7,19 @@ from discord.ext.commands import Cog
 from discord.ext import commands
 import random
 import datetime
+import json
 PREFIX=';'
+
+
+
+with open('config.json', 'r') as config:
+        configfile = json.load(config)
+        config.close()
+cooldown = int(configfile['cooldown'])
+times = int(configfile['numberoftimes'])
+
+
+
 def syntax(command):
     cmd_and_aliases = "|;".join([str(command), *command.aliases])
     params = []
@@ -90,7 +102,7 @@ class help(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="help", brief='Shows help menu')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def show_help(self, ctx, cmd: Optional[str]):
         await ctx.send('Please wait while help arrives from somewhere in the US')
         async with ctx.typing():

@@ -29,6 +29,15 @@ import time
 from time import time
 from aiohttp import ClientSession
 import io
+import logging
+
+#logging.basicConfig(level=logging.INFO)
+
+logger = logging.getLogger('discord')
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 
 global PREFIX
@@ -60,6 +69,7 @@ async def on_ready():
     await bot.change_presence(activity=activity)
     # bot.load_extension('cogs.Music2')
     bot.client = ClientSession()
+
     bot.load_extension('cogs.CommandErrorHandler')
     bot.load_extension('cogs.fun')
     bot.load_extension('cogs.helpmenu')
@@ -154,13 +164,7 @@ async def on_message(message):
     # await ctx.send('Missing Permissions to kick ' + str(user))
 
 
-@bot.command(name='botstop', aliases=['bstop'], brief='Shutdown the bot, NotThatBot#3360 only')
-@commands.is_owner()
-async def botstop(ctx):
-    print('Goodbye')
-    await ctx.send('Goodbye')
-    await bot.logout()
-    return
+
 
 # @bot.event
 # async def on_disconnect():

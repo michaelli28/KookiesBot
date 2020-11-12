@@ -18,6 +18,15 @@ import asyncio
 from discord.ext import tasks
 from operator import itemgetter
 
+
+with open('config.json', 'r') as config:
+        configfile = json.load(config)
+        config.close()
+cooldown = int(configfile['cooldown'])
+times = int(configfile['numberoftimes'])
+
+
+
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 30, fill = '█'):
     # @params:
     #     iteration   - Required  : current iteration (Int)
@@ -75,7 +84,7 @@ class levels(Cog):
     def __init__(self, bot):
         self.bot = bot
     @commands.command(name='leaderboard', aliases=['lb'], brief='Shows the leaderboard')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def show_leaderboard(self, ctx):
         async with ctx.typing():
             cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
@@ -100,7 +109,7 @@ class levels(Cog):
         return await menu.start(ctx)
 
     @commands.command(aliases=['xp'], brief='Get your xp and level')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def rank(self, ctx, author: discord.Member = None):
         async with ctx.typing():
 

@@ -32,6 +32,11 @@ import nltk
 # nltk.download('wordnet')
 from nltk.corpus import wordnet
 
+with open('config.json', 'r') as config:
+        configfile = json.load(config)
+        config.close()
+cooldown = int(configfile['cooldown'])
+times = int(configfile['numberoftimes'])
 
 
 client_secret = '5E8IY8h100TBQjMuU2OMHfum5v4'
@@ -47,7 +52,7 @@ class fun(commands.Cog):
         self.client = bot.client
 
     @commands.command(name='reddit', aliases=['red'], brief='Gets posts from reddit')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def reddit(self, ctx, *, subreddit):
         async with ctx.typing():
             reddit = praw.Reddit(
@@ -72,7 +77,7 @@ class fun(commands.Cog):
 
 
     @commands.command(brief='Gets a meme')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def meme(self, ctx):
         with urllib.request.urlopen("https://meme-api.herokuapp.com/gimme") as url:
             data = json.load(url)
@@ -139,18 +144,18 @@ class fun(commands.Cog):
 
 
     @commands.command(brief='Give money')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def gimme(self, ctx):
         return await ctx.send(f'{ctx.author.mention} has received {random.randint(100, 1000000)} dollars')
 
     @commands.command(brief='Says hello')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def hello(self, ctx):
         return await ctx.send("Hello " + ctx.message.author.mention)
 
 
     @commands.command(name='mimic', aliases=['mm'], brief='Mimics how you talk')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def mimicsentence(self, ctx):
         await ctx.send('Please send a small paragraph of sentences')
 
@@ -175,7 +180,7 @@ class fun(commands.Cog):
 
 
     @commands.command(aliases=['mood'], brief='Returns the mood of the sentence')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def sentiment(self, ctx, *, sentence):
         await ctx.send('Please wait while the AI does its work...')
         async with ctx.typing():

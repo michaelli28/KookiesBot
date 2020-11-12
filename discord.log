@@ -1,0 +1,5 @@
+2020-11-12 10:24:10,930:INFO:discord.client: logging in using static token
+2020-11-12 10:24:11,523:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
+2020-11-12 10:24:11,671:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-tmbj",{"micros":64221,"calls":["discord-sessions-prd-2-110",{"micros":62231,"calls":["start_session",{"micros":44028,"calls":["api-prd-main-p9rx",{"micros":37740,"calls":["get_user",{"micros":3886},"add_authorized_ip",{"micros":1636},"get_guilds",{"micros":3502},"coros_wait",{"micros":1}]}]},"guilds_connect",{"micros":5,"calls":[]},"presence_connect",{"micros":9499,"calls":[]}]}]}] (Session ID: a2b65477f9771968726ba7e7ac2d2d82).
+2020-11-12 10:27:39,416:WARNING:discord.http: We are being rate limited. Retrying in 0.15 seconds. Handled under the bucket "756508990409801780:None:/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me"
+2020-11-12 10:27:39,718:WARNING:discord.http: We are being rate limited. Retrying in 0.18 seconds. Handled under the bucket "756508990409801780:None:/channels/{channel_id}/messages/{message_id}/reactions/{emoji}/@me"

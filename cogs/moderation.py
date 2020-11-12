@@ -20,12 +20,20 @@ from discord.ext import tasks
 from pytz import timezone
 from discord.ext.commands.errors import BadArgument
 
+
+
+with open('config.json', 'r') as config:
+        configfile = json.load(config)
+        config.close()
+cooldown = int(configfile['cooldown'])
+times = int(configfile['numberoftimes'])
+
 class moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(aliases=['sm'], brief='Server mute everyone in a voice channel')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_guild_permissions(mute_members=True)
     async def servermute(self, ctx):
         async with ctx.typing():
@@ -36,7 +44,7 @@ class moderation(commands.Cog):
             return await ctx.send('Everyone has been muted')
 
     @commands.command(aliases=['su'], brief='Unmutes everyone in a voice channel')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_guild_permissions(mute_members=True)
     async def serverunmute(self, ctx):
         async with ctx.typing():
@@ -47,7 +55,7 @@ class moderation(commands.Cog):
             return await ctx.send('Everyone has been unmuted')
 
     @commands.command(aliases=['sd'], brief='Server deafen everyone in a voice channel')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_guild_permissions(deafen_members=True)
     async def serverdeafen(self, ctx):
         async with ctx.typing():
@@ -58,7 +66,7 @@ class moderation(commands.Cog):
             return await ctx.send('Everyone has been deafened')
 
     @commands.command(aliases=['sud'], brief='Undeafens everyone in a voice channel')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_guild_permissions(deafen_members=True)
     async def serverundeafen(self, ctx):
         async with ctx.typing():
@@ -70,7 +78,7 @@ class moderation(commands.Cog):
 
     @commands.command(aliases=['n'], brief='Changes someone\'s nickname')
     @commands.has_permissions(manage_nicknames=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def nick(self, ctx, member: discord.Member, *, nick):
         # try:
         old = member.display_name
@@ -81,7 +89,7 @@ class moderation(commands.Cog):
 
     @commands.command(brief='Locks the server from messages')
     @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def serverlock(self, ctx):
         try:
             role = ctx.guild.default_role
@@ -93,7 +101,7 @@ class moderation(commands.Cog):
 
     @commands.command(brief='Unlocks the server')
     @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def serverunlock(self, ctx):
         try:
             role = ctx.guild.default_role
@@ -105,7 +113,7 @@ class moderation(commands.Cog):
 
     @commands.command(brief='Locks the channel from messages')
     @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def channellock(self, ctx):
         try:
             channel = ctx.message.channel
@@ -117,7 +125,7 @@ class moderation(commands.Cog):
 
     @commands.command(brief='Unlocks the channel')
     @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def channelunlock(self, ctx):
         try:
             channel = ctx.message.channel
@@ -130,7 +138,7 @@ class moderation(commands.Cog):
 
 
     @commands.command(brief='Clears messages')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
     async def klear(self, ctx, amount=1):
         if amount == 0:
@@ -164,7 +172,7 @@ class moderation(commands.Cog):
                     print(embed.to_dict())
 
     @commands.command(aliases=['m'], brief='Mutes someone, need manage roles')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def mute(self, ctx, user: Optional[discord.Member], minutes: Optional[int]=0, everyone: Optional[str] = None):
         if everyone == 'everyone':
@@ -216,7 +224,7 @@ class moderation(commands.Cog):
                 return await ctx.send(f'Created Muted role and muted `{user.display_name}`')
 
     @commands.command(aliases=['um'], brief='Unmutes someone, need manage roles')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def unmute(self, ctx, user: Optional[discord.Member], everyone=None):
         if everyone == 'everyone':
@@ -264,7 +272,7 @@ class moderation(commands.Cog):
         print('##############################################################################################################################################################')
 
     @commands.command(aliases=['ba'], brief='Adds someone to a blacklist so they can\'t use commands')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def blacklistadd(self, ctx, *, user: discord.Member=None):
         if user==None:
@@ -283,7 +291,7 @@ class moderation(commands.Cog):
         return await ctx.send(f'{user.display_name} has been added to the blacklist')
 
     @commands.command(aliases=['br'], brief='Removes someone to a blacklist so they can use commands again')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def blacklistremove(self, ctx, *, user: discord.Member = None):
         if user == None:
@@ -302,7 +310,7 @@ class moderation(commands.Cog):
         return await ctx.send(f'{user.display_name} has been removed from the blacklist')
 
     @commands.command(aliases=['bls'], brief='Shows the people in the blacklist')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def blacklistshow(self, ctx):
         with open('blacklist.json', 'r') as blacklist:
@@ -324,7 +332,7 @@ class moderation(commands.Cog):
         return await ctx.send(embed=embed)
                 
     @commands.command(aliases=["slowm"], brief="Custom Slow Mode")
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_channels=True)
     async def slowmode(self, ctx, slowmode: int):
         if slowmode > 21600:
@@ -335,7 +343,7 @@ class moderation(commands.Cog):
                 f"Slow Mode set to {slowmode} seconds for {ctx.channel.mention}")
 
     @commands.command(brief="See your or other peoples permissions", aliases=["permissions"])
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def perms(self, ctx, member: discord.Member = None, channel: discord.TextChannel = None):
         channel = channel or ctx.channel
         member = member or ctx.author
@@ -359,7 +367,7 @@ class moderation(commands.Cog):
         return await ctx.send(embed=embed)
 
     @commands.command(brief="Blocks a user from chatting in current channel")
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def block(self, ctx, *, user: discord.Member):
         try:
@@ -371,7 +379,7 @@ class moderation(commands.Cog):
             return await ctx.send("I don\'t have permissions to do that")
 
     @commands.command(brief="Unblocks a user from current channel")
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def unblock(self, ctx, *, user: discord.Member):
         try:
@@ -389,7 +397,7 @@ class moderation(commands.Cog):
         brief="Clears a certain amount of messages"
     )
     @commands.has_permissions(manage_messages=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def purge(self, ctx, amount: int, *, member: discord.Member = None):
         def check(message):
             return message.author.id == member.id
@@ -425,7 +433,7 @@ class moderation(commands.Cog):
 
     @commands.command(brief="Bans a user")
     @commands.has_permissions(ban_members=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def ban(self, ctx, *, member: discord.Member):
         await member.ban()
         return await ctx.send(f"Banned {member.mention}")
@@ -433,7 +441,7 @@ class moderation(commands.Cog):
     @commands.command(
         brief="Unbans a previously banned user with their name and discriminator"
     )
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, *, member: Union[int, str]):
         if isinstance(member, str):

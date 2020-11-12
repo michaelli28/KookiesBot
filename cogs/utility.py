@@ -26,6 +26,13 @@ from googletrans import Translator, LANGUAGES
 from nltk.corpus import wordnet
 kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsbCwgIm8iOiAiNTg3MDY4NjEwMjM3NjkzOTYzIiwgImMiOiA3NTczNDQ4fQ.bdb3a6d6f99d566327126abc55fdbd969b04c877ccd7cd5c5df316a343e80355')
 
+
+with open('config.json', 'r') as config:
+        configfile = json.load(config)
+        config.close()
+cooldown = int(configfile['cooldown'])
+times = int(configfile['numberoftimes'])
+
 class util(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -34,7 +41,7 @@ class util(commands.Cog):
         self.kclient = kclient
 
     @commands.command(name='textart', aliases=['coolfont'], brief='Makes text look cool (the font is a number from 1-12 and the color is a hexadecimal color')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def font_generator(self, ctx, font: str ='3', color: str = '00fffff', *, text: str = ""):
         """Generate cool font"""
         if not text:
@@ -48,7 +55,7 @@ class util(commands.Cog):
         return await ctx.send(file=discord.File(data, 'textart.png'))
 
     @commands.command(name='color', brief='Shows the color of a hex code')
-    @commands.cooldown(1, 3, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def color(self, ctx, color=None):
         if color==None:
             return await ctx.send('Input a color')
@@ -60,8 +67,9 @@ class util(commands.Cog):
             embed.timestamp = datetime.datetime.utcnow()
             embed.set_author(name=ctx.author.display_name, url=ctx.author.avatar_url)
             return await ctx.send(embed=embed)
+
     @commands.command(aliases=['def'], brief='Gives the definitions of a word without using an API')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def define(self, ctx, *, word):
         synsets = wordnet.synsets(word)
         embed = discord.Embed(title=f'Definition of the word: `{word}`')
@@ -81,7 +89,7 @@ class util(commands.Cog):
         return await ctx.send(embed=embed)
 
     @commands.command(brief='Get your ping')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def ping(self, ctx):
         start = time()
         message = await ctx.send(f"Pong! Latency: {self.bot.latency*1000:,.0f} ms.")
@@ -90,7 +98,7 @@ class util(commands.Cog):
         return await message.edit(content=f"Pong! Latency: {self.bot.latency*1000:,.0f} ms. Response time: {(end-start)*1000:,.0f} ms")
 
     @commands.command(brief='Gets the time')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def time(self, ctx):
         now = datetime.datetime.utcnow()
         current_time = now.strftime("%H:%M:%S")
@@ -98,14 +106,15 @@ class util(commands.Cog):
         return await ctx.send(current_time)
 
     @commands.command(brief='Get your id')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def id(self, ctx):
         author = ctx.message.author.id
         return await ctx.send(author)
 
     @commands.command(aliases=['sa', 'av', 'avatar', 'pfp'], brief='Send a picture of someones avatar')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def stealavatar(self, ctx, *, member: discord.Member):
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def stealavatar(self, ctx, *, member: discord.Member=None):
+        member = member or ctx.author
         embed = discord.Embed(title=f'{member.name}\'s avatar', color=random.randint(
             0, 0xffffff), url=f'{member.avatar_url}')
         embed.set_image(url=member.avatar_url)
@@ -115,7 +124,7 @@ class util(commands.Cog):
         return await ctx.send(embed=embed)
 
     @commands.command(name='serverinfo', aliases=['server', 'sinfo'], brief='Gets info about the server')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def serverinfo(self, ctx, *, name: str = ""):
         """Get server info"""
         if name:
@@ -172,7 +181,7 @@ class util(commands.Cog):
 
 
     @commands.command(name='url', aliases=['shorten'], brief='Shortens a url')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def url_shorten(self, ctx, *, url):
         if not url:
             return await ctx.send('Please specify the url :link:')
@@ -188,7 +197,7 @@ class util(commands.Cog):
             return await ctx.send('Failed to shorten url :x:')
 
     @commands.command(name='userinfo', aliases=['user', 'uinfo', 'ui'], brief='Gets info about a user')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def userinfo(self, ctx, *, name=""):
         """Get user info. Ex: ;user @user"""
         if name:
@@ -243,8 +252,8 @@ class util(commands.Cog):
         return await ctx.send(embed=em)
 
     @commands.command(name='trace', aliases=['ip'], brief='Traces your ip')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def trace(self, ctx, ip: str = ""):
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def trace(self, ctx, *, ip: str = ""):
         """Trace ip"""
         if ip == "":
             return await ctx.send("Please enter an `IP` address :satellite:")
@@ -270,7 +279,7 @@ class util(commands.Cog):
             return await ctx.send(embed=embed)
 
     @commands.command(name='translate', brief='Translates text, use --list to see list of languages')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def translate(self, ctx, *args):
         """Translator"""
         if len(args) > 0:

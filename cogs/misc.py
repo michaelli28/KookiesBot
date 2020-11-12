@@ -40,6 +40,11 @@ import aiohttp
 from contextlib import redirect_stdout
 from textwrap import TextWrapper
 
+with open('config.json', 'r') as config:
+        configfile = json.load(config)
+        config.close()
+cooldown = int(configfile['cooldown'])
+times = int(configfile['numberoftimes'])
 
 
 
@@ -50,7 +55,7 @@ class misc(commands.Cog):
         self.message = None
         self.ctx = None
     @commands.command(name='repeat', brief='Repeats your input')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def do_repeat(self, ctx, *, inp: str):
         """A simple command which repeats your input!
         Parameters
@@ -77,7 +82,7 @@ class misc(commands.Cog):
     #             return await ctx.send("You forgot to give me input to repeat!")
 
     @commands.command(name='snipe', brief='Snipes the last repeat command')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def snipe(self, ctx):
         if self.ctx == None or self.message == None:
             return await ctx.send('No one has used the repeat command yet')
@@ -91,7 +96,7 @@ class misc(commands.Cog):
 
 
     @commands.command(aliases=['sp'], brief='Spam a message a certain number of times, say stop or end or cancel to stop spam')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(administrator=True)
     async def spam(self, ctx, *, message):
         await ctx.message.delete()
@@ -210,9 +215,18 @@ class misc(commands.Cog):
             await ctx.message.add_reaction('\u2705')
         return
 
-    @commands.command(name='ascii', brief='Ascii art of avatar or image')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def ascii(self, ctx, image_link: str=""):
+    @commands.command(name='botstop', aliases=['bstop'], brief='Shutdown the bot, NotThatBot#3360 only')
+    @commands.is_owner()
+    async def botstop(self, ctx):
+        print('Goodbye')
+        await ctx.send('Goodbye')
+        await self.bot.logout()
+        return
+
+
+    @commands.command(name='ascii', aliases=['ac'], brief='Ascii art of avatar or image')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def ascii(self, ctx, *, image_link: str=""):
         """Ascii art of avatar"""
         if not image_link:
             user = ctx.message.author
@@ -228,7 +242,7 @@ class misc(commands.Cog):
             return await ctx.send("Failed :x:\nMaybe the url is wrong")
 
         ascii_file = open("ascii.txt", "w")
-        n = ascii_file.write(result)
+        # n = ascii_file.write(result)
         ascii_file.close()
 
         file = discord.File('ascii.txt')
@@ -237,9 +251,8 @@ class misc(commands.Cog):
         return await ctx.send(file=file, embed=em)
 
 
-
     @commands.command(name='advice', brief='Generates advice')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def advice(self, ctx):
         """Random Advice generator"""
         url = 'https://api.adviceslip.com/advice'
@@ -252,8 +265,8 @@ class misc(commands.Cog):
         return await ctx.send(data['slip']['advice'])
 
     @commands.command(name='rhyme', brief='Rhymes a word')
-    @commands.cooldown(1, 5, commands.BucketType.user)
-    async def rhyme(self, ctx, word=""):
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def rhyme(self, ctx, *, word=""):
         if not word:
             return await ctx.send("Specify a word :thought_balloon:")
 
@@ -271,7 +284,7 @@ class misc(commands.Cog):
         return await ctx.send(f'Word(s) that rhyme with **{word}**\n' + f"`{', '.join(result)}`")
 
     @commands.command(brief='Gets news from CNN')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def news(self, ctx, *, search):
         num_query = search.split(',', 1)
         number_of_results = num_query[0]

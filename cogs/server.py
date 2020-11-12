@@ -19,13 +19,22 @@ from discord.ext import tasks
 from pytz import timezone
 from discord.ext.commands.errors import BadArgument
 
+
+
+with open('config.json', 'r') as config:
+        configfile = json.load(config)
+        config.close()
+cooldown = int(configfile['cooldown'])
+times = int(configfile['numberoftimes'])
+
+
 class server(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(brief='Creates a channel')
     @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def createchannel(self, ctx, *, name):
         guild = ctx.message.guild
         await guild.create_text_channel(name)
@@ -33,7 +42,7 @@ class server(commands.Cog):
 
     @commands.command(brief='Creates a voice channel')
     @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def createvoicechannel(self, ctx, *, name):
         guild = ctx.message.guild
         await guild.create_voice_channel(name)
@@ -41,7 +50,7 @@ class server(commands.Cog):
 
     @commands.command(brief='Edits a text channel')
     @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def editchannel(self, ctx, name: discord.TextChannel, *, nname: Optional[str] = None, slowmode: Optional[int] = None):
         rindex = 0
         for char in name:
@@ -61,7 +70,7 @@ class server(commands.Cog):
 
     @commands.command(brief='Creates a category')
     @commands.has_permissions(manage_channels=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def createcategory(self, ctx, *, name):
         guild = ctx.message.guild
         await guild.create_category(name)
@@ -69,7 +78,7 @@ class server(commands.Cog):
 
     # allows server members to set channel for welcome messages to send to
     @commands.command(brief='Sets the channel for welcome messages')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_guild=True)
     async def welcome(self, ctx):
         with open("guild.json", "r") as f:
@@ -128,7 +137,7 @@ class server(commands.Cog):
 
     @commands.command(brief='Deletes Kookies\' messages after a certain amount of seconds')
     @commands.has_permissions(manage_messages=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def prune(self, ctx, time = None):
         with open('config.json', 'r') as config:
             info = json.load(config)

@@ -20,6 +20,15 @@ from discord.ext import tasks
 
 from discord.ext.commands.errors import BadArgument
 
+
+with open('config.json', 'r') as config:
+        configfile = json.load(config)
+        config.close()
+cooldown = int(configfile['cooldown'])
+times = int(configfile['numberoftimes'])
+
+
+
 class roles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -28,7 +37,7 @@ class roles(commands.Cog):
     @commands.command(aliases=['ar'], brief='Gives someone a role, need manage roles, use _ as spaces')
     # This must be exactly the name of the appropriate role
     @commands.has_permissions(manage_roles=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def addrole(self, ctx, user: Optional[discord.Member], role, everyone=None):
         rindex = 0
         for char in role:
@@ -71,7 +80,7 @@ class roles(commands.Cog):
                 return await ctx.send('I\'m not allowed to do that')
 
     @commands.command(aliases=['rr'], brief='Removes a role, need manage roles, use _ as spaces')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def removerole(self, ctx, user: Optional[discord.Member], role, everyone=None):
         rindex = 0
@@ -113,7 +122,7 @@ class roles(commands.Cog):
 
 
     @commands.command(aliases=['cr'], brief='Creates a role; Using `random` for color sets a random color, use _ as spaces')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def createrole(self, ctx, name, color=None, permission=None):
         rindex = 0
@@ -147,7 +156,7 @@ class roles(commands.Cog):
                 return await ctx.send('I don\'t have the permissions to do that')
 
     @commands.command(aliases=['dr'], brief='Deletes a role')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def deleterole(self, ctx, *, role: discord.Role):
         if role == 'Admin' or role == 'Admin but Lower':
@@ -161,7 +170,7 @@ class roles(commands.Cog):
 
 
     @commands.command(aliases=['rn'], brief='Edits a role\'s name')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def rolename(self, ctx, name, *, newname: str = None):
         
@@ -195,7 +204,7 @@ class roles(commands.Cog):
             return await ctx.send('I don\'t have the permissions to do that')
 
     @commands.command(aliases=['rp'], brief='Edits a role\'s position')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def roleposition(self, ctx, name, position: int = None):
         if position == None:
@@ -221,7 +230,7 @@ class roles(commands.Cog):
         except discord.errors.HTTPException:
             return await ctx.send('Missing permissions')
     @commands.command(aliases=['rm'], brief='Edits a role\'s mentionability')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def rolemention(self, ctx, name, mentionable: bool = None):
 
@@ -248,7 +257,7 @@ class roles(commands.Cog):
             return await ctx.send('I don\'t have the permissions to do that')
 
     @commands.command(aliases=['rh'], brief='Sets the role hoist (shown separately on member list or not)')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def rolehoist(self, ctx, name, hoist: bool = None):
         if hoist == None:
@@ -277,7 +286,7 @@ class roles(commands.Cog):
             
     @commands.command(aliases=['rc'], brief='Adds a role claim message, use like this: ;rc toxic pro_player noob with spaces as underscores')
     @commands.has_permissions(manage_roles=True)
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def roleclaim(self, ctx, *roles, note=None):
         await ctx.message.delete()
         if 1 > len(roles) > 10:
@@ -615,7 +624,7 @@ class roles(commands.Cog):
 
 
     @commands.command(aliases=['rl'], brief='Show a list of roles from highest to lowest level')
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def rolelist(self, ctx):
         async with ctx.typing():
             roles = ctx.guild.roles

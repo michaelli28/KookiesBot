@@ -20,6 +20,14 @@ import asyncio
 from discord.ext import tasks
 from operator import itemgetter
 
+
+with open('config.json', 'r') as config:
+        configfile = json.load(config)
+        config.close()
+cooldown = int(configfile['cooldown'])
+times = int(configfile['numberoftimes'])
+
+
 class school(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
