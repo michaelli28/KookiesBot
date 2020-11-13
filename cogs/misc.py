@@ -227,7 +227,7 @@ class misc(commands.Cog):
     @commands.is_owner()
     async def reload_module(self, ctx, arg=None):
         """Reload module"""
-        modules = ['musiclava', 'fun', 'utility', 'levels', 'CommandErrorHandler', 'misc', 'moderation', 'roles', 'school', 'server', 'game']
+        modules = ['musiclava', 'fun', 'utility', 'levels', 'CommandErrorHandler', 'misc', 'moderation', 'roles', 'school', 'server', 'games']
         if not arg:
             embed = discord.Embed(
                 title='Modules', description='\n'.join(modules))

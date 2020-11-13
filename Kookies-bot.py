@@ -80,7 +80,7 @@ async def on_ready():
     bot.load_extension('cogs.server')
     bot.load_extension('cogs.misc')
     bot.load_extension('cogs.utility')
-    bot.load_extension('cogs.game')
+    bot.load_extension('cogs.games')
     #bot.load_extension('cogs.school')
 
 

@@ -185,7 +185,7 @@ class moderation(commands.Cog):
                     if minutes>0:
                         await ctx.send(f'Everyone has been muted from chat and will be unmuted in {minutes} minute(s))')
                         await asyncio.sleep(int(minutes*60))
-                        await user.remove_roles(role)
+                        await user.remove_roles(r)
                         return await ctx.send(f'Unmuted everyone after {minutes} minute(s)')
                     else:
                         return await ctx.send(f'Muted everyone, no timer')

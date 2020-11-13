@@ -4,12 +4,14 @@ import asyncio
 import discord
 from discord.ext import commands
 #from .games import tictactoe, wumpus, hangman, minesweeper, twenty
-import games.tictactoe as tictactoe
-import games.twenty as twenty
-import games.wumpus as wumpus
-import games.hangman as hangman
-import games.minesweeper as minesweeper
-class Game(commands.Cog):
+import game.tictactoe as tictactoe
+import game.twenty as twenty
+import game.wumpus as wumpus
+import game.hangman as hangman
+import game.minesweeper as minesweeper
+
+
+class games(commands.Cog):
     """Play various Games"""
 
     def __init__(self, bot):
@@ -80,3 +82,6 @@ class Game(commands.Cog):
     async def _wumpus(self, ctx):
         """Play Wumpus game"""
         await wumpus.play(self.bot, ctx)
+
+def setup(bot):
+	bot.add_cog(games(bot))
