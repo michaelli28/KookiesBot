@@ -171,10 +171,10 @@ class moderation(commands.Cog):
                 for embed in message.embeds:
                     print(embed.to_dict())
 
-    @commands.command(aliases=['m'], brief='Mutes someone, need manage roles')
+    @commands.command(aliases=['m'], brief='Mutes someone, need manage roles, if you want to mute one person, ;mute @me [optional time] or if you want to mute everyone, ;mute everyone')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def mute(self, ctx, user: Optional[discord.Member], minutes: Optional[int]=0, everyone: Optional[str] = None):
+    async def mute(self, ctx, user: Optional[discord.Member]=None, minutes: Optional[int]=0, everyone: Optional[str] = None):
         if everyone == 'everyone':
             async with ctx.typing():
                 try:
@@ -182,7 +182,13 @@ class moderation(commands.Cog):
                     for person in ctx.message.guild.members:
                         u = ctx.guild.get_member(person.id)
                         await u.add_roles(r)
-                    return await ctx.send(f'Muted everyone')
+                    if minutes>0:
+                        await ctx.send(f'Everyone has been muted from chat and will be unmuted in {minutes} minute(s))')
+                        await asyncio.sleep(int(minutes*60))
+                        await user.remove_roles(role)
+                        return await ctx.send(f'Unmuted everyone after {minutes} minute(s)')
+                    else:
+                        return await ctx.send(f'Muted everyone, no timer')
                 except AttributeError:
                     Muted = await ctx.guild.create_role(name="Muted", hoist = True)
                     for channel in ctx.guild.channels:  # removes permission to view and send in the channels
@@ -193,11 +199,19 @@ class moderation(commands.Cog):
                     for person in ctx.message.guild.members:
                         u = ctx.guild.get_member(person.id)
                         await u.add_roles(role)
-                    return await ctx.send(f'Created Muted role and muted Everyone')
+                    if minutes>0:
+                        await ctx.send(f'Created muted role, everyone has been muted from chat and will be unmuted in {minutes} minute(s))')
+                        await asyncio.sleep(int(minutes*60))
+                        await user.remove_roles(role)
+                        return await ctx.send(f'Unmuted everyone after {minutes} minute(s)')
+                    else:
+                        return await ctx.send(f'Created Muted role, muted everyone, no timer')
 
                 except discord.Forbidden:
                     return await ctx.send('I\'m not allowed to do that')
         else:
+            if user == None:
+                return await ctx.send('Input a user to mute or everyone')
             try:
                 role = get(user.guild.roles, name='Muted')
                 await user.add_roles(role)

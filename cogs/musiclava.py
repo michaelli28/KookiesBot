@@ -20,14 +20,14 @@ kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsb
 #TODO lavalink errors
 #TODO make sure when errors happen, things dont keep going on
 #TODO make volume guild based
-
+#TODO make song loop cmd
+#TODO make move song to cmd
 
 with open('config.json', 'r') as config:
         configfile = json.load(config)
         config.close()
 cooldown = int(configfile['cooldown'])
 times = int(configfile['numberoftimes'])
-
 
 
 class HelpMenu(ListPageSource):
@@ -68,6 +68,8 @@ class music(commands.Cog):
         self.bot = bot
         self.kclient = kclient
         self.volume = 40
+
+
         if not hasattr(bot, 'lavalink'):
             bot.lavalink = lavalink.Client(bot.user.id)
             # Host, Port, Password, Region, Name
@@ -79,7 +81,7 @@ class music(commands.Cog):
 
             # bot.lavalink.add_node(
             # 'localhost', 80, 'youshallnotpass', 'us', 'default-node')
-            
+
             bot.lavalink.add_node(
                 'lavalinkforkookies.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
 
@@ -273,6 +275,22 @@ class music(commands.Cog):
         """ Connects to the given voicechannel ID. A channel_id of `None` means disconnect. """
         ws = self.bot._connection._get_websocket(guild_id)
         return await ws.voice_state(str(guild_id), channel_id)
+
+    @commands.command(name='join', aliases=['j'], brief='Makes the bot join a voice channel')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def _join(self, ctx: commands.Context, channel: discord.VoiceChannel = None):
+        """Joins a voice channel"""
+        # await ctx.message.delete()
+        if not channel:
+            try:
+                channel = ctx.author.voice.channel
+            except AttributeError:
+                return await ctx.send(f'{ctx.author.mention}, specify a channel for me to join or join one')
+
+        destination = ctx.author.voice.channel.id
+        await self.connect_to(ctx.guild.id, (str(destination)))
+        return await ctx.send(f'{ctx.author.mention}, connected to: **{destination}**, type **;leave** to leave the channel')
+
 
     @commands.command(name='play', brief='Plays or queues a song or playlist by link or by search, to insert song at an index, search using # as a separator, songnamehere#3 will search for songnamehere and will insert at the 3rd position in the queue')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
