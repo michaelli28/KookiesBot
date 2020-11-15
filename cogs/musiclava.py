@@ -22,6 +22,7 @@ kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsb
 #TODO make volume guild based
 #TODO make song loop cmd
 #TODO make move song to cmd
+#TODO make soundcloud search using scsearch:blahblahblah
 
 with open('config.json', 'r') as config:
         configfile = json.load(config)
@@ -180,14 +181,15 @@ class music(commands.Cog):
             guild_id = int(event.player.guild_id)
             player = event.player
             channel = self.bot.get_channel(player.fetch(guild_id))
+
             guild = self.bot.get_guild(guild_id)
             try:
-                members = guild.voice_client.channel.members
+                members = guild.me.voice.channel.members
                 if len(members)==1:
                     await self.connect_to(guild_id, None)
                     return await channel.send('The voice channel that the bot is in has no members, leaving voice channel.')
-            except:
-                pass
+            except Exception as e:
+                print(e)
             # if player.shuffle:
             #     await channel.send('Shuffling...')
             #     await asyncio.sleep(5)
