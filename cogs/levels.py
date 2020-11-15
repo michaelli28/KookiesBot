@@ -26,6 +26,22 @@ cooldown = int(configfile['cooldown'])
 times = int(configfile['numberoftimes'])
 
 
+class menu(MenuPages):
+    def reaction_check(self, payload):
+        # if payload.user_id == self.bot.id:
+        #     return False
+
+        # if payload.message_id != self.message.id:
+        #     return False
+
+        # return payload.emoji in self.buttons
+        if payload.message_id != self.message.id:
+            return False
+        if payload.user_id in {743859420798124043}:
+            return False
+
+        return payload.emoji in self.buttons
+
 
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 30, fill = '█'):
     # @params:
@@ -105,8 +121,8 @@ class levels(Cog):
         for item in sort:
             collection.update_one({'_id': item['_id']}, {"$set":{"rank": rank}}) 
             rank+=1
-        menu = MenuPages(source=HelpMenu(ctx, sort), delete_message_after=True)
-        return await menu.start(ctx)
+        menu1 = menu(source=HelpMenu(ctx, sort), delete_message_after=True)
+        return await menu1.start(ctx)
 
     @commands.command(aliases=['xp'], brief='Get your xp and level')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
