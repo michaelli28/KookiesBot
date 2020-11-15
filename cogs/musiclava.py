@@ -30,6 +30,16 @@ with open('config.json', 'r') as config:
 cooldown = int(configfile['cooldown'])
 times = int(configfile['numberoftimes'])
 
+class menu(MenuPages):
+    def reaction_check(self, payload):
+
+        if payload.message_id != self.message.id:
+            return False
+        if payload.user_id in {743859420798124043}:
+            return False
+
+        return payload.emoji in self.buttons
+
 
 class HelpMenu(ListPageSource):
     def __init__(self, ctx, data):
@@ -595,9 +605,9 @@ class music(commands.Cog):
             
             if not player.queue:
                 return await ctx.send('Queue empty! :cd:')
-            menu = MenuPages(source=HelpMenu(ctx, player.queue))
+            menu1 = menu(source=HelpMenu(ctx, player.queue))
 
-            return await menu.start(ctx)
+            return await menu1.start(ctx)
             # items_per_page = 10
             # pages = math.ceil(len(player.queue) / items_per_page)
 

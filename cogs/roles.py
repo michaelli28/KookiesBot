@@ -27,6 +27,15 @@ with open('config.json', 'r') as config:
 cooldown = int(configfile['cooldown'])
 times = int(configfile['numberoftimes'])
 
+class menu(MenuPages):
+    def reaction_check(self, payload):
+
+        if payload.message_id != self.message.id:
+            return False
+        if payload.user_id in {743859420798124043}:
+            return False
+
+        return payload.emoji in self.buttons
 
 
 class roles(commands.Cog):
@@ -629,8 +638,8 @@ class roles(commands.Cog):
         async with ctx.typing():
             roles = ctx.guild.roles
             roles.reverse()
-            menu = MenuPages(source=HelpMenu(ctx, roles), delete_message_after=True)
-            return await menu.start(ctx)
+            menu1 = menu(source=HelpMenu(ctx, roles), delete_message_after=True)
+            return await menu1.start(ctx)
 
 
 

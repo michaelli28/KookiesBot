@@ -8,7 +8,6 @@ import markovify
 from discord.ext import commands
 from discord.ext.commands import command
 from discord.ext.commands import Cog
-from discord.ext.menus import MenuPages, ListPageSource
 from discord.utils import get
 from discord import Embed
 from typing import Optional

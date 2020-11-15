@@ -28,13 +28,7 @@ times = int(configfile['numberoftimes'])
 
 class menu(MenuPages):
     def reaction_check(self, payload):
-        # if payload.user_id == self.bot.id:
-        #     return False
 
-        # if payload.message_id != self.message.id:
-        #     return False
-
-        # return payload.emoji in self.buttons
         if payload.message_id != self.message.id:
             return False
         if payload.user_id in {743859420798124043}:

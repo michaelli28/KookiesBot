@@ -12,6 +12,8 @@ PREFIX=';'
 
 
 
+
+
 with open('config.json', 'r') as config:
         configfile = json.load(config)
         config.close()
@@ -43,6 +45,17 @@ def param(command):
     params = " ".join(params)
 
     return f"`{params}`"
+
+
+class menu2(MenuPages):
+    def reaction_check(self, payload):
+
+        if payload.message_id != self.message.id:
+            return False
+        if payload.user_id in {743859420798124043}:
+            return False
+
+        return payload.emoji in self.buttons
 
 
 class HelpMenu(ListPageSource):
@@ -111,14 +124,14 @@ class help(commands.Cog):
                 commands = cog.get_commands()
                 # menu = MenuPages(source=HelpMenu(ctx, commands),
                 #                 delete_message_after=True)
-                menu = MenuPages(source=HelpMenu(ctx, commands))
-                await menu.start(ctx)
+                menu1 = menu2(source=HelpMenu(ctx, commands))
+                await menu1.start(ctx)
             
 
 
             elif cmd == 'all':
-                menu = MenuPages(source=HelpMenu(ctx, list(self.bot.commands)))
-                await menu.start(ctx)
+                menu1 = menu2(source=HelpMenu(ctx, list(self.bot.commands)))
+                await menu1.start(ctx)
             
             elif cmd is None:
                 cogs = self.bot.cogs
