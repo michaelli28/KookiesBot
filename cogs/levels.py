@@ -31,7 +31,7 @@ class menu(MenuPages):
 
         if payload.message_id != self.message.id:
             return False
-        if payload.user_id in {743859420798124043}:
+        if payload.user_id in {self.bot.user.id}:
             return False
 
         return payload.emoji in self.buttons
@@ -200,8 +200,11 @@ class levels(Cog):
                 db = cluster.KookiesBot
 
                 global collection
+
                 try:
                     collection = db[ctx.guild.name]
+                except AttributeError:
+                    return
                 except:
                     db.createCollection(ctx.guild.name)
                     collection = db[ctx.guild.name]

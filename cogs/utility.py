@@ -1,3 +1,4 @@
+import sys
 import urllib
 import json
 import datetime
@@ -23,7 +24,69 @@ import io
 from googletrans import Translator, LANGUAGES
 # nltk.download('wordnet')
 from nltk.corpus import wordnet
+import math
+
 kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsbCwgIm8iOiAiNTg3MDY4NjEwMjM3NjkzOTYzIiwgImMiOiA3NTczNDQ4fQ.bdb3a6d6f99d566327126abc55fdbd969b04c877ccd7cd5c5df316a343e80355')
+
+from urllib.request import urlopen
+from urllib.parse import quote as urlquote
+
+UD_DEFINE_URL = 'https://api.urbandictionary.com/v0/define?term='
+
+
+
+class UrbanDefinition(object):
+    def __init__(self, word, definition, example, upvotes, downvotes):
+        self.word = word
+        self.definition = definition
+        self.example = example
+        self.upvotes = upvotes
+        self.downvotes = downvotes
+
+    def __str__(self):
+        return '%s: %s%s (%d, %d)' % (
+            self.word,
+            self.definition[:50],
+            '...' if len(self.definition) > 50 else '',
+            self.upvotes,
+            self.downvotes
+        )
+
+def _get_urban_json(url):
+    f = urlopen(url)
+    data = json.loads(f.read().decode('utf-8'))
+    f.close()
+    return data
+
+
+def _parse_urban_json(json, check_result=True):
+    result = []
+    if json is None or any(e in json for e in ('error', 'errors')):
+        print('UD: Invalid input for Urban Dictionary API')
+    if check_result and ('list' not in json or len(json['list']) == 0):
+        return result
+    for definition in json['list']:
+        d = UrbanDefinition(
+            definition['word'],
+            definition['definition'],
+            definition['example'],
+            int(definition['thumbs_up']),
+            int(definition['thumbs_down'])
+        )
+        result.append(d)
+    return result
+
+
+def define(term):
+    """Search for term/phrase and return list of UrbanDefinition objects.
+    Keyword arguments:
+    term -- term or phrase to search for (str)
+    """
+    json = _get_urban_json(UD_DEFINE_URL + urlquote(term))
+    return _parse_urban_json(json)
+
+
+
 
 
 with open('config.json', 'r') as config:
@@ -70,22 +133,55 @@ class util(commands.Cog):
     @commands.command(aliases=['def'], brief='Gives the definitions of a word without using an API')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def define(self, ctx, *, word):
-        synsets = wordnet.synsets(word)
-        embed = discord.Embed(title=f'Definition of the word: `{word}`')
-        embed.set_author(name=ctx.author.display_name,
-                         icon_url=ctx.author.avatar_url)
-        embed.timestamp = datetime.datetime.utcnow()
-        n = 1
-        if len(synsets) == 0:
-            return await ctx.send('No definitions found (this is kind of like AI so it\'s not perfect)')
-        else:
-            pass
-        for synset in synsets:
-            definition = synset.definition()
-            embed.add_field(name=f'Definition {n})',
-                            value=definition, inline=False)
+        # synsets = wordnet.synsets(word)
+        # embed = discord.Embed(title=f'Definition of the word: `{word}`')
+        # embed.set_author(name=ctx.author.display_name,
+        #                  icon_url=ctx.author.avatar_url)
+        # embed.timestamp = datetime.datetime.utcnow()
+        # n = 1
+        # if len(synsets) == 0:
+        #     return await ctx.send('No definitions found (this is kind of like AI so it\'s not perfect)')
+        # else:
+        #     pass
+        embeds = 0
+        defs = define(word)
+        n=1
+        des = ''
+        toolong = False
+        listEmbeds = []
+        triggered = False
+        for definition in defs:
+            # definition = synset.definition()
+            # embed.add_field(name=f'Definition {n})',
+            #                 value=definition.definition, inline=False)
+            words = f'**Definition {n})**\n{definition.definition}\n'
             n += 1
-        return await ctx.send(embed=embed)
+            test = des + words
+            if len(test) > 2048:
+                toolong = True
+                embeds+=1
+                if not triggered:
+                    triggered = True
+            if toolong:
+                embed = discord.Embed(title=f'Definition of `{word}`, Part {embeds}', description=des)
+                embed.set_author(name=ctx.author.display_name,
+                                icon_url=ctx.author.avatar_url)
+                embed.timestamp = datetime.datetime.utcnow()
+                listEmbeds.append(embed)
+                des = ''
+                des += words
+                toolong = False
+            else:
+                des += words
+        if not triggered:
+            embed = discord.Embed(title=f'Definition of `{word}`', description=des)
+            embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.avatar_url)
+            embed.timestamp = datetime.datetime.utcnow()
+        else:
+            for embed in listEmbeds:
+                await ctx.send(embed=embed)
+            return
 
     @commands.command(brief='Get your ping')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
