@@ -353,7 +353,7 @@ class moderation(commands.Cog):
         else:
             await ctx.channel.edit(slowmode_delay=slowmode)
             return await ctx.send(
-                f"Slow Mode set to {slowmode} seconds for {ctx.channel.mention}")
+                f"Slow Mode set to {slowmode} second(s) for {ctx.channel.mention}")
 
     @commands.command(brief="See your or other peoples permissions", aliases=["permissions"])
     @commands.cooldown(times, cooldown, commands.BucketType.user)

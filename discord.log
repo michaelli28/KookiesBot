@@ -1,3 +1,8 @@
-2020-11-16 11:12:48,163:INFO:discord.client: logging in using static token
-2020-11-16 11:12:48,548:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
-2020-11-16 11:12:48,651:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-lf78",{"micros":50515,"calls":["discord-sessions-prd-2-52",{"micros":45804,"calls":["start_session",{"micros":35400,"calls":["api-prd-main-gm33",{"micros":32844,"calls":["get_user",{"micros":2886},"add_authorized_ip",{"micros":1559},"get_guilds",{"micros":3259},"coros_wait",{"micros":0}]}]},"guilds_connect",{"micros":8,"calls":[]},"presence_connect",{"micros":2,"calls":[]}]}]}] (Session ID: f3c57a0103c2d08d9ecdbaf3977094a4).
+2020-11-16 14:02:37,331:INFO:discord.client: logging in using static token
+2020-11-16 14:02:37,891:INFO:discord.gateway: Shard ID None has sent the IDENTIFY payload.
+2020-11-16 14:02:37,998:INFO:discord.gateway: Shard ID None has connected to Gateway: ["gateway-prd-main-651w",{"micros":52285,"calls":["discord-sessions-prd-2-100",{"micros":46348,"calls":["start_session",{"micros":34709,"calls":["api-prd-main-nbk9",{"micros":32025,"calls":["get_user",{"micros":1918},"add_authorized_ip",{"micros":1662},"get_guilds",{"micros":3963},"coros_wait",{"micros":2}]}]},"guilds_connect",{"micros":11,"calls":[]},"presence_connect",{"micros":2,"calls":[]}]}]}] (Session ID: 833b38c965f73ee3b758920aed9bcf15).
+2020-11-16 14:05:18,798:INFO:discord.voice_client: Connecting to voice...
+2020-11-16 14:05:18,799:INFO:discord.voice_client: Starting voice handshake... (connection attempt 1)
+2020-11-16 14:05:18,895:INFO:discord.voice_client: Voice handshake complete. Endpoint found us-central888.discord.media
+2020-11-16 14:05:19,123:INFO:discord.gateway: selected the voice protocol for use (xsalsa20_poly1305_lite)
+2020-11-16 14:05:19,147:INFO:discord.gateway: received secret key for voice connection

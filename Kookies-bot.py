@@ -75,7 +75,7 @@ async def on_ready():
     bot.load_extension('cogs.helpmenu')
     bot.load_extension('cogs.levels')
     bot.load_extension('cogs.moderation')
-    bot.load_extension('cogs.musiclava')
+    bot.load_extension('cogs.music copy')
     bot.load_extension('cogs.roles')
     bot.load_extension('cogs.server')
     bot.load_extension('cogs.misc')
