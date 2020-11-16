@@ -145,43 +145,61 @@ class util(commands.Cog):
         #     pass
         embeds = 0
         defs = define(word)
+        number = len(defs)
+
         n=1
         des = ''
         toolong = False
         listEmbeds = []
         triggered = False
-        for definition in defs:
-            # definition = synset.definition()
-            # embed.add_field(name=f'Definition {n})',
-            #                 value=definition.definition, inline=False)
-            words = f'**Definition {n})**\n{definition.definition}\n'
-            n += 1
-            test = des + words
-            if len(test) > 2048:
-                toolong = True
-                embeds+=1
-                if not triggered:
-                    triggered = True
-            if toolong:
-                embed = discord.Embed(title=f'Definition of `{word}`, Part {embeds}', description=des)
+        async with ctx.typing():
+            for definition in defs:
+                # definition = synset.definition()
+                # embed.add_field(name=f'Definition {n})',
+                #                 value=definition.definition, inline=False)
+                words = f'**Definition {n})**\n{definition.definition}\n'
+                n += 1
+                test = des + words
+                if len(test) > 2048:
+                    toolong = True
+                    embeds+=1
+                    if not triggered:
+                        triggered = True
+                elif int(n) == int(number+1):
+
+                    embed = discord.Embed(title=f'Definition of `{word}`, Part {embeds}', description=des+words)
+                    embed.set_author(name=ctx.author.display_name,
+                                    icon_url=ctx.author.avatar_url)
+                    embed.timestamp = datetime.datetime.utcnow()
+                    listEmbeds.append(embed)
+                if toolong:
+                    embed = discord.Embed(title=f'Definition of `{word}`, Part {embeds}', description=des)
+                    embed.set_author(name=ctx.author.display_name,
+                                    icon_url=ctx.author.avatar_url)
+                    embed.timestamp = datetime.datetime.utcnow()
+                    listEmbeds.append(embed)
+                    des = ''
+                    des += words
+                    toolong = False
+                    if n==number+1:
+                        embeds+=1
+                        embed = discord.Embed(title=f'Definition of `{word}`, Part {embeds}', description=des)
+                        embed.set_author(name=ctx.author.display_name,
+                                        icon_url=ctx.author.avatar_url)
+                        embed.timestamp = datetime.datetime.utcnow()
+                        listEmbeds.append(embed)
+                else:
+                    des += words
+            if not triggered:
+                embed = discord.Embed(title=f'Definition of `{word}`', description=des)
                 embed.set_author(name=ctx.author.display_name,
                                 icon_url=ctx.author.avatar_url)
                 embed.timestamp = datetime.datetime.utcnow()
-                listEmbeds.append(embed)
-                des = ''
-                des += words
-                toolong = False
+                return await ctx.send(embed=embed)
             else:
-                des += words
-        if not triggered:
-            embed = discord.Embed(title=f'Definition of `{word}`', description=des)
-            embed.set_author(name=ctx.author.display_name,
-                            icon_url=ctx.author.avatar_url)
-            embed.timestamp = datetime.datetime.utcnow()
-        else:
-            for embed in listEmbeds:
-                await ctx.send(embed=embed)
-            return
+                for embed in listEmbeds:
+                    await ctx.send(embed=embed)
+                return
 
     @commands.command(brief='Get your ping')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
