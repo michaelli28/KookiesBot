@@ -40,8 +40,9 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 
-global PREFIX
 PREFIX = ';'
+
+
 intents = discord.Intents.all()
 #sys.dont_write_bytecode = True
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True,
