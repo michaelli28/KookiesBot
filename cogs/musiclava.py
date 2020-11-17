@@ -85,9 +85,9 @@ class music(commands.Cog):
             bot.lavalink = lavalink.Client(bot.user.id)
 
 
-            # bot.lavalink.add_node('localhost', 80, 'youshallnotpass', 'us', 'default-node')
+            bot.lavalink.add_node('localhost', 80, 'youshallnotpass', 'us', 'default-node')
 
-            bot.lavalink.add_node('kookiesll1.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            #bot.lavalink.add_node('kookiesll1.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             
             # bot.lavalink.add_node('kookiesll2.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             
@@ -295,9 +295,9 @@ class music(commands.Cog):
             except AttributeError:
                 return await ctx.send(f'{ctx.author.mention}, specify a channel for me to join or join one')
 
-        destination = ctx.author.voice.channel.id
-        await self.connect_to(ctx.guild.id, (str(destination)))
-        return await ctx.send(f'{ctx.author.mention}, connected to: **{destination}**, type **;leave** to leave the channel')
+        destination = ctx.author.voice.channel
+        await self.connect_to(ctx.guild.id, (str(destination.id)))
+        return await ctx.send(f'{ctx.author.mention}, connected to: **{destination.name}**, type **;leave** to leave the channel')
 
 
     @commands.command(name='play', aliases=['p', 'yt', 'youtube'], brief='Plays or queues a song or playlist by link or by search (youtube), to insert song at an index, search using # as a separator, songnamehere#3 will search for songnamehere and will insert at the 3rd position in the queue')
