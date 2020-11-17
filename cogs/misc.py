@@ -65,7 +65,10 @@ class misc(commands.Cog):
         self.ctx = ctx
         self.message = inp
         message = ctx.message
-        await message.delete()
+        try:
+            await message.delete()
+        except discord.errors.NotFound:
+            pass
         return await ctx.send(inp)
 
     # @do_repeat.error
