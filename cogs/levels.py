@@ -247,6 +247,9 @@ class levels(Cog):
                             collection.update_one({'_id': item['_id']}, {
                                                   "$set": {"rank": rank}})
                             rank += 1
+                        if item['name'] != ctx.author.display_name:
+                            collection.update_one({'_id': item['_id']}, {"$set": {"name": ctx.author.display_name}})
+
                 with open("cooldown.json", "r") as f:
                     cooldowns = json.load(f)
                     # del cooldowns[str(ctx.author.id)]

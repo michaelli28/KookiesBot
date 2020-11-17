@@ -83,19 +83,15 @@ class music(commands.Cog):
 
         if not hasattr(bot, 'lavalink'):
             bot.lavalink = lavalink.Client(bot.user.id)
-            # Host, Port, Password, Region, Name
 
 
-            # bot.lavalink.add_node(
-            #     'kookieslavalink.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            # bot.lavalink.add_node('localhost', 80, 'youshallnotpass', 'us', 'default-node')
 
-
-            # bot.lavalink.add_node(
-            # 'localhost', 80, 'youshallnotpass', 'us', 'default-node')
-
-            bot.lavalink.add_node(
-                'lavalinkforkookies.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
-
+            bot.lavalink.add_node('kookiesll1.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            
+            # bot.lavalink.add_node('kookiesll2.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            
+            # bot.lavalink.add_node('kookiesll3.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
 
             bot.add_listener(bot.lavalink.voice_update_handler,
                             'on_socket_response')
