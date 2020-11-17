@@ -85,9 +85,9 @@ class music(commands.Cog):
             bot.lavalink = lavalink.Client(bot.user.id)
 
 
-            bot.lavalink.add_node('localhost', 80, 'youshallnotpass', 'us', 'default-node')
+            # bot.lavalink.add_node('localhost', 80, 'youshallnotpass', 'us', 'default-node')
 
-            #bot.lavalink.add_node('kookiesll1.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            bot.lavalink.add_node('kookiesll1.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             
             # bot.lavalink.add_node('kookiesll2.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             
