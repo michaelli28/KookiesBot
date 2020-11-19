@@ -310,6 +310,7 @@ class fun(commands.Cog):
     #     return await ctx.send(f"{user.mention} {insult_text}")
 
     @commands.command(name='chat', aliases=['aichat'], brief = 'Starts ai chat mode, type bye to stop')
+    @commands.max_concurrency(5, commands.BucketType.guild)
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def _aichat(self, ctx):
         """Start AI chat mode"""

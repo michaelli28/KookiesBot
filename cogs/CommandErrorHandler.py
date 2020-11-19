@@ -92,6 +92,12 @@ class CommandErrorHandler(commands.Cog):
             except discord.Forbidden:
                 pass
             return
+        elif isinstance(error, commands.MaxConcurrencyReached):
+            try:
+                await ctx.message.delete()
+            except:
+                pass
+            return await ctx.send(f'The maximum amount of **{ctx.command.name}** commands as been reached for **{ctx.guild.name}**, please wait')
 
         # elif isinstance(error, commands.CheckFailure):
         #     await ctx.send("You do not have permission to use this command")
