@@ -33,39 +33,13 @@ import logging
 
 #logging.basicConfig(level=logging.INFO)
 
-logger = logging.getLogger('discord')
-logger.setLevel(logging.INFO)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
-
-
 PREFIX = ';'
-
-
-intents = discord.Intents.all()
-#sys.dont_write_bytecode = True
-bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True,
-                   description='Kookies FOR THE WIN', intents=intents, owner_id=587068610237693963)
-'''
-# Setting `Playing ` status
-await bot.change_presence(activity=discord.Game(name="a game"))
-
-# Setting `Streaming ` status
-await bot.change_presence(activity=discord.Streaming(name="My Stream", url=my_twitch_url))
-
-# Setting `Listening ` status
-await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="a song"))
-
-# Setting `Watching ` status
-await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="a movie"))
-'''
-
 #Below is blank space for future reference
 #᲼᲼᲼᲼᲼᲼#
+intents = discord.Intents.all()
 
-@bot.event
-async def on_ready():
+async def startup():
+    await bot.wait_until_ready()
     activity = discord.Game(name=";help")
     await bot.change_presence(activity=activity)
     # bot.load_extension('cogs.Music2')
@@ -85,19 +59,16 @@ async def on_ready():
     #bot.load_extension('cogs.school')
 
 
-    # channel = bot.get_channel(668863931200307248)
-    # embed = discord.Embed(title='Now Playing', url='https://stopify.co/profile.php?id=SXG05O.html')
-    # embed.timestamp=datetime.datetime.utcnow()
-    # await channel.send(embed=embed)
+bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True, intents=intents, owner_id=587068610237693963)
+bot.loop.create_task(startup())
+
+
+
+
+@bot.event
+async def on_ready():
     print('Logged in as:\n{0.user.name}'.format(bot))
 
-
-# @bot.event
-# async def on_raw_bulk_message_delete(payload):
-#     message = payload.cached_messages[0]
-#     for ids in payload.message_ids:
-#         new = await message.channel.fetch_message(ids)
-#         print(f'{message.guild}/{message.channel}/{new.author}>{new.content}')
 
 @bot.check
 async def blacklisted(ctx):
@@ -153,24 +124,6 @@ async def on_message(message):
         else:
             return
     await bot.process_commands(message)
-    
-    # if message.author.id == '740226974248730625':
-    # await message.delete()
-    #    await message.channel.send('MAGIC SUCKS')
-    # if message.content.startswith('-'):
-    # await message.delete()
-    #    await message.channel.send('MAGIC SUCKS')
-
-
-
-    # await ctx.send('Missing Permissions to kick ' + str(user))
-
-
-
-
-# @bot.event
-# async def on_disconnect():
-# 	print("Bot disconnected")
 
 
 bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.YC7CkxByk0-P93Xw7E2ZrOyqvYs')
