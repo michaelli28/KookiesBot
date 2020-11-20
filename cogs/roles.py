@@ -4,7 +4,7 @@ from discord.ext.commands import Cog
 from discord.ext.menus import MenuPages, ListPageSource
 from discord.utils import get
 from discord import Embed
-from typing import Optional
+from typing import Optional, Union
 import json
 import discord
 from discord.ext import commands
@@ -47,7 +47,7 @@ class roles(commands.Cog):
     # This must be exactly the name of the appropriate role
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def addrole(self, ctx, user: Optional[discord.Member], role, everyone=None):
+    async def addrole(self, ctx, user: Union[discord.Member, str], role):
         rindex = 0
         for char in role:
             try:
@@ -60,7 +60,7 @@ class roles(commands.Cog):
         if r == 'Admin' or r == 'Admin but Lower':
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send('Only owner can give admin permissions')
-        if everyone == 'everyone':
+        if user == 'everyone' or '@everyone':
             async with ctx.typing():
                 try:
                     r = get(ctx.guild.roles, name=r)
@@ -91,7 +91,7 @@ class roles(commands.Cog):
     @commands.command(aliases=['rr'], brief='Removes a role, need manage roles, use _ as spaces')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def removerole(self, ctx, user: Optional[discord.Member], role, everyone=None):
+    async def removerole(self, ctx, user: Union[discord.Member, str], role):
         rindex = 0
         for char in role:
             try:
@@ -104,7 +104,7 @@ class roles(commands.Cog):
         if r == 'Admin' or r == 'Admin but Lower':
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send('Only owner can remove admin permissions')
-        if everyone == 'everyone':
+        if user == 'everyone' or '@everyone':
             async with ctx.typing():
                 try:
                     r = get(ctx.guild.roles, name=r)

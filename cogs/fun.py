@@ -310,7 +310,7 @@ class fun(commands.Cog):
     #     return await ctx.send(f"{user.mention} {insult_text}")
 
     @commands.command(name='chat', aliases=['aichat'], brief = 'Starts ai chat mode, type bye to stop')
-    @commands.max_concurrency(5, commands.BucketType.guild)
+    @commands.max_concurrency(3, commands.BucketType.guild)
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def _aichat(self, ctx):
         """Start AI chat mode"""
@@ -322,7 +322,7 @@ class fun(commands.Cog):
         while True:
             try:
                 params = {'message': 'message'}
-                msg = await self.bot.wait_for('message', check=check, timeout=30)
+                msg = await self.bot.wait_for('message', check=check, timeout=45)
             except asyncio.TimeoutError:
                 return await ctx.send("See you later :wave:")
             else:
@@ -335,8 +335,8 @@ class fun(commands.Cog):
                             async with self.client.get(url, params=params) as r:
                                 response = await r.json()
                                 response = response['response']
-                    except (aiohttp.client_exceptions.ContentTypeError, KeyError):
-                        await ctx.send('The ai can\'t understand your response, try changing it')
+                    except KeyError:
+                        await ctx.send(response['error'])
                         continue
                     await ctx.send(response)
 def setup(bot):
