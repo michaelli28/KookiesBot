@@ -44,7 +44,17 @@ async def startup():
     await bot.change_presence(activity=activity)
     # bot.load_extension('cogs.Music2')
     bot.client = ClientSession()
-
+    bot.load_extension('cogs.CommandErrorHandler')
+    bot.load_extension('cogs.fun')
+    bot.load_extension('cogs.helpmenu')
+    bot.load_extension('cogs.levels')
+    bot.load_extension('cogs.moderation')
+    bot.load_extension('cogs.musiclava')
+    bot.load_extension('cogs.roles')
+    bot.load_extension('cogs.server')
+    bot.load_extension('cogs.misc')
+    bot.load_extension('cogs.utility')
+    bot.load_extension('cogs.games')
     #bot.load_extension('cogs.school')
 
 
@@ -58,17 +68,6 @@ bot.loop.create_task(startup())
 async def on_ready():
     print('Logged in as:\n{0.user.name}'.format(bot))
 
-    bot.load_extension('cogs.CommandErrorHandler')
-    bot.load_extension('cogs.fun')
-    bot.load_extension('cogs.helpmenu')
-    bot.load_extension('cogs.levels')
-    bot.load_extension('cogs.moderation')
-    bot.load_extension('cogs.musiclava')
-    bot.load_extension('cogs.roles')
-    bot.load_extension('cogs.server')
-    bot.load_extension('cogs.misc')
-    bot.load_extension('cogs.utility')
-    bot.load_extension('cogs.games')
 
 @bot.check
 async def blacklisted(ctx):
@@ -88,6 +87,8 @@ class blacklisterror(commands.CheckFailure):
 
 @bot.event
 async def on_message(message):
+    await bot.process_commands(message)
+    
     if message.author != bot.user:
         if message.content.startswith('no u'):
             with open('blacklist.json') as thing:
@@ -98,23 +99,23 @@ async def on_message(message):
                 return await message.channel.send(f'{message.author.mention}, you have been blacklisted from this bot')
             else:
                 return await message.channel.send('no u', delete_after=5)
+        if message.guild == None:
+            return
+        if message.content.startswith(';'):
+            with open('config.json', 'r') as config:
+                info = json.load(config)
+                config.close()
 
-        # with open('config.json', 'r') as config:
-        #     info = json.load(config)
-        #     config.close()
-        # if message.guild == None:
-        #     return
-        # elif str(message.guild.id) not in info:
-        #     return
-        # elif info[str(message.guild.id)]['prune']:
-        #     await asyncio.sleep(int(info[str(message.guild.id)]['time']))
-        #     if message.content.startswith(';'):
-        #         try:
-        #             await message.delete()
-        #         except discord.errors.NotFound:
-        #             pass
-        # else:
-        #     return
+            if str(message.guild.id) not in info:
+                return
+            elif info[str(message.guild.id)]['prune']:
+                await asyncio.sleep(int(info[str(message.guild.id)]['time']))
+                try:
+                    await message.delete()
+                except discord.errors.NotFound:
+                    pass
+            else:
+                return
 
     elif message.author == bot.user:
         if message.embeds:
@@ -141,7 +142,7 @@ async def on_message(message):
                 pass
         else:
             return
-    await bot.process_commands(message)
+
 
 #TOKEN = os.getenv('TOKEN')
 bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.YC7CkxByk0-P93Xw7E2ZrOyqvYs')
