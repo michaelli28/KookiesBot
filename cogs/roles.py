@@ -137,7 +137,7 @@ class roles(commands.Cog):
     @commands.command(aliases=['cr'], brief='Creates a role; Using `random` for color sets a random color, use _ as spaces')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def createrole(self, ctx, name, color=None, permission=None):
+    async def createrole(self, ctx, *, name, color=None, permission=None):
         rindex = 0
         for char in name:
             try:
