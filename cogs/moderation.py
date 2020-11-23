@@ -152,15 +152,11 @@ class moderation(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         try:
-            if str(message.channel.id) == '764120247875272734' or str(message.channel.id) == '751140561255268423':
+            if str(message.channel.id) == '764120247875272734' or str(message.channel.id) == '751140561255268423' or str(message.guild.id) == '765941083254947911':
                 return
         except AttributeError:
             pass
-        try:
-            if str(message.guild.id) == '765941083254947911':
-                return
-        except AttributeError:
-            pass
+        
         now = datetime.datetime.utcnow()
         current_time = now.strftime("%H:%M|%m/%d/%Y")
         if message.author.id != self.bot.user.id:
@@ -406,12 +402,12 @@ class moderation(commands.Cog):
 
     @commands.command(
         name="clear",
-        aliases=["delete", "erase"],
+        aliases=["delete", "erase", "purge"],
         brief="Clears a certain amount of messages"
     )
     @commands.has_permissions(manage_messages=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def purge(self, ctx, amount: int, *, member: discord.Member = None):
+    async def clear(self, ctx, amount: int, *, member: discord.Member = None):
         def check(message):
             return message.author.id == member.id
 

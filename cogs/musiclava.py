@@ -174,7 +174,6 @@ class music(commands.Cog):
 
     async def track_hook(self, event):
         if isinstance(event, lavalink.events.QueueEndEvent):
-            await asyncio.sleep(5)
             guild_id = int(event.player.guild_id)
             player = event.player
             channel = self.bot.get_channel(player.fetch(guild_id))
@@ -189,6 +188,9 @@ class music(commands.Cog):
             channel = self.bot.get_channel(player.fetch(guild_id))
 
             guild = self.bot.get_guild(guild_id)
+            
+            me = guild.me
+            await me.edit(deafen=True)
             try:
                 members = guild.me.voice.channel.members
                 if len(members)==1:
@@ -196,10 +198,7 @@ class music(commands.Cog):
                     return await channel.send('The voice channel that the bot is in has no members, leaving voice channel.')
             except Exception as e:
                 print(e)
-            # if player.shuffle:
-            #     await channel.send('Shuffling...')
-            #     await asyncio.sleep(5)
-        
+
             song = 'Nothing'
             if player.current.stream:
                 dur = 'LIVE'

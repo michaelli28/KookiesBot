@@ -57,17 +57,20 @@ class roles(commands.Cog):
                 pass
 
         r = role.replace('_', " ", rindex)
-        if r == 'Admin' or r == 'Admin but Lower':
+        if r == 'Bot' or r == 'bot':
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send('Only owner can give admin permissions')
-        if user == 'everyone' or '@everyone':
+        if user == 'everyone':
             async with ctx.typing():
                 try:
                     r = get(ctx.guild.roles, name=r)
                     
                     for person in ctx.guild.members:
-                        u = ctx.guild.get_member(person.id)
-                        await u.add_roles(r)
+                        if r in person.roles:
+                            await ctx.send(f'{person.display_name} already has role {r.name}')
+                            continue
+                        await person.add_roles(r)
+
                     return await ctx.send(f'Gave everyone the {r} role')
                 except AttributeError:
                     return await ctx.send('That is not a valid role')
@@ -101,18 +104,19 @@ class roles(commands.Cog):
                 pass
 
         r = role.replace('_', " ", rindex)
-        if r == 'Admin' or r == 'Admin but Lower':
+        if r == 'Bot' or r == 'bot':
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send('Only owner can remove admin permissions')
-        if user == 'everyone' or '@everyone':
+        if user == 'everyone':
             async with ctx.typing():
                 try:
-                    r = get(ctx.guild.roles, name=r)
-                    if r not in user.roles:
-                        return await ctx.send(f'{user.display_name} doesn\'t have role {role}')
+                    r = get(ctx.guild.roles, name=r)                    
                     for person in ctx.guild.members:
-                        u = ctx.guild.get_member(person.id)
-                        await u.remove_roles(r)
+                        if r not in person.roles:
+                            await ctx.send(f'{person.display_name} doesn\'t have role {r.name}')
+                            continue
+
+                        await person.remove_roles(r)
                     return await ctx.send(f'Everyone\'s {r} role has been removed')
                 except AttributeError:
                     return await ctx.send('That is not a valid role')
