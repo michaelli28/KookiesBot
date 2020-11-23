@@ -28,8 +28,8 @@ from time import time
 from aiohttp import ClientSession
 import io
 import logging
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 
 PREFIX = ';'
@@ -88,7 +88,7 @@ class blacklisterror(commands.CheckFailure):
 @bot.event
 async def on_message(message):
     await bot.process_commands(message)
-    
+
     if message.author != bot.user:
         if message.content.startswith('no u'):
             with open('blacklist.json') as thing:
