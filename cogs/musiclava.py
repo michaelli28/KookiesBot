@@ -660,17 +660,6 @@ class music(commands.Cog):
 
         return await ctx.send(f'Moved track to **{lavalink.format_time(track_time)}**')
 
-    # @commands.command(name='skipto', brief='Skips to a song in the queue')
-    # @commands.cooldown(times, cooldown, commands.BucketType.user)
-    # async def _skipto(self, ctx, index: int):
-    #     player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-
-    #     if not player.is_playing:
-    #         return await ctx.send('Not playing anything :mute:')
-    #     track = player.queue[index-1]
-    #     for i in range(index-1):
-    #         await player.skip()
-    #     return await ctx.send(f"⏭ Skipped to {track['info']['title']}")
 
     @commands.command(name='skip', brief='Skips the song playing')
     @commands.cooldown(1, 1, commands.BucketType.user)
@@ -863,7 +852,17 @@ class music(commands.Cog):
         index = index - 1
         removed = player.queue.pop(index)
 
-        return await ctx.send('Removed **' + removed.title + '** from the queue.')
+        return await ctx.send('Removed **' + removed.title + '** from the queue')
+
+    @commands.command(name='skipto', brief='Skips to a song in queue')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def skipto(self, ctx, index: int):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        if not player.is_playing:
+            return await ctx.send('Not playing anything :mute:')
+        player.queue = player.queue[index:]
+        player.skip()
+        return await ctx.send(f"⏭ Skipped to {player.current.title}")
 
     @commands.command(name='leave', aliases=['stop'], brief='Makes the bot leave the channel it is in')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
