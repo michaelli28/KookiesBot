@@ -26,7 +26,7 @@ from googletrans import Translator, LANGUAGES
 from nltk.corpus import wordnet
 import math
 
-kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsbCwgIm8iOiAiNTg3MDY4NjEwMjM3NjkzOTYzIiwgImMiOiA3NTczNDQ4fQ.bdb3a6d6f99d566327126abc55fdbd969b04c877ccd7cd5c5df316a343e80355')
+kclient = ksoftapi.Client('1931343e09f8c6434c51af90c3a602ac06c29211')
 
 from urllib.request import urlopen
 from urllib.parse import quote as urlquote
@@ -363,6 +363,21 @@ class util(commands.Cog):
         em.timestamp = datetime.datetime.utcnow()
 
         return await ctx.send(embed=em)
+
+    @commands.command(name='convert', aliases=['currency'], description = 'Converts currency')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def currency(self, ctx, value: str="", _from: str="", to: str=""):
+        """Currency conversion"""
+        if value=="" or _from=="" or to=="":
+            return await ctx.send("Please enter values in proper format\n`~convert [value] [from] [to]`\neg: `~convert 16 usd inr`")
+
+        try:
+            async with ctx.typing():
+                c = await self.kclient.kumo.currency_conversion(_from, to, value)
+        except (ksoftapi.NoResults, ksoftapi.errors.APIError):
+            await ctx.send('Conversion Failed :x:')
+        else:
+            await ctx.send(f":currency_exchange: Conversion:\n`{value} {_from.upper()}` = `{c.pretty}`")
 
     @commands.command(name='trace', aliases=['ip'], brief='Traces your ip')
     @commands.cooldown(times, cooldown, commands.BucketType.user)

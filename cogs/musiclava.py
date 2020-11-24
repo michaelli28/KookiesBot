@@ -14,7 +14,7 @@ import asyncio
 import sys
 import traceback
 import json
-kclient = ksoftapi.Client('eyJ0IjogImFwcCIsICJrIjogImtobWFjc2lnIiwgInBrIjogbnVsbCwgIm8iOiAiNTg3MDY4NjEwMjM3NjkzOTYzIiwgImMiOiA3NTczNDQ4fQ.bdb3a6d6f99d566327126abc55fdbd969b04c877ccd7cd5c5df316a343e80355')
+kclient = ksoftapi.Client('1931343e09f8c6434c51af90c3a602ac06c29211')
 
 #TODO skipto cmd
 #TODO lavalink errors
