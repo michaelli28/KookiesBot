@@ -860,8 +860,8 @@ class music(commands.Cog):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         if not player.is_playing:
             return await ctx.send('Not playing anything :mute:')
-        player.queue = player.queue[index:]
-        player.skip()
+        player.queue = player.queue[index-1:]
+        await player.skip()
         return await ctx.send(f"⏭ Skipped to {player.current.title}")
 
     @commands.command(name='leave', aliases=['stop'], brief='Makes the bot leave the channel it is in')
