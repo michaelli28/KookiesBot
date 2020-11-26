@@ -115,6 +115,8 @@ class levels(Cog):
         for item in sort:
             collection.update_one({'_id': item['_id']}, {"$set":{"rank": rank}}) 
             rank+=1
+        result = collection.find({})
+        sort = sorted(result, key=itemgetter('Xp'), reverse=True)
         menu1 = menu(source=HelpMenu(ctx, sort), delete_message_after=True)
         return await menu1.start(ctx)
 
@@ -134,19 +136,16 @@ class levels(Cog):
                 db.createCollection(ctx.guild.name)
                 collection = db[ctx.guild.name]
             if author == None:
-                author = ctx.author.id
+                author = ctx.author
 
-            else:
-                author = author.id
-
-            user = await self.bot.fetch_user(author)
+            
             res = collection.find({})
-            result = collection.find_one({'_id': int(author)})
+            result = collection.find_one({'_id': int(author.id)})
             try:
                 if result['Xp'] == 0:
-                    return await ctx.send(f'{user.mention} has no xp, send more messages to gain xp')
+                    return await ctx.send(f'{author.mention} has no xp, send more messages to gain xp')
             except:
-                return await ctx.send(f'{user.mention} has no xp, send more messages to gain xp')
+                return await ctx.send(f'{author.mention} has no xp, send more messages to gain xp')
 
             embed = discord.Embed(color=random.randint(0, 0xffffff))
             embed.set_author(name='Rank')
@@ -165,7 +164,7 @@ class levels(Cog):
 
             embed.add_field(name='Rank', value='**'+str(result['rank'])+'**')
 
-            embed.set_author(name=result['name'], icon_url=user.avatar_url)
+            embed.set_author(name=result['name'], icon_url=author.avatar_url)
             embed.add_field(name='Level', value='**' +
                             str(int(((12*result['Xp'])//800) ** 0.55))+'**')
 
@@ -213,20 +212,11 @@ class levels(Cog):
                 res = collection.find({})
 
                 xp = random.randint(15, 25)
-                try:
-                    
-                    collection.update_one({'_id': ctx.author.id}, {
+
+
+                collection.update_one({'_id': ctx.author.id}, {
                                           "$inc": {"Xp": xp}})
-                except:
-                    pass
 
-                sort = sorted(res, key=itemgetter('Xp'), reverse=True)
-                rank = 1
-
-                for item in sort:
-                    collection.update_one({'_id': item['_id']}, {
-                                          "$set": {"rank": rank}})
-                    rank += 1
 
                 try:
                     result = collection.find_one({'_id': author})
@@ -236,21 +226,24 @@ class levels(Cog):
                         await ctx.channel.send(f"Congrats {ctx.author.mention}! You reached level {new_lvl:,}!")
 
                 except:
-                    xp = random.randint(15, 25)
                     collection.insert_one(
                         {'_id': ctx.author.id, 'name': ctx.author.display_name, "Xp": xp})
-                        
-                    sort = sorted(res, key=itemgetter('Xp'), reverse=True)
-                    rank = 1
 
-                    for item in sort:
-                        member = ctx.guild.get_member(int(item['_id']))
-                        if item['rank'] != rank:
-                            collection.update_one({'_id': item['_id']}, {
-                                                  "$set": {"rank": rank}})
-                            rank += 1
+
+                sort = sorted(res, key=itemgetter('Xp'), reverse=True)
+                rank = 1
+
+                for item in sort:
+                    member = ctx.guild.get_member(int(item['_id']))
+                    if item['rank'] != rank:
+                        collection.update_one({'_id': item['_id']}, {
+                                                "$set": {"rank": rank}})
+                    rank += 1
+
+                    if member: #check if member in the server with the get_member thing
                         if item['name'] != member.display_name:
                             collection.update_one({'_id': item['_id']}, {"$set": {"name": member.display_name}})
+
 
                 with open("cooldown.json", "r") as f:
                     cooldowns = json.load(f)
