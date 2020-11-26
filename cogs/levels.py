@@ -238,17 +238,19 @@ class levels(Cog):
                 except:
                     xp = random.randint(15, 25)
                     collection.insert_one(
-                        {'_id': ctx.author.id, 'name': ctx.author.name, "Xp": xp})
+                        {'_id': ctx.author.id, 'name': ctx.author.display_name, "Xp": xp})
+                        
                     sort = sorted(res, key=itemgetter('Xp'), reverse=True)
                     rank = 1
 
                     for item in sort:
+                        member = ctx.guild.get_member(int(item['_id']))
                         if item['rank'] != rank:
                             collection.update_one({'_id': item['_id']}, {
                                                   "$set": {"rank": rank}})
                             rank += 1
-                        if item['name'] != ctx.author.display_name:
-                            collection.update_one({'_id': item['_id']}, {"$set": {"name": ctx.author.display_name}})
+                        if item['name'] != member.display_name:
+                            collection.update_one({'_id': item['_id']}, {"$set": {"name": member.display_name}})
 
                 with open("cooldown.json", "r") as f:
                     cooldowns = json.load(f)

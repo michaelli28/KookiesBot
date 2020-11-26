@@ -195,7 +195,7 @@ class music(commands.Cog):
                 members = guild.me.voice.channel.members
                 if len(members)==1:
                     await self.connect_to(guild_id, None)
-                    return await channel.send('The voice channel that the bot is in has no members, leaving voice channel.')
+                    return await channel.send('The voice channel that the bot is in has no members, leaving voice channel')
             except Exception as e:
                 print(e)
 
@@ -590,7 +590,7 @@ class music(commands.Cog):
                     return await ctx.send('Please respond with a number between one through ten to select a song or stop to cancel')
                 if response.content.lower() == 'cancel' or response.content.lower() == 'stop':
                     return await ctx.send('Stopping')
-                elif int(response.content) > 10:
+                elif int(response.content) > 10 or int(response.content) < 1:
                     return await ctx.send('Please list a number from 1 to 10')
                 track = tracks[int(response.content)-1]
 
