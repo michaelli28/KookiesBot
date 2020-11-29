@@ -47,23 +47,25 @@ class roles(commands.Cog):
     # This must be exactly the name of the appropriate role
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def addrole(self, ctx, user: Union[discord.Member, str], role):
-        rindex = 0
-        for char in role:
-            try:
-                role.find('_')
-                rindex += 1
-            except:
-                pass
+    async def addrole(self, ctx, user: Union[discord.Member, str], *, r: discord.Role):
+        # rindex = 0
+        # for char in role:
+        #     try:
+        #         role.find('_')
+        #         rindex += 1
+        #     except:
+        #         pass
 
-        r = role.replace('_', " ", rindex)
+        # r = role.replace('_', " ", rindex)
+
         if r == 'Bot' or r == 'bot':
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send('Only owner can give admin permissions')
+
         if user == 'everyone':
             async with ctx.typing():
                 try:
-                    r = get(ctx.guild.roles, name=r)
+                    #r = get(ctx.guild.roles, name=r)
                     
                     for person in ctx.guild.members:
                         if r in person.roles:
@@ -78,9 +80,9 @@ class roles(commands.Cog):
                     return await ctx.send('I\'m not allowed to do that')
         else:
             try:
-                r = get(ctx.guild.roles, name=r)
+                #r = get(ctx.guild.roles, name=r)
                 if r in user.roles:
-                    return await ctx.send(f'{user.display_name} already has role {role}')
+                    return await ctx.send(f'{user.display_name} already has role {r.name}')
                 else:
                     await user.add_roles(r)
                     return await ctx.send(f'`{r}` role was given to `{user.display_name}`')
@@ -94,23 +96,23 @@ class roles(commands.Cog):
     @commands.command(aliases=['rr'], brief='Removes a role, need manage roles, use _ as spaces')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def removerole(self, ctx, user: Union[discord.Member, str], role):
-        rindex = 0
-        for char in role:
-            try:
-                role.find('_')
-                rindex += 1
-            except:
-                pass
+    async def removerole(self, ctx, user: Union[discord.Member, str], *, r: discord.Role):
+        # rindex = 0
+        # for char in role:
+        #     try:
+        #         role.find('_')
+        #         rindex += 1
+        #     except:
+        #         pass
 
-        r = role.replace('_', " ", rindex)
+        # r = role.replace('_', " ", rindex)
         if r == 'Bot' or r == 'bot':
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send('Only owner can remove admin permissions')
         if user == 'everyone':
             async with ctx.typing():
                 try:
-                    r = get(ctx.guild.roles, name=r)                    
+                    #r = get(ctx.guild.roles, name=r)                    
                     for person in ctx.guild.members:
                         if r not in person.roles:
                             await ctx.send(f'{person.display_name} doesn\'t have role {r.name}')
@@ -123,7 +125,7 @@ class roles(commands.Cog):
                 except discord.Forbidden:
                     return await ctx.send('I\'m not allowed to do that')
         try:
-            r = get(ctx.guild.roles, name=r)
+            #r = get(ctx.guild.roles, name=r)
             await user.remove_roles(r)
             await ctx.send(f'`{r}` role was removed from `{user.display_name}`')
         except AttributeError:

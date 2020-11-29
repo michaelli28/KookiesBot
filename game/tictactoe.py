@@ -96,11 +96,11 @@ def board_winner(board):
 
     for row in range(0, 3):
         if board[board_index(0, row)] == board[board_index(1, row)] == board[board_index(2, row)]:
-            return board[board_index(0, row)]
+            return board[board_index(1, row)]
 
     for col in range(0, 3):
         if board[board_index(col, 0)] == board[board_index(col, 1)] == board[board_index(col, 2)]:
-            return board[board_index(col, 0)]
+            return board[board_index(col, 1)]
 
     if board[board_index(0, 0)] == board[board_index(1, 1)] == board[board_index(2, 2)] or \
             board[board_index(2, 0)] == board[board_index(1, 1)] == board[board_index(0, 2)]:

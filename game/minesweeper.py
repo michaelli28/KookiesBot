@@ -108,4 +108,4 @@ async def play(ctx, columns=None, rows=None, bombs=None):
 	                value=f'{percentage}%', inline=True)
 	embed.add_field(name='Requested by:',
 	                value=ctx.author.display_name, inline=True)
-	await ctx.send(content=f'\U0000FEFF\n{final}', embed=embed)
+	return await ctx.send(content=f'\U0000FEFF\n{final}', embed=embed)

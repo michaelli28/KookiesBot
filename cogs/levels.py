@@ -235,9 +235,13 @@ class levels(Cog):
 
                 for item in sort:
                     member = ctx.guild.get_member(int(item['_id']))
-                    if item['rank'] != rank:
+                    try:
+                        if item['rank'] != rank:
+                            collection.update_one({'_id': item['_id']}, {
+                                                    "$set": {"rank": rank}})
+                    except KeyError:
                         collection.update_one({'_id': item['_id']}, {
-                                                "$set": {"rank": rank}})
+                            "$set": {"rank": rank}})
                     rank += 1
 
                     if member: #check if member in the server with the get_member thing
