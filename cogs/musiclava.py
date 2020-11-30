@@ -864,7 +864,7 @@ class music(commands.Cog):
         await player.skip()
         return await ctx.send(f"⏭ Skipped to {player.current.title}")
 
-    @commands.command(name='leave', aliases=['stop'], brief='Makes the bot leave the channel it is in')
+    @commands.command(name='leave', aliases=['stop', 'dc', 'disconnect', 'end'], brief='Makes the bot leave the channel it is in, clear the queue and stop playing')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def disconnect(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)

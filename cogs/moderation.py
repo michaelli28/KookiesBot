@@ -447,6 +447,27 @@ class moderation(commands.Cog):
         await member.ban()
         return await ctx.send(f"Banned {member.mention}")
 
+
+    @commands.command(brief="Bans yourself")
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def banme(self, ctx):
+
+        await ctx.send('Would you like to ban yourself? Y for yes, N for no')
+        def check(m):
+            return m.author.id == ctx.author.id
+        try:
+            response = await self.bot.wait_for('message', check=check, timeout=30)
+        except asyncio.TimeoutError:
+            return await ctx.send('Please respond Y or N next time')
+        if response.content.lower() == 'y' or response.content.lower() == 'yes':
+            await ctx.send('Bye have a great time')
+            return await ctx.author.ban()
+        
+        else:
+            return await ctx.send('Good job your smart!')
+
+
+    
     @commands.command(
         brief="Unbans a previously banned user with their name and discriminator"
     )
