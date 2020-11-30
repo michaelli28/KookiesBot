@@ -486,6 +486,13 @@ class moderation(commands.Cog):
                 if role in ctx.author.roles:
                     return await ctx.send('You are already muted')
                 await ctx.author.add_roles(role)
+                with open('muted.json', 'r') as file:
+                    stuff = json.load(file)
+                    stuff['ids'].append(ctx.author.id)
+                    file.close()
+                with open('muted.json', 'w') as file:
+                    json.dump(stuff, file)
+                    file.close()
         else:
             return await ctx.send('Not muting')
 
@@ -507,6 +514,11 @@ class moderation(commands.Cog):
             else:
                 if role not in ctx.author.roles:
                     return await ctx.send('You aren\'t already muted')
+                with open('muted.json', 'r') as file:
+                    stuff = json.load(file)
+                    file.close()
+                    if ctx.author.id not in stuff['ids']:
+                        return await ctx.send('You tried to unmute yourself when a mod muted you... it failed')
                 await ctx.author.remove_roles(role)
         else:
             return await ctx.send('Not unmuting')
