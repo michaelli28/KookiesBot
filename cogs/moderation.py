@@ -520,6 +520,13 @@ class moderation(commands.Cog):
                     if ctx.author.id not in stuff['ids']:
                         return await ctx.send('You tried to unmute yourself when a mod muted you... it failed')
                 await ctx.author.remove_roles(role)
+                with open('muted.json', 'r') as file:
+                    stuff = json.load(file)
+                    stuff['ids'].remove(ctx.author.id)
+                    file.close()
+                with open('muted.json', 'w') as file:
+                    json.dump(stuff, file)
+                    file.close()
         else:
             return await ctx.send('Not unmuting')
     
