@@ -445,7 +445,7 @@ class moderation(commands.Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def ban(self, ctx, *, member: discord.Member):
         await member.ban()
-        return await ctx.send(f"Banned {member.mention}")
+        return await ctx.send(f"Banned {member.mention} {str(ctx.author)}")
 
 
     @commands.command(brief="Bans yourself", aliases=['selfban'])
@@ -460,7 +460,7 @@ class moderation(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.send('Please respond Y or N next time')
         if response.content.lower() == 'y' or response.content.lower() == 'yes':
-            await ctx.send('Bye have a great time')
+            await ctx.send(f'Bye have a great time {ctx.author.mention} {str(ctx.author)}')
             return await ctx.author.ban()
         
         else:
