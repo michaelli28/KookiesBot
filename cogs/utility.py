@@ -87,8 +87,6 @@ def define(term):
 
 
 
-
-
 with open('config.json', 'r') as config:
         configfile = json.load(config)
         config.close()
@@ -130,19 +128,10 @@ class util(commands.Cog):
             embed.set_author(name=ctx.author.display_name, url=ctx.author.avatar_url)
             return await ctx.send(embed=embed)
 
-    @commands.command(aliases=['def'], brief='Gives the definitions of a word without using an API')
+    @commands.command(aliases=['urbandictionary', 'urbandefine'], brief='Gives the definitions of a word using Urban Dictionary')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def define(self, ctx, *, word):
-        # synsets = wordnet.synsets(word)
-        # embed = discord.Embed(title=f'Definition of the word: `{word}`')
-        # embed.set_author(name=ctx.author.display_name,
-        #                  icon_url=ctx.author.avatar_url)
-        # embed.timestamp = datetime.datetime.utcnow()
-        # n = 1
-        # if len(synsets) == 0:
-        #     return await ctx.send('No definitions found (this is kind of like AI so it\'s not perfect)')
-        # else:
-        #     pass
+    async def urban(self, ctx, *, word):
+
         embeds = 0
         defs = define(word)
         number = len(defs)
@@ -154,9 +143,7 @@ class util(commands.Cog):
         triggered = False
         async with ctx.typing():
             for definition in defs:
-                # definition = synset.definition()
-                # embed.add_field(name=f'Definition {n})',
-                #                 value=definition.definition, inline=False)
+
                 words = f'**Definition {n})**\n{definition.definition}\n'
                 n += 1
                 test = des + words
@@ -200,7 +187,32 @@ class util(commands.Cog):
                 for embed in listEmbeds:
                     await ctx.send(embed=embed)
                 return
-
+    @commands.command(aliases=['def'], brief='Gives the definitions of a word using a module')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def define(self, ctx, *, word):
+        synsets = wordnet.synsets(word)
+        embed = discord.Embed(title=f'Definition of the word: `{word}`')
+        embed.set_author(name=ctx.author.display_name,
+                         icon_url=ctx.author.avatar_url)
+        embed.timestamp = datetime.datetime.utcnow()
+        n = 1
+        if len(synsets) == 0:
+            return await ctx.send('No definitions found (this is kind of like AI so it\'s not perfect)')
+        else:
+            pass
+        for synset in synsets:
+            definition = synset.definition()
+            lists = '`'
+            for hyp in synset.hypernyms():
+                list = hyp.name().split('.')
+                hypernym = list[0]
+                lists += hypernym
+                lists += '`\n`'
+            lists = lists[:-1]
+            embed.add_field(name=f'Definition {n})',
+                            value=definition + '\nHypernym(s):\n' + lists, inline=False)
+            n+=1
+        return await ctx.send(embed=embed)
     @commands.command(brief='Get your ping')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def ping(self, ctx):
@@ -379,32 +391,32 @@ class util(commands.Cog):
         else:
             await ctx.send(f":currency_exchange: Conversion:\n`{value} {_from.upper()}` = `{c.pretty}`")
 
-    @commands.command(name='trace', aliases=['ip'], brief='Traces your ip')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def trace(self, ctx, *, ip: str = ""):
-        """Trace ip"""
-        if ip == "":
-            return await ctx.send("Please enter an `IP` address :satellite:")
+    # @commands.command(name='trace', aliases=['ip'], brief='Traces your ip')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def trace(self, ctx, *, ip: str = ""):
+    #     """Trace ip"""
+    #     if ip == "":
+    #         return await ctx.send("Please enter an `IP` address :satellite:")
 
-        try:
-            async with ctx.typing():
-                info = await self.kclient.kumo.trace_ip(ip)
-        except (ksoftapi.NoResults, ksoftapi.errors.APIError):
-            return await ctx.send('Unable to locate :x:\nEnter valid IP')
-        else:
-            details = [['City', 'city'], ['Continent code', 'continent_code'], ['Continent name', 'continent_name'], ['Country code', 'country_code'], ['Country_name', 'country_name'], [
-                'DMA code', 'dma_code'], ['Latitude', 'latitude'], ['Longitude', 'longitude'], ['Postal code', 'postal_code'], ['Region', 'region'], ['Timezone', 'time_zone']]
-            description = []
-            for i in details:
-                description.append(f'{i[0]}: `{getattr(info, i[1])}`')
-            description.append(f':map:Map: [GoogleMaps]({info.gmap})')
+    #     try:
+    #         async with ctx.typing():
+    #             info = await self.kclient.kumo.trace_ip(ip)
+    #     except (ksoftapi.NoResults, ksoftapi.errors.APIError):
+    #         return await ctx.send('Unable to locate :x:\nEnter valid IP')
+    #     else:
+    #         details = [['City', 'city'], ['Continent code', 'continent_code'], ['Continent name', 'continent_name'], ['Country code', 'country_code'], ['Country_name', 'country_name'], [
+    #             'DMA code', 'dma_code'], ['Latitude', 'latitude'], ['Longitude', 'longitude'], ['Postal code', 'postal_code'], ['Region', 'region'], ['Timezone', 'time_zone']]
+    #         description = []
+    #         for i in details:
+    #             description.append(f'{i[0]}: `{getattr(info, i[1])}`')
+    #         description.append(f':map:Map: [GoogleMaps]({info.gmap})')
 
-            embed = discord.Embed(title=":satellite_orbital: IP information:", color=random.randint(0,0xffffff), description="\n".join(description))
-            embed.set_footer(text=ip, icon_url=ctx.author.avatar_url)
-            embed.set_author(name=ctx.author.display_name,
-                             icon_url=ctx.author.avatar_url)
-            embed.timestamp = datetime.datetime.utcnow()
-            return await ctx.send(embed=embed)
+    #         embed = discord.Embed(title=":satellite_orbital: IP information:", color=random.randint(0,0xffffff), description="\n".join(description))
+    #         embed.set_footer(text=ip, icon_url=ctx.author.avatar_url)
+    #         embed.set_author(name=ctx.author.display_name,
+    #                          icon_url=ctx.author.avatar_url)
+    #         embed.timestamp = datetime.datetime.utcnow()
+    #         return await ctx.send(embed=embed)
 
     @commands.command(name='translate', brief='Translates text, use --list to see list of languages')
     @commands.cooldown(times, cooldown, commands.BucketType.user)

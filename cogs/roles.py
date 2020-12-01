@@ -330,10 +330,10 @@ class roles(commands.Cog):
                     pass
 
             r = r.replace('_', " ", rindex)
-            rolesR[index] = r
+            #rolesR[index] = r
 
             role = get(ctx.author.guild.roles, name=r)
-
+            rolesR[index] = role.id
             if role == None:
                 return await ctx.send(f'`{r}` is not a valid role')
 
@@ -355,7 +355,7 @@ class roles(commands.Cog):
             embed.timestamp = timestamp
             messagesent = await ctx.send(embed=embed)
 
-        rolesjson[messagesent.id] = rolesR
+        rolesjson[str(messagesent.id)] = rolesR
 
         with open("roles.json", "w") as f:
             json.dump(rolesjson, f)
@@ -368,7 +368,7 @@ class roles(commands.Cog):
     async def on_raw_reaction_add(self, payload):
         channel = discord.utils.get(self.bot.get_all_channels(), id=payload.channel_id)
         user = payload.member
-
+        guild = self.bot.get_guild(payload.guild_id)
         if payload.emoji.name == '❌':
             try:
                 message = await channel.fetch_message(payload.message_id)
@@ -398,7 +398,8 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             if (not payload.member.bot):
                 user = payload.member
-                role = get(user.guild.roles, name=rolesR[0])
+                #role = get(user.guild.roles, name=rolesR[0])
+                role = guild.get_role(rolesR[0])
                 if role in user.roles:
                     return await user.send(f'You already have role **{role.name}** in **{user.guild.name}**')
                 await user.add_roles(role)
@@ -410,7 +411,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             if (not payload.member.bot):
                 user = payload.member
-                role = get(user.guild.roles, name=rolesR[1])
+                role = guild.get_role(rolesR[1])
                 if role in user.roles:
                     return await user.send(f'You already have role **{role.name}** in **{user.guild.name}**')
                 await user.add_roles(role)
@@ -422,7 +423,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             if (not payload.member.bot):
                 user = payload.member
-                role = get(user.guild.roles, name=rolesR[2])
+                role = guild.get_role(rolesR[2])
                 if role in user.roles:
                     return await user.send(f'You already have role **{role.name}** in **{user.guild.name}**')
                 await user.add_roles(role)
@@ -434,7 +435,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             if (not payload.member.bot):
                 user = payload.member
-                role = get(user.guild.roles, name=rolesR[3])
+                role = guild.get_role(rolesR[3])
                 if role in user.roles:
                     return await user.send(f'You already have role **{role.name}** in **{user.guild.name}**')
                 await user.add_roles(role)
@@ -446,7 +447,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             if (not payload.member.bot):
                 user = payload.member
-                role = get(user.guild.roles, name=rolesR[4])
+                role = guild.get_role(rolesR[4])
                 if role in user.roles:
                     return await user.send(f'You already have role **{role.name}** in **{user.guild.name}**')
                 await user.add_roles(role)
@@ -458,7 +459,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             if (not payload.member.bot):
                 user = payload.member
-                role = get(user.guild.roles, name=rolesR[5])
+                role = guild.get_role(rolesR[5])
                 if role in user.roles:
                     return await user.send(f'You already have role **{role.name}** in **{user.guild.name}**')
                 await user.add_roles(role)
@@ -470,7 +471,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             if (not payload.member.bot):
                 user = payload.member
-                role = get(user.guild.roles, name=rolesR[6])
+                role = guild.get_role(rolesR[6])
                 if role in user.roles:
                     return await user.send(f'You already have role **{role.name}** in **{user.guild.name}**')
                 await user.add_roles(role)
@@ -482,7 +483,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             if (not payload.member.bot):
                 user = payload.member
-                role = get(user.guild.roles, name=rolesR[7])
+                role = guild.get_role(rolesR[7])
                 if role in user.roles:
                     return await user.send(f'You already have role **{role.name}** in **{user.guild.name}**')
                 await user.add_roles(role)
@@ -494,7 +495,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             if (not payload.member.bot):
                 user = payload.member
-                role = get(user.guild.roles, name=rolesR[8])
+                role = guild.get_role(rolesR[8])
                 if role in user.roles:
                     return await user.send(f'You already have role **{role.name}** in **{user.guild.name}**')
                 await user.add_roles(role)
@@ -506,7 +507,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             if (not payload.member.bot):
                 user = payload.member
-                role = get(user.guild.roles, name=rolesR[9])
+                role = guild.get_role(rolesR[9])
                 if role in user.roles:
                     return await user.send(f'You already have role **{role.name}** in **{user.guild.name}**')
                 await user.add_roles(role)
@@ -523,7 +524,8 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
-            role = get(guild.roles, name=rolesR[0])
+            # role = get(guild.roles, name=rolesR[0])
+            role = guild.get_role(rolesR[0])
             if role not in user.roles:
                 return await user.send(f'You don\'t have role **{role.name}** in **{user.guild.name}**')
             await user.remove_roles(role)
@@ -535,7 +537,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
-            role = get(guild.roles, name=rolesR[1])
+            role = guild.get_role(rolesR[1])
             if role not in user.roles:
                 return await user.send(f'You don\'t have role **{role.name}** in **{user.guild.name}**')
             await user.remove_roles(role)
@@ -547,7 +549,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
-            role = get(guild.roles, name=rolesR[2])
+            role = guild.get_role(rolesR[2])
             if role not in user.roles:
                 return await user.send(f'You don\'t have role **{role.name}** in **{user.guild.name}**')
             await user.remove_roles(role)
@@ -559,7 +561,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
-            role = get(guild.roles, name=rolesR[3])
+            role = guild.get_role(rolesR[3])
             if role not in user.roles:
                 return await user.send(f'You don\'t have role **{role.name}** in **{user.guild.name}**')
             await user.remove_roles(role)
@@ -571,7 +573,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
-            role = get(guild.roles, name=rolesR[4])
+            role = guild.get_role(rolesR[4])
             if role not in user.roles:
                 return await user.send(f'You don\'t have role **{role.name}** in **{user.guild.name}**')
             await user.remove_roles(role)
@@ -583,7 +585,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
-            role = get(guild.roles, name=rolesR[5])
+            role = guild.get_role(rolesR[5])
             if role not in user.roles:
                 return await user.send(f'You don\'t have role **{role.name}** in **{user.guild.name}**')
             await user.remove_roles(role)
@@ -595,7 +597,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
-            role = get(guild.roles, name=rolesR[6])
+            role = guild.get_role(rolesR[6])
             if role not in user.roles:
                 return await user.send(f'You don\'t have role **{role.name}** in **{user.guild.name}**')
             await user.remove_roles(role)
@@ -607,7 +609,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
-            role = get(guild.roles, name=rolesR[7])
+            role = guild.get_role(rolesR[7])
             if role not in user.roles:
                 return await user.send(f'You don\'t have role **{role.name}** in **{user.guild.name}**')
             await user.remove_roles(role)
@@ -619,7 +621,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
-            role = get(guild.roles, name=rolesR[8])
+            role = guild.get_role(rolesR[8])
             if role not in user.roles:
                 return await user.send(f'You don\'t have role **{role.name}** in **{user.guild.name}**')
             await user.remove_roles(role)
@@ -631,7 +633,7 @@ class roles(commands.Cog):
             rolesR = rolesjson[str(payload.message_id)]
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
-            role = get(guild.roles, name=rolesR[9])
+            role = guild.get_role(rolesR[9])
             if role not in user.roles:
                 return await user.send(f'You don\'t have role **{role.name}** in **{user.guild.name}**')
             await user.remove_roles(role)
@@ -646,7 +648,6 @@ class roles(commands.Cog):
             roles.reverse()
             menu1 = menu(source=HelpMenu(ctx, roles), delete_message_after=True)
             return await menu1.start(ctx)
-
 
 
 
