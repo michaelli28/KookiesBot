@@ -466,6 +466,25 @@ class moderation(commands.Cog):
         else:
             return await ctx.send('Good job you are smart!')
 
+
+    @commands.command(brief="Kicks yourself", aliases=['selfkick'])
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def kickme(self, ctx):
+
+        await ctx.send('Would you like to kick yourself? Y for yes, N for no')
+        def check(m):
+            return m.author.id == ctx.author.id
+        try:
+            response = await self.bot.wait_for('message', check=check, timeout=30)
+        except asyncio.TimeoutError:
+            return await ctx.send('Please respond Y or N next time')
+        if response.content.lower() == 'y' or response.content.lower() == 'yes':
+            await ctx.send(f'Bye have a great time {ctx.author.mention} {str(ctx.author)}')
+            return await ctx.author.ban()
+        
+        else:
+            return await ctx.send('Good job you are smart!')
+
     @commands.command(brief="Mutes yourself", aliases=['selfmute'])
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def muteme(self, ctx):

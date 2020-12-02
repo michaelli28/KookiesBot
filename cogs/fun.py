@@ -54,7 +54,7 @@ class fun(commands.Cog):
         self.df = pd.read_csv('./IMDB Dataset.csv')
         self.client = bot.client
         self.kclient = kclient
-    @commands.command(name='reddit', aliases=['red'], brief='Gets posts from subreddit, you can specify the timespan using a comma, with hour, day, week, month, year, or all. Example: ;reddit coding,month to get coding posts within a month')
+    @commands.command(name='reddit', aliases=['red'], brief='Gets posts from subreddit, you can specify the timespan using a comma, with hour, day, week, month, year, or all. Example: ;reddit coding,month to get coding posts within a month, the default is day if not specified')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def reddit(self, ctx, *, subreddit):
         async with ctx.typing():

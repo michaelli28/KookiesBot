@@ -122,7 +122,7 @@ class server(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        embed = discord.Embed(title=str(member.display_name)+' has left ' +
+        embed = discord.Embed(title=member.display_name+' has left ('+str(member)+')' +
                               str(member.guild.name), color=random.randint(0, 0xffffff))
         embed.set_author(name=member.display_name, icon_url=member.avatar_url)
         embed.timestamp = datetime.datetime.utcnow()
