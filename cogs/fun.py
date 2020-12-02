@@ -54,7 +54,7 @@ class fun(commands.Cog):
         self.df = pd.read_csv('./IMDB Dataset.csv')
         self.client = bot.client
         self.kclient = kclient
-    @commands.command(name='reddit', aliases=['red'], brief='Gets posts from subreddit, specify the timespan using a comma, with hour, day, week, month, year, or all. Example: ;reddit coding,month to get coding posts within a month')
+    @commands.command(name='reddit', aliases=['red'], brief='Gets posts from subreddit, you can specify the timespan using a comma, with hour, day, week, month, year, or all. Example: ;reddit coding,month to get coding posts within a month')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def reddit(self, ctx, *, subreddit):
         async with ctx.typing():
@@ -83,13 +83,13 @@ class fun(commands.Cog):
                 subreddit = list[0]
                 timespan = list[1]
                 if timespan not in ["hour", "day", "week", "month", "year", "all"]:
-                    return await ctx.send('Timespan must be hour, day, week, month, year or all. Example: ;reddit coding,day or ;reddit python,all')
+                    return await ctx.send('Timespan must be hour, day, week, month, year or all. Example: ;reddit r/coding,day or ;reddit python,all you could also do ;reddit python without specifying a timestamp')
             else:
                 timespan = 'day'
             try:
-                reddit = await self.kclient.images.random_reddit(subreddit, timespan)
+                reddit = await self.kclient.images.random_reddit(subreddit, span = timespan)
                 embed = discord.Embed(color=random.randint(
-                    0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the {reddit.subreddit} subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
+                    0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
                 embed.set_image(url=reddit.image_url)
                 embed.set_author(name=ctx.author.display_name,
                                 icon_url=ctx.author.avatar_url)
@@ -97,8 +97,8 @@ class fun(commands.Cog):
                 embed.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=embed)
 
-            except ksoftapi.NoResults:
-                return await ctx.send('Error, maybe no results')
+            except ksoftapi.errors.APIError as e:
+                return await ctx.send(e)
 
     @commands.command(brief='Gets a meme')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
@@ -135,7 +135,7 @@ class fun(commands.Cog):
             return await ctx.send('Error getting meme :cry:')
         else:
             embed = discord.Embed(color=random.randint(
-                0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the {reddit.subreddit} subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
+                0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
             embed.set_image(url=reddit.image_url)
             embed.set_author(name=ctx.author.display_name,
                             icon_url=ctx.author.avatar_url)
@@ -153,7 +153,7 @@ class fun(commands.Cog):
             return await ctx.send('Error getting aww image :cry:')
         else:
             embed = discord.Embed(color=random.randint(
-                0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the {reddit.subreddit} subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
+                0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
             embed.set_image(url=reddit.image_url)
             embed.set_author(name=ctx.author.display_name,
                              icon_url=ctx.author.avatar_url)
