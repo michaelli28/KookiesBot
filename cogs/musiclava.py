@@ -265,14 +265,19 @@ class music(commands.Cog):
         if not player.is_connected:
             if not should_connect and not not_connect:
                 raise commands.CommandInvokeError('Not connected :mute:')
+            try:
+                permissions = ctx.author.voice.channel.permissions_for(ctx.me)
 
-            permissions = ctx.author.voice.channel.permissions_for(ctx.me)
-
-            if not permissions.connect or not permissions.speak:  # Check user limit too?
-                raise commands.CommandInvokeError('I need the `CONNECT` and `SPEAK` permissions. :disappointed_relieved:')
+                if not permissions.connect or not permissions.speak:  # Check user limit too?
+                    raise commands.CommandInvokeError('I need the `CONNECT` and `SPEAK` permissions. :disappointed_relieved:')
+            except Exception as e:
+                return await ctx.send(e)
 
             player.store('channel', ctx.channel.id)
-            await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
+            try:
+                return await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
+            except:
+                return await ctx.send('Try joining a voice channel, by the looks of it, you aren\'t in one')
         else:
             pass
             # if int(player.channel_id) != ctx.author.voice.channel.id:
