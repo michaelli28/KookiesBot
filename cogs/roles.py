@@ -43,11 +43,11 @@ class roles(commands.Cog):
         self.bot = bot
 
 
-    @commands.command(aliases=['ar'], brief='Gives someone a role, need manage roles, use _ as spaces')
+    @commands.command(aliases=['ar'], brief='Gives someone a role, need manage roles')
     # This must be exactly the name of the appropriate role
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def addrole(self, ctx, user: Union[discord.Member, str], *, r: discord.Role):
+    async def addrole(self, ctx, user: Union[discord.Member, str], *, role: discord.Role):
         # rindex = 0
         # for char in role:
         #     try:
@@ -57,8 +57,8 @@ class roles(commands.Cog):
         #         pass
 
         # r = role.replace('_', " ", rindex)
-
-        if r == 'Bot' or r == 'bot':
+        r = role
+        if r.name.lower() in ['bot', ' bot', 'bot ']:
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send('Only owner can give admin permissions')
 
@@ -93,10 +93,10 @@ class roles(commands.Cog):
             except discord.Forbidden:
                 return await ctx.send('I\'m not allowed to do that')
 
-    @commands.command(aliases=['rr'], brief='Removes a role, need manage roles, use _ as spaces')
+    @commands.command(aliases=['rr'], brief='Removes a role, need manage roles')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def removerole(self, ctx, user: Union[discord.Member, str], *, r: discord.Role):
+    async def removerole(self, ctx, user: Union[discord.Member, str], *, role: discord.Role):
         # rindex = 0
         # for char in role:
         #     try:
@@ -106,7 +106,9 @@ class roles(commands.Cog):
         #         pass
 
         # r = role.replace('_', " ", rindex)
-        if r == 'Bot' or r == 'bot':
+        r = role
+
+        if r.name.lower() in ['bot', ' bot', 'bot ']:
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send('Only owner can remove admin permissions')
         if user == 'everyone':

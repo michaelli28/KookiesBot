@@ -277,7 +277,7 @@ class music(commands.Cog):
             try:
                 return await self.connect_to(ctx.guild.id, str(ctx.author.voice.channel.id))
             except:
-                return await ctx.send('Try joining a voice channel, by the looks of it, you aren\'t in one')
+                raise commands.CommandInvokeError('Try joining a voice channel, by the looks of it, you aren\'t in one')
         else:
             pass
             # if int(player.channel_id) != ctx.author.voice.channel.id:
