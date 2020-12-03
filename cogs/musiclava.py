@@ -271,7 +271,7 @@ class music(commands.Cog):
                 if not permissions.connect or not permissions.speak:  # Check user limit too?
                     raise commands.CommandInvokeError('I need the `CONNECT` and `SPEAK` permissions. :disappointed_relieved:')
             except Exception as e:
-                return await ctx.send(e)
+                print(e)
 
             player.store('channel', ctx.channel.id)
             try:
