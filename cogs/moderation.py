@@ -170,6 +170,7 @@ class moderation(commands.Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def mute(self, ctx, user: Union[discord.Member, str]=None, minutes: Optional[int]=0):
+        
         if user == 'everyone':
             async with ctx.typing():
                 try:
@@ -201,7 +202,8 @@ class moderation(commands.Cog):
                         return await ctx.send(f'Created Muted role, muted everyone, no timer')
                     else:
                         return await ctx.send('Muted everyone, no timer')
-
+        if isinstance(user, str):
+            return await ctx.send('Invalid user')
 
         else:
             if user == None:
@@ -209,8 +211,7 @@ class moderation(commands.Cog):
             try:
                 role = get(user.guild.roles, name='Muted')
                 create = False
-            except BadArgument:
-                return await ctx.send(f'`{user.display_name}` user not found')
+
             except discord.Forbidden:
                 return await ctx.send('I\'m not allowed to do that')
             except AttributeError:
@@ -278,6 +279,9 @@ class moderation(commands.Cog):
 
                 except discord.Forbidden:
                     return await ctx.send('I\'m not allowed to do that')
+                    
+        if isinstance(user, str):
+            return await ctx.send('Invalid user')
         try:
             role = get(user.guild.roles, name='Muted')
 
