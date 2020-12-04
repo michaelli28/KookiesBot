@@ -35,6 +35,8 @@ import urllib
 import io
 import textwrap
 import traceback
+import time
+import sys
 import aiohttp
 from contextlib import redirect_stdout
 from textwrap import TextWrapper
@@ -53,6 +55,13 @@ class misc(commands.Cog):
         self.client = bot.client
         self.message = None
         self.ctx = None
+
+
+    @commands.command(aliases=['botinvite'], brief='Sends an invite link')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def invite(self, ctx):
+        return await ctx.send(f"Use this URL to invite me\n<{discord.utils.oauth_url(self.bot.user.id)}>")
+
     @commands.command(name='repeat', brief='Repeats your input')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def do_repeat(self, ctx, *, inp: str):

@@ -283,19 +283,19 @@ class util(commands.Cog):
         # Create embed
         em = discord.Embed(color=0x00CC99)
         em.set_author(name='Server Info:', icon_url=server.owner.avatar_url)
-        em.add_field(name='Name', value=f'`{server.name}`')
-        em.add_field(name='Owner', value=f'`{server.owner}`', inline=False)
-        em.add_field(name='Members', value=f'`{server.member_count}`')
-        em.add_field(name='Online', value=f'`{online}`')
-        em.add_field(name='Region', value=f'`{str(server.region).title()}`')
-        em.add_field(name='Text Channels', value=f'`{tchannel_count}`')
-        em.add_field(name='Voice Channels', value=f'`{vchannel_count}`')
+        em.add_field(name='Name', value=f'{server.name}')
+        em.add_field(name='Owner', value=f'{server.owner}', inline=False)
+        em.add_field(name='Members', value=f'{server.member_count}')
+        em.add_field(name='Online', value=f'{online}')
+        em.add_field(name='Region', value=f'{str(server.region).title()}')
+        em.add_field(name='Text Channels', value=f'{tchannel_count}')
+        em.add_field(name='Voice Channels', value=f'{vchannel_count}')
         em.add_field(name='Verification Level',
-                     value=f'`{str(server.verification_level).title()}`')
-        em.add_field(name='Number of roles', value=f'`{role_count}`')
-        em.add_field(name='Highest role', value=f'`{server.roles[-1]}`')
+                     value=f'{str(server.verification_level).title()}')
+        em.add_field(name='Number of roles', value=f'{role_count}')
+        em.add_field(name='Highest role', value=f'{server.roles[-1]}')
         em.add_field(
-            name='Created At', value=f"`{server.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S')}`", inline=False)
+            name='Created At', value=f"{server.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S')}", inline=False)
         em.set_thumbnail(url=server.icon_url)
         em.set_footer(text='Server ID: %s' % server.id)
         em.set_author(name=ctx.author.display_name,
@@ -350,7 +350,7 @@ class util(commands.Cog):
             voice_state = None if not user.voice else user.voice.channel
 
         em = discord.Embed(colour=0x00CC99)
-        em.add_field(name='User ID', value=f'`{user.id}`')
+        em.add_field(name='User ID', value=f'{user.id}')
         if isinstance(user, discord.Member):
             if isinstance(user.activity, discord.Spotify):
                 activity = "Listening " + user.activity.title
@@ -360,16 +360,16 @@ class util(commands.Cog):
             else:
                 activity = None
 
-            em.add_field(name='Nick', value=f'`{user.nick}`')
-            em.add_field(name='Status', value=f'`{user.status}`')
-            em.add_field(name='In Voice', value=f'`{voice_state}`')
-            em.add_field(name='Activity', value=f'`{activity}`')
-            em.add_field(name='Highest Role', value=f'`{role}`')
+            em.add_field(name='Nick', value=f'{user.nick}')
+            em.add_field(name='Status', value=f'{user.status}')
+            em.add_field(name='In Voice', value=f'{voice_state}')
+            em.add_field(name='Activity', value=f'{activity}')
+            em.add_field(name='Highest Role', value=f'{role}')
         em.add_field(name='Account Created',
-                     value=f"`{user.created_at.__format__('%A, %d %B %Y @ %H:%M:%S')}`", inline=False)
+                     value=f"{user.created_at.__format__('%A, %d %B %Y @ %H:%M:%S')}", inline=False)
         if isinstance(user, discord.Member):
             em.add_field(
-                name='Join Date', value=f"`{user.joined_at.__format__('%A, %d %B %Y @ %H:%M:%S')}`", inline=False)
+                name='Join Date', value=f"{user.joined_at.__format__('%A, %d %B %Y @ %H:%M:%S')}", inline=False)
         em.set_thumbnail(url=user.avatar_url)
         em.set_author(name=user, icon_url=user.avatar_url)
         em.timestamp = datetime.datetime.utcnow()
