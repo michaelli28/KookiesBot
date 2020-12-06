@@ -50,7 +50,7 @@ async def play(bot, ctx):
 			return await ctx.send("**You Win :trophy:**")
 
 		try:
-			msg = await bot.wait_for('message', check=check, timeout=20.0)
+			msg = await bot.wait_for('message', check=check, timeout=120.0)
 			if msg.content == 'exit':
 				await ctx.send("You quit")
 				return

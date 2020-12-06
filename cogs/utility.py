@@ -197,7 +197,7 @@ class util(commands.Cog):
         embed.timestamp = datetime.datetime.utcnow()
         n = 1
         if len(synsets) == 0:
-            return await ctx.send('No definitions found (this is kind of like AI so it\'s not perfect)')
+            return await ctx.send(f'No definitions found for `{word}`')
         else:
             pass
         for synset in synsets:
