@@ -177,6 +177,8 @@ class levels(Cog):
     async def on_message(self, ctx):
         if ctx.author.bot:
             return
+        elif ctx.author.id == 726233978536853545:
+            return
         else:
             with open("cooldown.json", "r") as f:
                 cooldowns = json.load(f)
