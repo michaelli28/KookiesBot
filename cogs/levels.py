@@ -177,8 +177,8 @@ class levels(Cog):
     async def on_message(self, ctx):
         if ctx.author.bot:
             return
-        elif ctx.author.id == 726233978536853545:
-            return
+        # elif ctx.author.id == 726233978536853545:
+        #     return
         else:
             with open("cooldown.json", "r") as f:
                 cooldowns = json.load(f)
@@ -213,7 +213,7 @@ class levels(Cog):
                 author = ctx.author.id
                 res = collection.find({})
 
-                xp = random.randint(15, 25)
+                xp = random.randint(45, 60)
 
 
                 collection.update_one({'_id': ctx.author.id}, {
