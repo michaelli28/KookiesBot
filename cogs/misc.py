@@ -234,36 +234,46 @@ class misc(commands.Cog):
         await self.bot.logout()
         return
 
-    @commands.command(name='reload')
+    @commands.command(brief='Adds an alias to an existing command')
     @commands.is_owner()
-    async def reload_module(self, ctx, arg=None):
-        """Reload module"""
-        modules = ['musiclava', 'fun', 'utility', 'levels', 'CommandErrorHandler', 'misc', 'moderation', 'roles', 'school', 'server', 'games']
-        if not arg:
-            embed = discord.Embed(
-                title='Modules', description='\n'.join(modules))
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.timestamp = datetime.datetime.utcnow()
-            return await ctx.send(embed=embed)
-        if arg.lower() == 'all':
-            for module in modules:
-                msg = await ctx.send(f":arrows_counterclockwise: Reloading `{module}`...")
-                try:
-                    self.bot.unload_extension('cogs.' + module)
-                    self.bot.load_extension('cogs.' + module)
-                except:
-                    await msg.edit(content=f":x: Reloading `{module}` Failed!")
-                else:
-                    await msg.edit(content=f":white_check_mark: Reloaded `{module}`")
-        elif arg.lower() in modules:
-            msg = await ctx.send(f":arrows_counterclockwise: Reloading `{arg.lower()}`...")
-            try:
-                self.bot.unload_extension('cogs.' + arg.lower())
-                self.bot.load_extension('cogs.' + arg.lower())
-            except:
-                await msg.edit(content=f":x: Reloading `{arg.lower()}` Failed!")
-            else:
-                await msg.edit(content=f":white_check_mark: Reloaded `{arg.lower()}`")
+    async def alias(self, ctx, cmdname, alias):
+        cmd = ctx.bot.get_command(cmdname)
+        cmd.aliases.append(alias)
+        # register the modified command
+        ctx.bot.remove_command(cmdname)
+        ctx.bot.add_command(cmd)
+        return
+
+    # @commands.command(name='reload')
+    # @commands.is_owner()
+    # async def reload_module(self, ctx, arg=None):
+    #     """Reload module"""
+    #     modules = ['musiclava', 'fun', 'utility', 'levels', 'CommandErrorHandler', 'misc', 'moderation', 'roles', 'school', 'server', 'games']
+    #     if not arg:
+    #         embed = discord.Embed(
+    #             title='Modules', description='\n'.join(modules))
+    #         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+    #         embed.timestamp = datetime.datetime.utcnow()
+    #         return await ctx.send(embed=embed)
+    #     if arg.lower() == 'all':
+    #         for module in modules:
+    #             msg = await ctx.send(f":arrows_counterclockwise: Reloading `{module}`...")
+    #             try:
+    #                 self.bot.unload_extension('cogs.' + module)
+    #                 self.bot.load_extension('cogs.' + module)
+    #             except:
+    #                 await msg.edit(content=f":x: Reloading `{module}` Failed!")
+    #             else:
+    #                 await msg.edit(content=f":white_check_mark: Reloaded `{module}`")
+    #     elif arg.lower() in modules:
+    #         msg = await ctx.send(f":arrows_counterclockwise: Reloading `{arg.lower()}`...")
+    #         try:
+    #             self.bot.unload_extension('cogs.' + arg.lower())
+    #             self.bot.load_extension('cogs.' + arg.lower())
+    #         except:
+    #             await msg.edit(content=f":x: Reloading `{arg.lower()}` Failed!")
+    #         else:
+    #             await msg.edit(content=f":white_check_mark: Reloaded `{arg.lower()}`")
     
 
     @commands.command(name='ascii', aliases=['ac'], brief='Ascii art of avatar or image')

@@ -28,6 +28,7 @@ from time import time
 from aiohttp import ClientSession
 import io
 import logging
+#import jishaku
 # from dotenv import load_dotenv
 # load_dotenv()
 
@@ -55,6 +56,7 @@ async def startup():
     bot.load_extension('cogs.misc')
     bot.load_extension('cogs.utility')
     bot.load_extension('cogs.games')
+    bot.load_extension('jishaku')
     #bot.load_extension('cogs.school')
 
 
