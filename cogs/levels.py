@@ -213,7 +213,7 @@ class levels(Cog):
                 author = ctx.author.id
                 res = collection.find({})
 
-                xp = random.randint(45, 60)
+                xp = random.randint(45, 75)
 
 
                 collection.update_one({'_id': ctx.author.id}, {
