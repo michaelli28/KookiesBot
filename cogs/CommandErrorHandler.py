@@ -31,9 +31,9 @@ class CommandErrorHandler(commands.Cog):
         error = getattr(error, 'original', error)
 
         if isinstance(error, commands.CommandNotFound):
-            if ctx.message.content.startswith(';)'):
+            if ctx.message.content.startswith(';)') or ctx.message.content.startswith(';-;'):
                 return
-            await ctx.send(f'`{ctx.message.content}` is not a valid command')
+            return await ctx.send(f'`{ctx.message.content}` is not a valid command')
 
         elif isinstance(error, commands.BotMissingPermissions):
             missing = [perm.replace('_', ' ').replace(
@@ -59,7 +59,7 @@ class CommandErrorHandler(commands.Cog):
                 await ctx.message.delete()
             except:
                 pass
-            await ctx.send('{}, That command is on cooldown! Try again in {:.2f}s!'.format(ctx.author.mention, error.retry_after))
+            return await ctx.send('{}, That command is on cooldown! Try again in {:.2f}s!'.format(ctx.author.mention, error.retry_after))
 
         elif isinstance(error, commands.NotOwner):
             try:
