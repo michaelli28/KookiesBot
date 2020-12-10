@@ -213,8 +213,7 @@ class levels(Cog):
                 author = ctx.author.id
                 res = collection.find({})
 
-                xp = random.randint(45, 75)
-
+                xp = random.randint(15, 25)
 
                 collection.update_one({'_id': ctx.author.id}, {
                                           "$inc": {"Xp": xp}})
