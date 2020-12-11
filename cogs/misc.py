@@ -88,8 +88,8 @@ class misc(commands.Cog):
             channel = await self._join(ctx)
         else:
             channel = voiceconnect
-        if not ctx.author.voice.channel or ctx.author.voice.channel != channel.channel:
-            return await ctx.send('Join the same channel as the bot')
+        # if not ctx.author.voice.channel or ctx.author.voice.channel != channel.channel:
+        #     return await ctx.send('Join the same channel as the bot')
 
         speech = gtts.gTTS(text, lang=f"en-us")
         speech.save('tts.mp3')
