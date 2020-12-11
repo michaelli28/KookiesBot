@@ -74,8 +74,10 @@ class misc(commands.Cog):
             except AttributeError:
                 return await ctx.send(f'{ctx.author.mention}, specify a channel for me to join or join one')
 
-
-        channel = await channel.connect()
+        try:
+            channel = await channel.connect()
+        except:
+            return await ctx.send('The bot seems to be in a voice channel although this might not always be the case (it was kicked out) or it is playing music in which case tts won\'t work')
         return channel
 
     @commands.command(aliases=['talk'], brief='Speaks a message into the voice channel that you are in')
@@ -86,8 +88,9 @@ class misc(commands.Cog):
             channel = await self._join(ctx)
         else:
             channel = voiceconnect
-        # name = ctypes.util.find_library('opus')
-        # discord.opus.load_opus(name)
+        if not ctx.author.voice.channel or ctx.author.voice.channel != channel.channel:
+            return await ctx.send('Join the same channel as the bot')
+
         speech = gtts.gTTS(text, lang=f"en-us")
         speech.save('tts.mp3')
         channel.play(discord.FFmpegOpusAudio("tts.mp3"))
