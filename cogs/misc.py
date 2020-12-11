@@ -58,7 +58,7 @@ class misc(commands.Cog):
         self.client = bot.client
         self.message = None
         self.ctx = None
-
+        self.lang = 'en-us'
 
     @commands.command(aliases=['botinvite'], brief='Sends an invite link')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
@@ -91,7 +91,7 @@ class misc(commands.Cog):
         # if not ctx.author.voice.channel or ctx.author.voice.channel != channel.channel:
         #     return await ctx.send('Join the same channel as the bot')
 
-        speech = gtts.gTTS(text, lang=f"en-us")
+        speech = gtts.gTTS(text, lang=f"{self.lang}")
         speech.save('tts.mp3')
         channel.play(discord.FFmpegOpusAudio("tts.mp3"))
         return
@@ -102,6 +102,36 @@ class misc(commands.Cog):
         # speech.write_to_fp(obj)
         # obj.seek(0)
         # return await ctx.send(discord.File(obj, "tts.mp3"))
+
+    @commands.command(brief='Changes the language of the tts, use list for language argument to get a list of languages')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def ttsset(self, ctx, language: str ='en-us'):
+        if language == 'list':
+            string = ''
+
+            for abb,lan in gtts.lang.tts_langs().items():
+                add = f'{lan} ------> `{abb}`\n'
+                string+=add
+
+            embed = discord.Embed(title='List of Available Languages', color = random.randint(0, 0xffffff), description = string)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.timestamp = datetime.datetime.utcnow()
+            return await ctx.send(embed=embed)
+
+        elif language in gtts.lang.tts_langs():
+            self.lang = language
+            return await ctx.send(f'Set the language of tts to {gtts.lang.tts_langs()[language]}')
+
+        else:
+            for abb,lan in gtts.lang.tts_langs().items():
+                add = f'{lan} ------> `{abb}`\n'
+                string+=add
+
+            embed = discord.Embed(title='List of Available Languages', color = random.randint(0, 0xffffff), description = string)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.timestamp = datetime.datetime.utcnow()
+            return await ctx.send(embed=embed)
+
 
     @commands.command(aliases=['stoptts'], brief='Ends the tts session by leaving the voice channel')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
