@@ -17,7 +17,9 @@ import datetime
 import pymongo
 from pymongo import MongoClient
 import random
+import ctypes
 import requests
+import os
 import re
 import time
 from collections import Counter
@@ -33,6 +35,7 @@ import ksoftapi
 import inspect
 import urllib
 import io
+import gtts
 import textwrap
 import traceback
 import time
@@ -61,6 +64,50 @@ class misc(commands.Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def invite(self, ctx):
         return await ctx.send(f"Use this URL to invite me\n<{discord.utils.oauth_url(self.bot.user.id)}>")
+
+    async def _join(self, ctx: commands.Context, channel: discord.VoiceChannel = None):
+        """Joins a voice channel"""
+        #await ctx.message.delete()
+        if not channel:
+            try:
+                channel = ctx.author.voice.channel
+            except AttributeError:
+                return await ctx.send(f'{ctx.author.mention}, specify a channel for me to join or join one')
+
+
+        channel = await channel.connect()
+        return channel
+
+    @commands.command(aliases=['talk'], brief='Speaks a message into the voice channel that you are in')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def tts(self, ctx, *, text: str):
+        voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
+        if not voiceconnect or not voiceconnect.is_connected():
+            channel = await self._join(ctx)
+        else:
+            channel = voiceconnect
+        # name = ctypes.util.find_library('opus')
+        # discord.opus.load_opus(name)
+        speech = gtts.gTTS(text, lang=f"en-us")
+        speech.save('tts.mp3')
+        channel.play(discord.FFmpegOpusAudio("tts.mp3"))
+        return
+        # if os.path.exists("tts.mp3"):
+        #     os.remove("tts.mp3")
+        # return
+        # obj = io.BytesIO()
+        # speech.write_to_fp(obj)
+        # obj.seek(0)
+        # return await ctx.send(discord.File(obj, "tts.mp3"))
+
+    @commands.command(aliases=['stoptts'], brief='Ends the tts session by leaving the voice channel')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def ttsend(self, ctx):
+        voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
+        if not voiceconnect or not voiceconnect.is_connected():
+            return await ctx.send('Not in a voice channel')
+        else:
+            return await voiceconnect.disconnect()
 
     @commands.command(name='repeat', brief='Repeats your input')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
