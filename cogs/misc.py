@@ -124,7 +124,7 @@ class misc(commands.Cog):
 
         else:
             for abb,lan in gtts.lang.tts_langs().items():
-                add = f'{lan} ------> `{abb}`\n'
+                add = f'{abb} ({lan})\n'
                 string+=add
 
             embed = discord.Embed(title='List of Available Languages', color = random.randint(0, 0xffffff), description = string)

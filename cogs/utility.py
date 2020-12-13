@@ -342,21 +342,21 @@ class util(commands.Cog):
         return await ctx.send(embed=em)
 
 
-    @commands.command(name='url', aliases=['shorten'], brief='Shortens a url')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def url_shorten(self, ctx, *, url):
-        if not url:
-            return await ctx.send('Please specify the url :link:')
-        if not url.startswith('http'):
-            url = 'http://' + url
-        try:
-            async with ctx.typing():
-                async with self.client.post('https://rel.ink/api/links/', data={'url': url}) as r:
-                    data = await r.json()
-            if data.get('hashid'):
-                return await ctx.send(f"Url: `{data['url']}`\nShort: https://rel.ink/{data['hashid']}")
-        except:
-            return await ctx.send('Failed to shorten url :x:')
+    # @commands.command(name='url', aliases=['shorten'], brief='Shortens a url')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def url_shorten(self, ctx, *, url):
+    #     if not url:
+    #         return await ctx.send('Please specify the url :link:')
+    #     if not url.startswith('http'):
+    #         url = 'http://' + url
+    #     try:
+    #         async with ctx.typing():
+    #             async with self.client.post('https://rel.ink/api/links/', data={'url': url}) as r:
+    #                 data = await r.json()
+    #         if data.get('hashid'):
+    #             return await ctx.send(f"Url: `{data['url']}`\nShort: https://rel.ink/{data['hashid']}")
+    #     except:
+    #         return await ctx.send('Failed to shorten url :x:')
 
     @commands.command(name='userinfo', aliases=['user', 'uinfo', 'ui'], brief='Gets info about a user')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
