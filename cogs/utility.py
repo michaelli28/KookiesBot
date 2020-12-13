@@ -100,6 +100,43 @@ class util(commands.Cog):
         self.trans = Translator()
         self.kclient = kclient
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        guild = self.bot.get_guild(765941083254947911) #log guild
+        if message.guild == guild:
+            return
+        channel = guild.get_channel(765941083254947914)
+
+
+        if message.author.id != self.bot.user.id:
+            try:
+                embed = discord.Embed(color=random.randint(
+                    0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} [Jump to Message]({message.jump_url})')
+                embed.add_field(name=f'{message.content}', value=f'\u200B')
+                embed.set_author(name=message.author.display_name,
+                                icon_url=message.author.avatar_url)
+
+                embed.timestamp = datetime.datetime.utcnow()
+                await channel.send(embed=embed)
+            except:
+                if message.attachments:
+                    embed = discord.Embed(color=random.randint(
+                        0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} [Jump to Message]({message.jump_url})')
+                    for attachment in message.attachments:
+                        new = await attachment.to_file()
+                        await channel.send(file=new)
+                        embed.set_image(url=f'{attachment.url}')
+
+                    embed.set_author(name=message.author.display_name,
+                                        icon_url=message.author.avatar_url)
+                    embed.timestamp = datetime.datetime.utcnow()
+                    await channel.send(embed=embed)
+
+            if message.embeds:
+                for embed in message.embeds:
+                    await channel.send(embed=embed)
+        return
+    
     @commands.command(name='textart', aliases=['coolfont'], brief='Makes text look cool (the font is a number from 1-12 and the color is a hexadecimal color')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def font_generator(self, ctx, font: str ='3', color: str = '00fffff', *, text: str = ""):
@@ -376,20 +413,21 @@ class util(commands.Cog):
 
         return await ctx.send(embed=em)
 
-    @commands.command(name='convert', aliases=['currency'], description = 'Converts currency')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def currency(self, ctx, value: str="", _from: str="", to: str=""):
-        """Currency conversion"""
-        if value=="" or _from=="" or to=="":
-            return await ctx.send("Please enter values in proper format\n`~convert [value] [from] [to]`\neg: `~convert 16 usd inr`")
+    # @commands.command(name='convert', aliases=['currency'], description = 'Converts currency')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def currency(self, ctx, value: str="", _from: str="", to: str=""):
+    #     """Currency conversion"""
+    #     if value=="" or _from=="" or to=="":
+    #         return await ctx.send("Please enter values in proper format\n`~convert [value] [from] [to]`\neg: `~convert 16 usd inr`")
 
-        try:
-            async with ctx.typing():
-                c = await self.kclient.kumo.currency_conversion(_from, to, value)
-        except (ksoftapi.NoResults, ksoftapi.errors.APIError):
-            await ctx.send('Conversion Failed :x:')
-        else:
-            await ctx.send(f":currency_exchange: Conversion:\n`{value} {_from.upper()}` = `{c.pretty}`")
+    #     try:
+    #         async with ctx.typing():
+    #             c = await self.kclient.kumo.currency_conversion(_from, to, value)
+    #     except (ksoftapi.NoResults, ksoftapi.errors.APIError):
+    #         await ctx.send('Conversion Failed :x:')
+    #     else:
+    #         await ctx.send(f":currency_exchange: Conversion:\n`{value} {_from.upper()}` = `{c.pretty}`")
+
 
     # @commands.command(name='trace', aliases=['ip'], brief='Traces your ip')
     # @commands.cooldown(times, cooldown, commands.BucketType.user)

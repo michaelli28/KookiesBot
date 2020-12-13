@@ -31,6 +31,50 @@ class server(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def on_message(self, message):
+        
+
+        log = self.bot.get_guild(765941083254947911)
+        asians = self.bot.get_guild(751137949420224642)
+        bikeguild = self.bot.get_guild(764977928307998750)
+
+        if message.guild == log or message.guild == asians:
+            return
+
+        channel = log.get_channel(768939732280803358)
+        channelbike = log.get_channel(768945060753702913)
+        if message.guild == bikeguild:
+            channel = channelbike
+
+        if message.author.id != self.bot.user.id:
+            try:
+                embed = discord.Embed(color=random.randint(
+                    0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
+                embed.add_field(name=f'{message.content}', value=f'\u200B')
+                embed.set_author(name=message.author.display_name,
+                                icon_url=message.author.avatar_url)
+
+                embed.timestamp = datetime.datetime.utcnow()
+                await channel.send(embed=embed)
+            except:
+                if message.attachments:
+                    embed = discord.Embed(color=random.randint(
+                        0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
+                    for attachment in message.attachments:
+                        new = await attachment.to_file()
+                        await channel.send(file=new)
+                        embed.set_image(url=f'{attachment.url}')
+
+                    embed.set_author(name=message.author.display_name,
+                                    icon_url=message.author.avatar_url)
+                    embed.timestamp = datetime.datetime.utcnow()
+                    await channel.send(embed=embed)
+
+            if message.embeds:
+                for embed in message.embeds:
+                    await channel.send(embed=embed)
+        return
+
     @commands.command(brief='Creates a channel')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
