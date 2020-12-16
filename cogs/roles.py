@@ -19,6 +19,11 @@ import asyncio
 from discord.ext import tasks
 
 from discord.ext.commands.errors import BadArgument
+cluster = MongoClient(
+                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+db = cluster.Other
+global collection
+collection = db['Roles']
 
 
 with open('config.json', 'r') as config:
@@ -227,6 +232,7 @@ class roles(commands.Cog):
         if position == None:
             return await ctx.send('You need to specify the new position to change to')
         rindex = 0
+        
         for char in name:
             try:
                 name.find('_')
@@ -236,6 +242,8 @@ class roles(commands.Cog):
         
         r = name.replace('_', " ", rindex)
         r = get(ctx.message.guild.roles, name=r)
+        if ctx.author.top_role.position < r.position or ctx.author.top_role.position < position:
+            return await ctx.send(f'You do not have permissions to change this role. Your top role position **{ctx.author.top_role.position}** is less than {r.name}\'s **{r.position}** or the position you are trying to change {r.name} to is less than your role position ({position})')
         if r == None:
             return await ctx.send(f'{name} is not a role')
         try:
@@ -312,9 +320,9 @@ class roles(commands.Cog):
         global rolesR
         rolesR = list(roles)
 
-        with open("roles.json", "r") as f:
-            rolesjson = json.load(f)
-            f.close()
+        # with open("roles.json", "r") as f:
+        #     rolesjson = json.load(f)
+        #     f.close()
 
 
         index = 0
@@ -357,11 +365,11 @@ class roles(commands.Cog):
             embed.timestamp = timestamp
             messagesent = await ctx.send(embed=embed)
 
-        rolesjson[str(messagesent.id)] = rolesR
+        collection.insert_one({'_id':str(messagesent.id),'roles':rolesR})
 
-        with open("roles.json", "w") as f:
-            json.dump(rolesjson, f)
-            f.close()
+        # with open("roles.json", "w") as f:
+        #     json.dump(rolesjson, f)
+        #     f.close()
         for i in range(len(roles)):
             await messagesent.add_reaction(reactions[i])
         return
@@ -394,10 +402,12 @@ class roles(commands.Cog):
             except:
                 pass
         elif payload.emoji.name == '1️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             if (not payload.member.bot):
                 user = payload.member
                 #role = get(user.guild.roles, name=rolesR[0])
@@ -407,10 +417,12 @@ class roles(commands.Cog):
                 await user.add_roles(role)
                 return await user.send(f'You have received the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '2️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             if (not payload.member.bot):
                 user = payload.member
                 role = guild.get_role(rolesR[1])
@@ -419,10 +431,12 @@ class roles(commands.Cog):
                 await user.add_roles(role)
                 return await user.send(f'You have received the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '3️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             if (not payload.member.bot):
                 user = payload.member
                 role = guild.get_role(rolesR[2])
@@ -431,10 +445,12 @@ class roles(commands.Cog):
                 await user.add_roles(role)
                 return await user.send(f'You have received the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '4️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             if (not payload.member.bot):
                 user = payload.member
                 role = guild.get_role(rolesR[3])
@@ -443,10 +459,12 @@ class roles(commands.Cog):
                 await user.add_roles(role)
                 return await user.send(f'You have received the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '5️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             if (not payload.member.bot):
                 user = payload.member
                 role = guild.get_role(rolesR[4])
@@ -455,10 +473,12 @@ class roles(commands.Cog):
                 await user.add_roles(role)
                 return await user.send(f'You have received the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '6️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             if (not payload.member.bot):
                 user = payload.member
                 role = guild.get_role(rolesR[5])
@@ -467,10 +487,12 @@ class roles(commands.Cog):
                 await user.add_roles(role)
                 return await user.send(f'You have received the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '7️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             if (not payload.member.bot):
                 user = payload.member
                 role = guild.get_role(rolesR[6])
@@ -479,10 +501,12 @@ class roles(commands.Cog):
                 await user.add_roles(role)
                 return await user.send(f'You have received the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '8️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             if (not payload.member.bot):
                 user = payload.member
                 role = guild.get_role(rolesR[7])
@@ -491,10 +515,12 @@ class roles(commands.Cog):
                 await user.add_roles(role)
                 return await user.send(f'You have received the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '9️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             if (not payload.member.bot):
                 user = payload.member
                 role = guild.get_role(rolesR[8])
@@ -503,10 +529,12 @@ class roles(commands.Cog):
                 await user.add_roles(role)
                 return await user.send(f'You have received the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '🔟':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             if (not payload.member.bot):
                 user = payload.member
                 role = guild.get_role(rolesR[9])
@@ -520,10 +548,12 @@ class roles(commands.Cog):
     async def on_raw_reaction_remove(self, payload):
 
         if payload.emoji.name == '1️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
             # role = get(guild.roles, name=rolesR[0])
@@ -533,10 +563,12 @@ class roles(commands.Cog):
             await user.remove_roles(role)
             return await user.send(f'You have successfully removed the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '2️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
             role = guild.get_role(rolesR[1])
@@ -545,10 +577,12 @@ class roles(commands.Cog):
             await user.remove_roles(role)
             return await user.send(f'You have successfully removed the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '3️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
             role = guild.get_role(rolesR[2])
@@ -557,10 +591,12 @@ class roles(commands.Cog):
             await user.remove_roles(role)
             return await user.send(f'You have successfully removed the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '4️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
             role = guild.get_role(rolesR[3])
@@ -569,10 +605,12 @@ class roles(commands.Cog):
             await user.remove_roles(role)
             return await user.send(f'You have successfully removed the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '5️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
             role = guild.get_role(rolesR[4])
@@ -581,10 +619,12 @@ class roles(commands.Cog):
             await user.remove_roles(role)
             return await user.send(f'You have successfully removed the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '6️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
             role = guild.get_role(rolesR[5])
@@ -593,10 +633,12 @@ class roles(commands.Cog):
             await user.remove_roles(role)
             return await user.send(f'You have successfully removed the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '7️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
             role = guild.get_role(rolesR[6])
@@ -605,10 +647,12 @@ class roles(commands.Cog):
             await user.remove_roles(role)
             return await user.send(f'You have successfully removed the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '8️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
             role = guild.get_role(rolesR[7])
@@ -617,10 +661,12 @@ class roles(commands.Cog):
             await user.remove_roles(role)
             return await user.send(f'You have successfully removed the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '9️⃣':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
             role = guild.get_role(rolesR[8])
@@ -629,10 +675,12 @@ class roles(commands.Cog):
             await user.remove_roles(role)
             return await user.send(f'You have successfully removed the role **{role.name}** in **{user.guild.name}**')
         elif payload.emoji.name == '🔟':
-            with open("roles.json", "r") as f:
-                rolesjson = json.load(f)
-                f.close()
-            rolesR = rolesjson[str(payload.message_id)]
+            # with open("roles.json", "r") as f:
+            #     rolesjson = json.load(f)
+            #     f.close()
+            # rolesR = rolesjson[str(payload.message_id)]
+            result = collection.find_one({'_id':str(payload.message_id)})
+            rolesR = result['roles']
             guild = self.bot.get_guild(payload.guild_id)
             user = guild.get_member(payload.user_id)
             role = guild.get_role(rolesR[9])

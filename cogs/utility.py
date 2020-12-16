@@ -111,7 +111,7 @@ class util(commands.Cog):
         if message.author.id != self.bot.user.id:
             try:
                 embed = discord.Embed(color=random.randint(
-                    0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} [Jump to Message]({message.jump_url})')
+                    0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
                 embed.add_field(name=f'{message.content}', value=f'\u200B')
                 embed.set_author(name=message.author.display_name,
                                 icon_url=message.author.avatar_url)
@@ -121,7 +121,7 @@ class util(commands.Cog):
             except:
                 if message.attachments:
                     embed = discord.Embed(color=random.randint(
-                        0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} [Jump to Message]({message.jump_url})')
+                        0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
                     for attachment in message.attachments:
                         new = await attachment.to_file()
                         await channel.send(file=new)

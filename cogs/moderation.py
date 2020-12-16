@@ -203,7 +203,7 @@ class moderation(commands.Cog):
                     else:
                         return await ctx.send('Muted everyone, no timer')
         if isinstance(user, str):
-            return await ctx.send('Invalid user')
+            return await ctx.send('Invalid user, use everyone to mute everyone')
 
         else:
             if user == None:
@@ -240,14 +240,28 @@ class moderation(commands.Cog):
                         await ctx.send(f'Unable to remove role `{r.name}`')
 
             await user.add_roles(role)
-            roles = {'id':user.id, 'roles':list,'self':False}
-            with open('muted.json', 'r') as file:
-                stuff = json.load(file)
-                stuff['ids'].append(roles)
-                file.close()
-            with open('muted.json', 'w') as file:
-                json.dump(stuff, file)
-                file.close()
+            cluster = MongoClient(
+                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+            db = cluster.Other
+            collection = db['Muted']
+            id = str(ctx.guild.id)
+            id += str(user.id)
+
+            roles = {'_id':id, 'roles':list,'self':False}
+
+            try:
+                collection.delete_many({'_id':id})
+            except Exception as e:
+                print(e)
+            collection.insert_one(roles)
+
+            # with open('muted.json', 'r') as file:
+            #     stuff = json.load(file)
+            #     stuff['ids'].append(roles)
+            #     file.close()
+            # with open('muted.json', 'w') as file:
+            #     json.dump(stuff, file)
+            #     file.close()
             
             if minutes>0:
                 if create:
@@ -286,36 +300,53 @@ class moderation(commands.Cog):
             role = get(user.guild.roles, name='Muted')
 
             await user.remove_roles(role)
-            with open('muted.json', 'r') as file:
-                stuff = json.load(file)
-                file.close()
+            # with open('muted.json', 'r') as file:
+            #     stuff = json.load(file)
+            #     file.close()
 
-            rolesd = None
-            for dict in stuff['ids']:
-                if dict['id'] == user.id:
-                    rolesd = dict
-            
+            # rolesd = None
+            # for dict in stuff['ids']:
+            #     if dict['id'] == user.id:
+            #         rolesd = dict
+            cluster = MongoClient(
+                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+            db = cluster.Other
+            collection = db['Muted']
+            id = str(ctx.guild.id)
+            id += str(user.id)
+
+            result = collection.find_one({'_id':id})
+            roles = result['roles']
 
             await user.remove_roles(role)
-            if rolesd != None:
-                for role in rolesd['roles']:
-                    try:
-                        if role == '@everyone':
-                            pass
-                        else:
-                            role = get(ctx.message.guild.roles, name=role)
-                            await user.add_roles(role)
-                    except:
-                        await ctx.send(f'Unable to add role `{role.name}`')
 
-                with open('muted.json', 'r') as file:
-                    stuff = json.load(file)
-                    stuff['ids'].remove(rolesd)
-                    file.close()
+            for role in roles:
+                try:
+                    if role == '@everyone':
+                        pass
+                    else:
+                        role = get(ctx.message.guild.roles, name=role)
+                        await user.add_roles(role)
+                except:
+                    await ctx.send(f'Unable to add role `{role.name}`')
 
-                with open('muted.json', 'w') as file:
-                    json.dump(stuff, file)
-                    file.close()
+                # with open('muted.json', 'r') as file:
+                #     stuff = json.load(file)
+                #     stuff['ids'].remove(rolesd)
+                #     file.close()
+
+                # with open('muted.json', 'w') as file:
+                #     json.dump(stuff, file)
+                #     file.close()
+                cluster = MongoClient(
+                        'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                db = cluster.Other
+
+                try:
+                    collection.delete_many({'_id':id})
+                except Exception as e:
+                    print(e)
+                
             return await ctx.send(f'{user.display_name} has been unmuted')
 
         except BadArgument:
@@ -563,11 +594,14 @@ class moderation(commands.Cog):
         except asyncio.TimeoutError:
             return await ctx.send('Please respond Y or N next time')
         if response.content.lower() == 'y' or response.content.lower() == 'yes':
-            await ctx.send('Type ;unmuteme to unmute')
+            
             muted = get(ctx.guild.roles, name='Muted')
             if muted == None:
                 return await ctx.send('Muted isn\'t a role, ask admins to do ;mute testuserhere to create the role')
+            if muted in ctx.author.roles:
+                return await ctx.send('You are already muted')
             else:
+                await ctx.send('Type ;unmuteme to unmute')
                 list=[]
                 for r in ctx.author.roles:
                     try:
@@ -583,14 +617,27 @@ class moderation(commands.Cog):
                             await ctx.send(f'Unable to remove role `{r.name}`')
 
                 await ctx.author.add_roles(muted)
-                roles = {'id':ctx.author.id, 'roles':list,'self':True}
-                with open('muted.json', 'r') as file:
-                    stuff = json.load(file)
-                    stuff['ids'].append(roles)
-                    file.close()
-                with open('muted.json', 'w') as file:
-                    json.dump(stuff, file)
-                    file.close()
+                cluster = MongoClient(
+                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                db = cluster.Other
+                collection = db['Muted']
+                id = str(ctx.guild.id)
+                id += str(ctx.author.id)
+
+                roles = {'_id':id, 'roles':list,'self':True}
+
+                try:
+                    collection.delete_many({'_id':id})
+                except Exception as e:
+                    print(e)
+                collection.insert_one(roles)
+                # with open('muted.json', 'r') as file:
+                #     stuff = json.load(file)
+                #     stuff['ids'].append(roles)
+                #     file.close()
+                # with open('muted.json', 'w') as file:
+                #     json.dump(stuff, file)
+                #     file.close()
         else:
             return await ctx.send('Not muting')
 
@@ -604,21 +651,44 @@ class moderation(commands.Cog):
             else:
                 if role not in ctx.author.roles:
                     return await ctx.send('You aren\'t already muted')
-                with open('muted.json', 'r') as file:
-                    stuff = json.load(file)
-                    file.close()
-                selfm = False
-                rolesd = None
-                for dict in stuff['ids']:
-                    if dict['id'] == ctx.author.id:
-                        if dict['self'] == True:
-                            rolesd = dict
-                            selfm = True
-                if not selfm:
-                    return await ctx.send('You tried to unmute yourself when a mod muted you... it failed')
+                # with open('muted.json', 'r') as file:
+                #     stuff = json.load(file)
+                #     file.close()
+                # selfm = False
+                # rolesd = None
+                # for dict in stuff['ids']:
+                #     if dict['id'] == ctx.author.id:
+                #         if dict['self'] == True:
+                #             rolesd = dict
+                #             selfm = True
+                cluster = MongoClient(
+                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                db = cluster.Other
+                collection = db['Muted']
+                id = str(ctx.guild.id)
+                id += str(ctx.author.id)
+
+
+                results = collection.find({'_id': id})
+                selfmute = None
+                doc = None
+                for document in results:
+                    mute = document['self']
+                    if mute == True:
+                        if selfmute == None:
+                            selfmute = True
+                        if doc == None:
+                            doc = document
+                    elif mute == False:
+                        selfmute = False
+                        doc = document
+                        break
+                if selfmute == False:
+                    return await ctx.send('You tried to unmute yourself when a mod muted you... it failed (this may be false)')
                 
                 await ctx.author.remove_roles(role)
-                for role in rolesd['roles']:
+                await ctx.send('Unmuting!')
+                for role in doc['roles']:
                     try:
                         if role == '@everyone':
                             pass
@@ -627,13 +697,18 @@ class moderation(commands.Cog):
                             await ctx.author.add_roles(role)
                     except:
                         await ctx.send(f'Unable to add role `{role.name}`')
-                with open('muted.json', 'r') as file:
-                    stuff = json.load(file)
-                    stuff['ids'].remove(rolesd)
-                    file.close()
-                with open('muted.json', 'w') as file:
-                    json.dump(stuff, file)
-                    file.close()
+                try:
+                    collection.delete_many({'_id':id})
+                except Exception as e:
+                    print(e)
+                return 
+                # with open('muted.json', 'r') as file:
+                #     stuff = json.load(file)
+                #     stuff['ids'].remove(rolesd)
+                #     file.close()
+                # with open('muted.json', 'w') as file:
+                #     json.dump(stuff, file)
+                #     file.close()
 
     
     @commands.command(

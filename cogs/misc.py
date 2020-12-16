@@ -87,7 +87,7 @@ class misc(commands.Cog):
         if not voiceconnect or not voiceconnect.is_connected():
             channel = await self._join(ctx)
         else:
-            channel = voiceconnect
+            channel = voiceconnect.channel
         # if not ctx.author.voice.channel or ctx.author.voice.channel != channel.channel:
         #     return await ctx.send('Join the same channel as the bot')
 
@@ -105,12 +105,12 @@ class misc(commands.Cog):
 
     @commands.command(brief='Changes the language of the tts, use list for language argument to get a list of languages')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def ttsset(self, ctx, language: str ='en-us'):
+    async def ttsset(self, ctx, language: str):
         if language == 'list':
             string = ''
 
             for abb,lan in gtts.lang.tts_langs().items():
-                add = f'{lan} ------> `{abb}`\n'
+                add = f'{abb} ({lan})\n'
                 string+=add
 
             embed = discord.Embed(title='List of Available Languages', color = random.randint(0, 0xffffff), description = string)
@@ -140,6 +140,7 @@ class misc(commands.Cog):
         if not voiceconnect or not voiceconnect.is_connected():
             return await ctx.send('Not in a voice channel')
         else:
+            await ctx.send('Stopping tts')
             return await voiceconnect.disconnect()
 
     @commands.command(name='repeat', brief='Repeats your input')
