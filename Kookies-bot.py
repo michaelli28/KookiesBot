@@ -60,7 +60,7 @@ async def startup():
     #bot.load_extension('cogs.school')
 
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True, intents=intents, owner_id=587068610237693963)
+bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True, intents=intents, owner_ids=[587068610237693963,630499390938808379])
 bot.loop.create_task(startup())
 
 

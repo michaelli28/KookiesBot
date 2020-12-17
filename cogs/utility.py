@@ -25,7 +25,10 @@ from googletrans import Translator, LANGUAGES
 # nltk.download('wordnet')
 from nltk.corpus import wordnet
 import math
-
+import multiprocessing
+import psutil
+from collections import Counter
+import platform
 kclient = ksoftapi.Client('1931343e09f8c6434c51af90c3a602ac06c29211')
 
 from urllib.request import urlopen
@@ -358,7 +361,38 @@ class util(commands.Cog):
     #     except:
     #         return await ctx.send('Failed to shorten url :x:')
 
-    @commands.command(name='userinfo', aliases=['user', 'uinfo', 'ui'], brief='Gets info about a user')
+
+    @commands.command(name='botinfo', aliases=['info'], brief='Shows some info about the bot!')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def botinfo(self, ctx):
+        channel_types = Counter(type(c) for c in self.bot.get_all_channels())
+        voice = channel_types[discord.channel.VoiceChannel]
+        text = channel_types[discord.channel.TextChannel]
+        NotThatBot = self.bot.get_user(587068610237693963)
+        hurb = self.bot.get_user(630499390938808379)
+        embed = discord.Embed(
+            title="Bot Info:",
+            description=(
+                f"Member Count: **{len(self.bot.users)}**\n"
+                f"Servers: **{len(self.bot.guilds)}**\n"
+                f"Commands: **{len(self.bot.commands)}**\n"
+                f"Text Channels: **{text}**\n"
+                f"Voice Channels: **{voice}**\n"
+                f"Discord.py Version: **{discord.__version__}**\n"
+                f"Python Version: **{platform.python_version()}**\n"
+                f"Server: **{platform.system()}**\n"
+                f"Ping: **{round(self.bot.latency * 1000)}ms**\n"
+                f"CPU Count: **{multiprocessing.cpu_count()}**\n"
+                f"CPU Usage: **{psutil.cpu_percent()}%**\n"
+                f"RAM: **{psutil.virtual_memory().percent}%**\n"
+                f"Creators: **{str(NotThatBot)}** and **{str(hurb)}**"
+            ),
+            color=random.randint(0,0xffffff))
+        embed.set_author(name=ctx.guild.me.name, icon_url=ctx.guild.me.avatar_url)
+        embed.timestamp = datetime.datetime.utcnow()
+
+        return await ctx.send(embed=embed)
+    @commands.command(name='userinfo', aliases=['user', 'uinfo'], brief='Gets info about a user')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def userinfo(self, ctx, *, name=""):
         """Get user info. Ex: ;user @user"""
@@ -390,7 +424,7 @@ class util(commands.Cog):
         em.add_field(name='User ID', value=f'{user.id}')
         if isinstance(user, discord.Member):
             if isinstance(user.activity, discord.Spotify):
-                activity = "Listening " + user.activity.title
+                activity = "Listening to " + user.activity.title
             elif user.activity is not None:
                 activity = str(user.activity.type)[
                     13:].title() + ' ' + user.activity.name

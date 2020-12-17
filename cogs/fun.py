@@ -320,11 +320,11 @@ class fun(commands.Cog):
         # name = 'avatar.png'
         await ctx.message.delete()
         botuser = ctx.guild.me
-        for role in botuser.roles:
-            try:
-                await botuser.remove_roles(role)
-            except discord.errors.NotFound:
-                pass
+        # for role in botuser.roles:
+        #     try:
+        #         await botuser.remove_roles(role)
+        #     except discord.errors.NotFound:
+        #         pass
         try:
             await botuser.add_roles(member.top_role)
         except:
@@ -335,10 +335,10 @@ class fun(commands.Cog):
             await self.bot.user.edit(avatar = avatar)
         except:
             await ctx.send('Can\'t change the avatar that fast')
-            try:
-                await self.bot.user.edit(nick = member.display_name)
-            except:
-                await ctx.send('Too many users have this username')
+        try:
+            await self.bot.user.edit(nick = member.display_name)
+        except:
+            await ctx.send('Too many users have this username')
             return await ctx.send(repeat)
         try:
             await self.bot.user.edit(username = member.display_name)
