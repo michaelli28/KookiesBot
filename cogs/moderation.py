@@ -316,9 +316,10 @@ class moderation(commands.Cog):
             id += str(user.id)
 
             result = collection.find_one({'_id':id})
-            roles = result['roles']
-
-            await user.remove_roles(role)
+            try:
+                roles = result['roles']
+            except:
+                return
 
             for role in roles:
                 try:
