@@ -632,7 +632,7 @@ class music(commands.Cog):
         cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
         db = cluster.Other
         collection = db['Playlists']
-        help_message = 'Play a saved playlist with ;playlist play playlist_name\nSave a playlist by queuing songs and using ;playlist add playlist_name\nShow your playlists with ;playlist show\nShow the contents of a playlist with ;playlist show playlist_name\nDelete saved playlists with ;playlist remove playlist_name (Note: Playlist names are case sensitive)'
+        help_message = '`;playlist play name`\n\n`;playlist add playlist_name`\n\n`;playlist show`\n\n`;playlist show name`\n\n`;playlist remove name`(Note: Playlist names are case sensitive)'
         if operation.lower() in ['show','list']:
             embed = discord.Embed(title=f'Playlists for {ctx.author.display_name}', color=random.randint(0,0xffffff))
             embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
@@ -647,9 +647,9 @@ class music(commands.Cog):
                 if numsong > 5:
                     numsong = 5
                 while num < numsong:
-                    five += playlist['songs'][num]['title']
+                    five += playlist['songs'][num]['info']['title']
                     five += '\n'
-                    five += playlist['songs'][num]['uri']
+                    five += playlist['songs'][num]['info']['uri']
                     five += '\n\n'
                     num += 1
                 embed.add_field(name=f"{playlist['name']}",value=five)
@@ -662,9 +662,9 @@ class music(commands.Cog):
                 songs = ''
                 for song in playlist['songs']:
 
-                    songs += song['title']
+                    songs += song['info']['title']
                     songs += '\n'
-                    songs += song['uri']
+                    songs += song['info']['uri']
                     songs += '\n\n'
                 embed = discord.Embed(title=f'Playlist `{name}` for {ctx.author.display_name}', description = songs, color=random.randint(0,0xffffff))
                 embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
@@ -704,8 +704,25 @@ class music(commands.Cog):
         elif operation.lower() in ['save', 'add']:
             player = self.bot.lavalink.player_manager.get(ctx.guild.id)
             songs = []
+
             if len(player.queue)==0:
                 return await ctx.send('Queue is empty and nothing is playing, so there is nothing to save! Add songs to the queue with ;play')
+            playlist = collection.find_one({'_id':ctx.author.id,'name':name})
+            if playlist != None:
+                await ctx.send(f'There is already a playlist that you have saved named **{name}**, type yes to override the saved playlist or type no to stop')
+                
+                def check(m):
+                    return m.author.id == ctx.author.id
+                try:
+                    response = await self.bot.wait_for('message', check=check, timeout=120)
+                except asyncio.TimeoutError:
+                    return await ctx.send('Timed out after 120 seconds, cancelling')
+                if response.content.lower() in ['y','yes']:
+                    await ctx.send('Overriding the old playlist')
+                else:
+                    return await ctx.send('Cancelling the override')
+
+
             if player.current:
                 song = player.current
                 newsong = {'info':{}}
@@ -731,6 +748,7 @@ class music(commands.Cog):
                 newsong['info']['uri'] = song['uri']
                 newsong['requester'] = song['requester']
                 songs.append(newsong)
+            
             collection.insert_one({'_id':ctx.author.id,'songs':songs,'name':name})
             return await ctx.send(f'Saved playlist {name} with {len(player.queue)+1} songs')
 
@@ -850,8 +868,7 @@ class music(commands.Cog):
                 dur = lavalink.format_time(
                     player.current.duration).lstrip('00:')
             song = f'[{player.current.title}]({player.current.uri})'
-            em = discord.Embed(colour=discord.Colour(
-                0x59FFC8), description=song)
+            em = discord.Embed(colour=discord.Color(random.randint(0,0xffffff)), description=song)
             em.set_author(name="Now Playing 🎵",
                           icon_url="https://i.ibb.co/DGsmTvh/star.gif")
             em.set_thumbnail(
@@ -862,8 +879,9 @@ class music(commands.Cog):
             user = ctx.author
             await user.send(embed=em)
             await ctx.send(f"Current song has been sent to you {ctx.author.mention} :floppy_disk:")
+            return
         else:
-            await ctx.send('Not playing anything :mute:')
+            return await ctx.send('Not playing anything :mute:')
 
     @commands.command(name='queue', aliases=['q'], brief='Checks the queue for songs')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
