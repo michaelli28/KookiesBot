@@ -873,7 +873,6 @@ class music(commands.Cog):
             
             if not player.queue:
                 return await ctx.send('Queue empty! :cd:')
-            for song in player.queue:
             menu1 = menu(source=HelpMenu(ctx, player.queue))
 
             return await menu1.start(ctx)
