@@ -874,7 +874,6 @@ class music(commands.Cog):
             if not player.queue:
                 return await ctx.send('Queue empty! :cd:')
             for song in player.queue:
-                print(song)
             menu1 = menu(source=HelpMenu(ctx, player.queue))
 
             return await menu1.start(ctx)
@@ -1025,7 +1024,6 @@ class music(commands.Cog):
             await ctx.send(f'No lyrics found for `{query}`')
         else:
             lyrics = results[0].lyrics
-            print(lyrics)
             result = results[0]
             embed = discord.Embed(title=f'{result.name} - {result.artist}',
                                   color=random.randint(0,0xffffff), description=lyrics[:2048])
@@ -1051,7 +1049,6 @@ class music(commands.Cog):
     async def equalizer(self, ctx, *args):
         """Equalizer"""
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-        print(args)
         if len(args) == 0:
             await ctx.send('Note: specify `band gain` or `preset` to change frequencies :control_knobs:')
         elif len(args) == 1:
