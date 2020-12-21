@@ -708,7 +708,7 @@ class music(commands.Cog):
                 return await ctx.send('Queue is empty and nothing is playing, so there is nothing to save! Add songs to the queue with ;play')
             if player.current:
                 song = player.current
-                newsong = {}
+                newsong = {'info':{}}
                 newsong['track'] = song['track']
                 newsong['info']['identifier'] = song['identifier']
                 newsong['info']['isSeekable'] = song['is_seekable']
@@ -720,7 +720,7 @@ class music(commands.Cog):
                 newsong['requester'] = song['requester']
                 songs.append(newsong)
             for song in player.queue:
-                newsong = {}
+                newsong = {'info':{}}
                 newsong['track'] = song['track']
                 newsong['info']['identifier'] = song['identifier']
                 newsong['info']['isSeekable'] = song['is_seekable']
