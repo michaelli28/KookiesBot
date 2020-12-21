@@ -75,6 +75,44 @@ class HelpMenu(ListPageSource):
 
         return await self.write_page(menu, fields)
 
+
+
+class Playlist(ListPageSource):
+    def __init__(self, ctx, data, saver, playlistname):
+        self.ctx = ctx
+        self.place = 1
+        self.saver = saver
+        self.playlistname = playlistname
+        super().__init__(data, per_page=10)
+
+    async def write_page(self, menu, fields=[]):
+        offset = (menu.current_page*self.per_page) + 1
+        len_data = len(self.entries)
+
+        embed = Embed(
+            title=f"Playlist `{self.playlistname}` for {self.saver}", color=random.randint(0, 0xffffff))
+        embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
+        embed.set_footer(
+            text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} songs")
+        timestamp = datetime.datetime.utcnow()
+        embed.timestamp = timestamp
+        for name, value in fields:
+            embed.add_field(name=name, value=value, inline=False)
+
+        return embed
+
+    async def format_page(self, menu, entries):
+        fields = []
+        n = (menu.current_page)*10+1
+        for entry in entries:
+            fields.append((f'{n})', f"[{entry['info']['title']}]({entry['info']['uri']})"))
+
+            n+=1
+        self.place += 1
+
+        return await self.write_page(menu, fields)
+
+
 class music(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -626,140 +664,147 @@ class music(commands.Cog):
                     return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
         except lavalink.exceptions.NodeException:
             return await ctx.send('Node not found, contact owner for support')
-    @commands.command(name='playlist', brief='Play a saved playlist with ;playlist play playlist_name\nSave a playlist by queuing songs and using ;playlist add playlist_name\nShow your playlists with ;playlist show\nShow the contents of a playlist with ;playlist show playlist_name\nDelete saved playlists with ;playlist remove playlist_name (Note: Playlist names are case sensitive)')
+
+    @commands.command(name='playlist', brief='Play a saved playlist with ;playlist play playlist_name\nSave a playlist by queuing songs and using ;playlist add playlist_name\nShow your playlists with ;playlist show\nShow the contents of a playlist with ;playlist show playlist_name\nDelete saved playlists with ;playlist remove playlist_name\n(Note: Playlist names are case sensitive)')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def playlist(self, ctx, operation, *, name=None):
-        cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
-        db = cluster.Other
-        collection = db['Playlists']
-        help_message = '`;playlist play name`\n\n`;playlist add playlist_name`\n\n`;playlist show`\n\n`;playlist show name`\n\n`;playlist remove name`(Note: Playlist names are case sensitive)'
-        if operation.lower() in ['show','list']:
-            embed = discord.Embed(title=f'Playlists for {ctx.author.display_name}', color=random.randint(0,0xffffff))
-            embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-            embed.timestamp = datetime.datetime.utcnow()
-            if name == None:
-                playlist = collection.find_one({'_id':ctx.author.id})
-                if playlist == None:
-                    return await ctx.send('You have no saved playlists')
-                five = ''
-                num = 0
-                numsong = len(playlist['songs'])
-                if numsong > 5:
-                    numsong = 5
-                while num < numsong:
-                    five += playlist['songs'][num]['info']['title']
-                    five += '\n'
-                    five += playlist['songs'][num]['info']['uri']
-                    five += '\n\n'
-                    num += 1
-                embed.add_field(name=f"{playlist['name']}",value=five)
-                return await ctx.send(embed=embed)
-            else:
+        async with ctx.typing():
+            cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+            db = cluster.Other
+            collection = db['Playlists']
+            help_message = 'Play a saved playlist with ;playlist play playlist_name\nSave a playlist by queuing songs and using ;playlist add playlist_name\nShow your playlists with ;playlist show\nShow the contents of a playlist with ;playlist show playlist_name\nDelete saved playlists with ;playlist remove playlist_name\n(Note: Playlist names are case sensitive)'
+            if operation.lower() in ['show','list']:
+                embed = discord.Embed(title=f'Playlists for {ctx.author.display_name}', color=random.randint(0,0xffffff))
+                embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                embed.timestamp = datetime.datetime.utcnow()
+                if name == None:
+                    playlist = collection.find_one({'_id':ctx.author.id})
+                    if playlist == None:
+                        return await ctx.send('You have no saved playlists')
+                    ten = ''
+                    num = 0
+                    numsong = len(playlist['songs'])
+                    if numsong > 10:
+                        numsong = 10
+                    while num < numsong:
+                        ten += playlist['songs'][num]['info']['title']
+                        ten += '\n'
+                        ten += playlist['songs'][num]['info']['uri']
+                        ten += '\n\n'
+                        num += 1
+                    ten += f"And {len(playlist['songs'])-numsong} more songs..."
+                    embed.add_field(name=f"{playlist['name']}",value=ten)
+                    return await ctx.send(embed=embed)
+                else:
+                    
+                    playlist = collection.find_one({'_id':ctx.author.id,'name':name})
+                    if playlist == None:
+                        return await ctx.send(f'You have no playlists with the name `{name}`')
+                    # songs = ''
+                    # for song in playlist['songs']:
+                    #     songs += song['info']['title']
+                    #     songs += '\n'
+                    #     songs += song['info']['uri']
+                    #     songs += '\n\n'
                 
+                    menu1 = menu(source=Playlist(ctx, playlist['songs'],ctx.author.display_name,name))
+
+                    return await menu1.start(ctx)
+
+                    # embed = discord.Embed(title=f'Playlist `{name}` for {ctx.author.display_name}', description = songs, color=random.randint(0,0xffffff))
+                    # embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                    # embed.timestamp = datetime.datetime.utcnow()
+                    # return await ctx.send(embed=embed)
+
+            if name == None:
+                return await ctx.send(help_message)
+            if operation.lower() in ['play','start']:
+                player = self.bot.lavalink.player_manager.get(ctx.guild.id)
                 playlist = collection.find_one({'_id':ctx.author.id,'name':name})
                 if playlist == None:
                     return await ctx.send(f'You have no playlists with the name `{name}`')
-                songs = ''
                 for song in playlist['songs']:
+                    player.add(requester=song['requester'], track=song)
+                em = discord.Embed(color = random.randint(0,0xffffff))
+                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                em.timestamp = datetime.datetime.utcnow()
+                em.title = 'Playlist Enqueued!'
+                em.description = f"{playlist['name']} - {len(playlist['songs'])} tracks"
+                msg = await ctx.send(embed=em)
+                await player.set_volume(self.volume)
 
-                    songs += song['info']['title']
-                    songs += '\n'
-                    songs += song['info']['uri']
-                    songs += '\n\n'
-                embed = discord.Embed(title=f'Playlist `{name}` for {ctx.author.display_name}', description = songs, color=random.randint(0,0xffffff))
-                embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-                embed.timestamp = datetime.datetime.utcnow()
-                return await ctx.send(embed=embed)
+                if player.fetch(ctx.guild.id) != None:
+                    player.delete(ctx.guild.id)
+                player.store(ctx.guild.id, ctx.message.channel.id)
+                await ctx.send(f'Sending now playing messages in **{ctx.channel.name}**')
 
-        if name == None:
-            return await ctx.send(help_message)
-        if operation.lower() in ['play','start']:
-            player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-            playlist = collection.find_one({'_id':ctx.author.id,'name':name})
-            if playlist == None:
-                return await ctx.send(f'You have no playlists with the name `{name}`')
-            for song in playlist['songs']:
-                player.add(requester=song['requester'], track=song)
-            em = discord.Embed(color = random.randint(0,0xffffff))
-            em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-            em.timestamp = datetime.datetime.utcnow()
-            em.title = 'Playlist Enqueued!'
-            em.description = f"{playlist['name']} - {len(playlist['songs'])} tracks"
-            msg = await ctx.send(embed=em)
-            await player.set_volume(self.volume)
+                if not player.is_playing:
+                    await player.play()
+                    await player.reset_equalizer()
+                    await msg.delete(delay=1)
+                    # await self.now(ctx)
+                    return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                return
 
-            if player.fetch(ctx.message.guild.id) != None:
-                player.delete(ctx.message.guild.id)
-            player.store(ctx.message.guild.id, ctx.message.channel.id)
-            await ctx.send(f'Sending now playing messages in **{ctx.channel.name}**')
+            elif operation.lower() in ['save', 'add']:
+                player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+                songs = []
 
-            if not player.is_playing:
-                await player.play()
-                await player.reset_equalizer()
-                await msg.delete(delay=1)
-                # await self.now(ctx)
-                return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
-            return
+                if len(player.queue)==0:
+                    return await ctx.send('Queue is empty and nothing is playing, so there is nothing to save! Add songs to the queue with ;play')
+                playlist = collection.find_one({'_id':ctx.author.id,'name':name})
+                if playlist != None:
+                    await ctx.send(f'There is already a playlist that you have saved named **{name}**, type yes to override the saved playlist or type no to stop')
+                    
+                    def check(m):
+                        return m.author.id == ctx.author.id
+                    try:
+                        response = await self.bot.wait_for('message', check=check, timeout=120)
+                    except asyncio.TimeoutError:
+                        return await ctx.send('Timed out after 120 seconds, cancelling')
+                    if response.content.lower() in ['y','yes']:
+                        await ctx.send('Overriding the old playlist')
+                    else:
+                        return await ctx.send('Cancelling the override')
 
-        elif operation.lower() in ['save', 'add']:
-            player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-            songs = []
 
-            if len(player.queue)==0:
-                return await ctx.send('Queue is empty and nothing is playing, so there is nothing to save! Add songs to the queue with ;play')
-            playlist = collection.find_one({'_id':ctx.author.id,'name':name})
-            if playlist != None:
-                await ctx.send(f'There is already a playlist that you have saved named **{name}**, type yes to override the saved playlist or type no to stop')
+                if player.current:
+                    song = player.current
+                    newsong = {'info':{}}
+                    newsong['track'] = song['track']
+                    newsong['info']['identifier'] = song['identifier']
+                    newsong['info']['isSeekable'] = song['is_seekable']
+                    newsong['info']['author'] = song['author']
+                    newsong['info']['length'] = song['duration']
+                    newsong['info']['isStream'] = song['stream']
+                    newsong['info']['title'] = song['title']
+                    newsong['info']['uri'] = song['uri']
+                    newsong['requester'] = song['requester']
+                    songs.append(newsong)
+                for song in player.queue:
+                    newsong = {'info':{}}
+                    newsong['track'] = song['track']
+                    newsong['info']['identifier'] = song['identifier']
+                    newsong['info']['isSeekable'] = song['is_seekable']
+                    newsong['info']['author'] = song['author']
+                    newsong['info']['length'] = song['duration']
+                    newsong['info']['isStream'] = song['stream']
+                    newsong['info']['title'] = song['title']
+                    newsong['info']['uri'] = song['uri']
+                    newsong['requester'] = song['requester']
+                    songs.append(newsong)
                 
-                def check(m):
-                    return m.author.id == ctx.author.id
-                try:
-                    response = await self.bot.wait_for('message', check=check, timeout=120)
-                except asyncio.TimeoutError:
-                    return await ctx.send('Timed out after 120 seconds, cancelling')
-                if response.content.lower() in ['y','yes']:
-                    await ctx.send('Overriding the old playlist')
+                collection.insert_one({'_id':ctx.author.id,'songs':songs,'name':name})
+                return await ctx.send(f'Saved playlist {name} with {len(player.queue)+1} songs')
+
+            elif operation.lower() in ['remove','delete']:
+                playlist = collection.find_one_and_delete({'_id':ctx.author.id,'name':name})
+                if playlist == None:
+                    return await ctx.send(f'You have not saved a playlist named **{name}**')
                 else:
-                    return await ctx.send('Cancelling the override')
-
-
-            if player.current:
-                song = player.current
-                newsong = {'info':{}}
-                newsong['track'] = song['track']
-                newsong['info']['identifier'] = song['identifier']
-                newsong['info']['isSeekable'] = song['is_seekable']
-                newsong['info']['author'] = song['author']
-                newsong['info']['length'] = song['duration']
-                newsong['info']['isStream'] = song['stream']
-                newsong['info']['title'] = song['title']
-                newsong['info']['uri'] = song['uri']
-                newsong['requester'] = song['requester']
-                songs.append(newsong)
-            for song in player.queue:
-                newsong = {'info':{}}
-                newsong['track'] = song['track']
-                newsong['info']['identifier'] = song['identifier']
-                newsong['info']['isSeekable'] = song['is_seekable']
-                newsong['info']['author'] = song['author']
-                newsong['info']['length'] = song['duration']
-                newsong['info']['isStream'] = song['stream']
-                newsong['info']['title'] = song['title']
-                newsong['info']['uri'] = song['uri']
-                newsong['requester'] = song['requester']
-                songs.append(newsong)
-            
-            collection.insert_one({'_id':ctx.author.id,'songs':songs,'name':name})
-            return await ctx.send(f'Saved playlist {name} with {len(player.queue)+1} songs')
-
-        elif operation.lower() in ['remove','delete']:
-            playlist = collection.find_one_and_delete({'_id':ctx.author.id,'name':name})
-            if playlist == None:
-                return await ctx.send(f'You have not saved a playlist named **{name}**')
+                    return await ctx.send(f'Deleted playlist **{name}**')
             else:
-                return await ctx.send(f'Deleted playlist **{name}**')
-        else:
-            return await ctx.send(help_message)
+                return await ctx.send(help_message)
 
     @commands.command(name='seek', brief='Seeks to a point in the song (positive seconds moves the song forward that much while negative seconds moves the song backward that much')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
