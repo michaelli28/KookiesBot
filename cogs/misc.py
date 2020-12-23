@@ -59,7 +59,7 @@ class misc(commands.Cog):
         self.message = None
         self.ctx = None
         self.lang = 'en-us'
-
+        self.channels = {}
     @commands.command(aliases=['botinvite'], brief='Sends an invite link')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def invite(self, ctx):
@@ -86,8 +86,10 @@ class misc(commands.Cog):
         voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
         if not voiceconnect or not voiceconnect.is_connected():
             channel = await self._join(ctx)
+            self.channels[ctx.guild.id] = channel
         else:
-            channel = voiceconnect.channel
+            channel = self.channels[ctx.guild.id]
+            
         # if not ctx.author.voice.channel or ctx.author.voice.channel != channel.channel:
         #     return await ctx.send('Join the same channel as the bot')
 
@@ -141,6 +143,10 @@ class misc(commands.Cog):
             return await ctx.send('Not in a voice channel')
         else:
             await ctx.send('Stopping tts')
+            try:
+                del self.channels[ctx.guild.id]
+            except:
+                pass
             return await voiceconnect.disconnect()
 
     @commands.command(name='repeat', brief='Repeats your input')
