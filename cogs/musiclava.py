@@ -43,9 +43,10 @@ class menu(MenuPages):
 
 
 class HelpMenu(ListPageSource):
-    def __init__(self, ctx, data):
+    def __init__(self, ctx, bot, data):
         self.ctx = ctx
         self.place = 1
+        self.bot = bot
         super().__init__(data, per_page=10)
 
     async def write_page(self, menu, fields=[]):
@@ -59,6 +60,8 @@ class HelpMenu(ListPageSource):
             text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} songs")
         timestamp = datetime.datetime.utcnow()
         embed.timestamp = timestamp
+        player = self.bot.lavalink.player_manager.get(self.ctx.guild.id)
+        embed.add_field(name='Now playing', value=f'[{player.current.title}]({player.current.uri})')
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
 
@@ -96,6 +99,7 @@ class Playlist(ListPageSource):
             text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} songs")
         timestamp = datetime.datetime.utcnow()
         embed.timestamp = timestamp
+        
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
 
@@ -141,75 +145,75 @@ class music(commands.Cog):
         """ Cog unload handler. This removes any event hooks that were registered. """
         self.bot.lavalink._event_hooks.clear()
 
-    # async def cog_command_error(self, ctx, error):
-    #     if isinstance(error, commands.CommandInvokeError):
-    #         return await ctx.send(error.original)
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandInvokeError):
+            return await ctx.send(error.original)
 
-    #     error = getattr(error, 'original', error)
-    #     if isinstance(error, commands.CommandNotFound):
-    #         if ctx.message.content.startswith(';)'):
-    #             return
-    #         await ctx.send(f'`{ctx.message.content}` is not a valid command')
+        error = getattr(error, 'original', error)
+        if isinstance(error, commands.CommandNotFound):
+            if ctx.message.content.startswith(';)'):
+                return
+            await ctx.send(f'`{ctx.message.content}` is not a valid command')
 
-    #     elif isinstance(error, commands.BotMissingPermissions):
-    #         missing = [perm.replace('_', ' ').replace(
-    #             'guild', 'server').title() for perm in error.missing_perms]
-    #         if len(missing) > 2:
-    #             fmt = '{}, and {}'.format(
-    #                 "**, **".join(missing[:-1]), missing[-1])
-    #         else:
-    #             fmt = ' and '.join(missing)
-    #         _message = 'I need the **{}** permission(s) to run this command.'.format(
-    #             fmt)
-    #         await ctx.send(_message)
-    #         return
+        elif isinstance(error, commands.BotMissingPermissions):
+            missing = [perm.replace('_', ' ').replace(
+                'guild', 'server').title() for perm in error.missing_perms]
+            if len(missing) > 2:
+                fmt = '{}, and {}'.format(
+                    "**, **".join(missing[:-1]), missing[-1])
+            else:
+                fmt = ' and '.join(missing)
+            _message = 'I need the **{}** permission(s) to run this command.'.format(
+                fmt)
+            await ctx.send(_message)
+            return
 
-    #     elif isinstance(error, discord.errors.Forbidden):
-    #         ctx.command.reset_cooldown(ctx)
-    #         return await ctx.send('I don\'t have permissions to do that')
-    #     elif isinstance(error, commands.CommandOnCooldown):
-    #         try:
-    #             await ctx.message.delete()
-    #         except:
-    #             pass
-    #         await ctx.send('{}, That command is on cooldown! Try again in {:.2f}s!'.format(ctx.author.mention, error.retry_after))
+        elif isinstance(error, discord.errors.Forbidden):
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send('I don\'t have permissions to do that')
+        elif isinstance(error, commands.CommandOnCooldown):
+            try:
+                await ctx.message.delete()
+            except:
+                pass
+            await ctx.send('{}, That command is on cooldown! Try again in {:.2f}s!'.format(ctx.author.mention, error.retry_after))
 
-    #     elif isinstance(error, commands.NotOwner):
-    #         try:
-    #             await ctx.message.delete()
-    #         except:
-    #             pass
-    #         return await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))
+        elif isinstance(error, commands.NotOwner):
+            try:
+                await ctx.message.delete()
+            except:
+                pass
+            return await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))
             
-    #     elif isinstance(error, commands.MissingPermissions):
-    #         ctx.command.reset_cooldown(ctx)
-    #         missing = [perm.replace('_', ' ').replace(
-    #             'guild', 'server').title() for perm in error.missing_perms]
-    #         if len(missing) > 2:
-    #             fmt = '{}, and {}'.format(
-    #                 "**, **".join(missing[:-1]), missing[-1])
-    #         else:
-    #             fmt = ' and '.join(missing)
-    #         _message = 'You need the **{}** permission(s) to use this command.'.format(
-    #             fmt)
-    #         return await ctx.send(_message)
+        elif isinstance(error, commands.MissingPermissions):
+            ctx.command.reset_cooldown(ctx)
+            missing = [perm.replace('_', ' ').replace(
+                'guild', 'server').title() for perm in error.missing_perms]
+            if len(missing) > 2:
+                fmt = '{}, and {}'.format(
+                    "**, **".join(missing[:-1]), missing[-1])
+            else:
+                fmt = ' and '.join(missing)
+            _message = 'You need the **{}** permission(s) to use this command.'.format(
+                fmt)
+            return await ctx.send(_message)
 
-    #     elif isinstance(error, commands.UserInputError):
-    #         ctx.command.reset_cooldown(ctx) 
-    #         await ctx.send("Invalid input")
+        elif isinstance(error, commands.UserInputError):
+            ctx.command.reset_cooldown(ctx) 
+            await ctx.send("Invalid input")
 
-    #     elif isinstance(error, commands.NoPrivateMessage):
-    #         try:
-    #             await ctx.author.send('This command cannot be used in direct messages.')
-    #         except discord.Forbidden:
-    #             pass
-    #         return
+        elif isinstance(error, commands.NoPrivateMessage):
+            try:
+                await ctx.author.send('This command cannot be used in direct messages.')
+            except discord.Forbidden:
+                pass
+            return
             
-    #     print('Ignoring exception in command {}:'.format(
-    #         ctx.command), file=sys.stderr)
+        print('Ignoring exception in command {}:'.format(
+            ctx.command), file=sys.stderr)
 
-    #     traceback.print_exception(
-    #         type(error), error, error.__traceback__, file=sys.stderr)
+        traceback.print_exception(
+            type(error), error, error.__traceback__, file=sys.stderr)
 
     async def track_hook(self, event):
         if isinstance(event, lavalink.events.QueueEndEvent):
@@ -674,30 +678,36 @@ class music(commands.Cog):
             collection = db['Playlists']
             help_message = 'Play a saved playlist with ;playlist play playlist_name\nSave a playlist by queuing songs and using ;playlist add playlist_name\nShow your playlists with ;playlist show\nShow the contents of a playlist with ;playlist show playlist_name\nDelete saved playlists with ;playlist remove playlist_name\n(Note: Playlist names are case sensitive)'
             if operation.lower() in ['show','list']:
-                embed = discord.Embed(title=f'Playlists for {ctx.author.display_name}', color=random.randint(0,0xffffff))
-                embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
-                embed.timestamp = datetime.datetime.utcnow()
+ 
                 if name == None:
-                    playlist = collection.find_one({'_id':ctx.author.id})
-                    if playlist == None:
+                    playlists = collection.find({'id':ctx.author.id})
+                    if playlists == None:
                         return await ctx.send('You have no saved playlists')
-                    ten = ''
-                    num = 0
-                    numsong = len(playlist['songs'])
-                    if numsong > 10:
-                        numsong = 10
-                    while num < numsong:
-                        ten += playlist['songs'][num]['info']['title']
-                        ten += '\n'
-                        ten += playlist['songs'][num]['info']['uri']
-                        ten += '\n\n'
-                        num += 1
-                    ten += f"And {len(playlist['songs'])-numsong} more songs..."
-                    embed.add_field(name=f"{playlist['name']}",value=ten)
+                    string = '**'
+                    for playlist in playlists:
+                        # ten = ''
+                        # num = 0
+                        # numsong = len(playlist['songs'])
+                        # if numsong > 10:
+                        #     numsong = 10
+                        # while num < numsong:
+                        #     ten += playlist['songs'][num]['info']['title']
+                        #     ten += '\n'
+                        #     ten += playlist['songs'][num]['info']['uri']
+                        #     ten += '\n\n'
+                        #     num += 1
+                        # ten += f"And {len(playlist['songs'])-numsong} more song(s)..."
+                        # embed.add_field(name=f"{playlist['name']}",value=ten)
+                        string += str(playlist['name'])
+                        string += '\n'
+                    string += '**'
+                    embed = discord.Embed(title=f'Playlists for {ctx.author.display_name}', color=random.randint(0,0xffffff), description=string)
+                    embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                    embed.timestamp = datetime.datetime.utcnow()
                     return await ctx.send(embed=embed)
                 else:
                     
-                    playlist = collection.find_one({'_id':ctx.author.id,'name':name})
+                    playlist = collection.find_one({'id':ctx.author.id,'name':name})
                     if playlist == None:
                         return await ctx.send(f'You have no playlists with the name `{name}`')
                     # songs = ''
@@ -720,7 +730,7 @@ class music(commands.Cog):
                 return await ctx.send(help_message)
             if operation.lower() in ['play','start']:
                 player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-                playlist = collection.find_one({'_id':ctx.author.id,'name':name})
+                playlist = collection.find_one({'id':ctx.author.id,'name':name})
                 if playlist == None:
                     return await ctx.send(f'You have no playlists with the name `{name}`')
                 for song in playlist['songs']:
@@ -752,7 +762,7 @@ class music(commands.Cog):
 
                 if len(player.queue)==0:
                     return await ctx.send('Queue is empty and nothing is playing, so there is nothing to save! Add songs to the queue with ;play')
-                playlist = collection.find_one({'_id':ctx.author.id,'name':name})
+                playlist = collection.find_one({'id':ctx.author.id,'name':name})
                 if playlist != None:
                     await ctx.send(f'There is already a playlist that you have saved named **{name}**, type yes to override the saved playlist or type no to stop')
                     
@@ -794,11 +804,11 @@ class music(commands.Cog):
                     newsong['requester'] = song['requester']
                     songs.append(newsong)
                 
-                collection.insert_one({'_id':ctx.author.id,'songs':songs,'name':name})
-                return await ctx.send(f'Saved playlist {name} with {len(player.queue)+1} songs')
+                collection.insert_one({'id':ctx.author.id,'songs':songs,'name':name})
+                return await ctx.send(f'Saved playlist **{name}** with **{len(player.queue)+1}** songs')
 
             elif operation.lower() in ['remove','delete']:
-                playlist = collection.find_one_and_delete({'_id':ctx.author.id,'name':name})
+                playlist = collection.find_one_and_delete({'id':ctx.author.id,'name':name})
                 if playlist == None:
                     return await ctx.send(f'You have not saved a playlist named **{name}**')
                 else:
@@ -856,7 +866,7 @@ class music(commands.Cog):
         await player.skip()
         return
 
-    @commands.command(name='now', aliases=['current', 'playing', 'np'], brief='Shows the song that is playing')
+    @commands.command(name='nowplaying', aliases=['current', 'playing', 'np'], brief='Shows the song that is playing')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def now(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
@@ -936,7 +946,7 @@ class music(commands.Cog):
             
             if not player.queue:
                 return await ctx.send('Queue empty! :cd:')
-            menu1 = menu(source=HelpMenu(ctx, player.queue))
+            menu1 = menu(source=HelpMenu(ctx, self.bot, player.queue))
 
             return await menu1.start(ctx)
             # items_per_page = 10
