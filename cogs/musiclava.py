@@ -96,7 +96,7 @@ class Playlist(ListPageSource):
         embed = Embed(
             title=f"Playlist `{self.playlistname}` for {self.saver}", color=random.randint(0, 0xffffff))
         # embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
-        
+
         embed.set_footer(
             text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} songs")
 
@@ -416,6 +416,7 @@ class music(commands.Cog):
 
                     # track = lavalink.models.AudioTrack(
                     #     track, ctx.author.id, recommended=True)
+                    
                     track = lavalink.models.AudioTrack(track, ctx.author.id)
 
                     if index != None:
@@ -434,7 +435,7 @@ class music(commands.Cog):
                     player.delete(ctx.message.guild.id)
                 player.store(ctx.message.guild.id, ctx.message.channel.id)
                 await ctx.send(f'Sending now playing messages in **{ctx.channel.name}**')
-
+                
                 if not player.is_playing:
                     await player.play()
                     await player.reset_equalizer()
