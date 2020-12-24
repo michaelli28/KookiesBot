@@ -52,16 +52,17 @@ class HelpMenu(ListPageSource):
     async def write_page(self, menu, fields=[]):
         offset = (menu.current_page*self.per_page) + 1
         len_data = len(self.entries)
-
+        player = self.bot.lavalink.player_manager.get(self.ctx.guild.id)
         embed = Embed(
-            title=f"Music Queue For {self.ctx.guild.name}", color=random.randint(0, 0xffffff))
-        embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
+            title=f"Music Queue For {self.ctx.guild.name}", color=random.randint(0, 0xffffff), description=f'**Now playing - [{player.current.title}]({player.current.uri})**')
+        # embed.set_thumbnail(url=self.ctx.me.avatar_url)
         embed.set_footer(
             text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} songs")
-        timestamp = datetime.datetime.utcnow()
-        embed.timestamp = timestamp
-        player = self.bot.lavalink.player_manager.get(self.ctx.guild.id)
-        embed.add_field(name='Now playing', value=f'[{player.current.title}]({player.current.uri})')
+        embed.timestamp = datetime.datetime.utcnow()
+        embed.set_author(name=self.ctx.author.display_name,
+                icon_url=self.ctx.author.avatar_url)
+        
+
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
 
@@ -94,12 +95,13 @@ class Playlist(ListPageSource):
 
         embed = Embed(
             title=f"Playlist `{self.playlistname}` for {self.saver}", color=random.randint(0, 0xffffff))
-        embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
+        # embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
         embed.set_footer(
             text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} songs")
-        timestamp = datetime.datetime.utcnow()
-        embed.timestamp = timestamp
-        
+
+        embed.timestamp = datetime.datetime.utcnow()
+        embed.set_author(name=self.ctx.author.display_name,
+                icon_url=self.ctx.author.avatar_url)
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
 
@@ -411,8 +413,9 @@ class music(commands.Cog):
                             track['info']['length']).lstrip('00:')
                     em.add_field(name='Duration', value=duration)
 
-                    track = lavalink.models.AudioTrack(
-                        track, ctx.author.id, recommended=True)
+                    # track = lavalink.models.AudioTrack(
+                    #     track, ctx.author.id, recommended=True)
+                    track = lavalink.models.AudioTrack(track, ctx.author.id)
 
                     if index != None:
                         player.add(requester=ctx.author.id, track=track, index=(index-1))
@@ -507,8 +510,9 @@ class music(commands.Cog):
                             track['info']['length']).lstrip('00:')
                     em.add_field(name='Duration', value=duration)
 
-                    track = lavalink.models.AudioTrack(
-                        track, ctx.author.id, recommended=True)
+                    # track = lavalink.models.AudioTrack(
+                    #     track, ctx.author.id, recommended=True)
+                    track = lavalink.models.AudioTrack(track, ctx.author.id)
 
                     if index != None:
                         player.add(requester=ctx.author.id, track=track, index=(index-1))
