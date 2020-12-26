@@ -319,7 +319,7 @@ class moderation(commands.Cog):
             try:
                 roles = result['roles']
             except:
-                return
+                return await ctx.send(f'Unmuted {user.mention}')
 
             for role in roles:
                 try:

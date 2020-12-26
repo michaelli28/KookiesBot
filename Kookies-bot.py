@@ -10,7 +10,7 @@ from discord.utils import get
 import json
 import asyncio
 from os import system
-
+import youtube_dl
 import sys
 import datetime
 from pytz import timezone
@@ -64,7 +64,10 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insen
 bot.loop.create_task(startup())
 
 
-
+# youtube_dl.utils.bug_reports_message = lambda: ''
+# ydl = youtube_dl.YoutubeDL({"format": "bestaudio/best", "restrictfilenames": True, "noplaylist": True, "nocheckcertificate": True,
+#                             "ignoreerrors": True, "logtostderr": False, "quiet": True, "no_warnings": True, "source_address": "0.0.0.0"})
+#     data = await bot.loop.run_in_executor(None, lambda: ydl.extract_info('https://www.youtube.com/watch?v=RXLzvo6kvVQ', download=True))
 
 @bot.event
 async def on_ready():

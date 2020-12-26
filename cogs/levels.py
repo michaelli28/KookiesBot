@@ -103,10 +103,10 @@ class levels(Cog):
 
         global collection
         try:
-            collection = db[ctx.guild.name]
+            collection = db[str(ctx.guild.id)]
         except:
-            db.createCollection(ctx.guild.name)
-            collection = db[ctx.guild.name]
+            db.createCollection(str(ctx.guild.id))
+            collection = db[str(ctx.guild.id)]
             return await ctx.send('No one is on the leaderboard yet... send more messages to get on the leaderboard')
         result = collection.find({})
 
@@ -131,10 +131,10 @@ class levels(Cog):
             db = cluster.KookiesBot
             global collection
             try:
-                collection = db[ctx.guild.name]
+                collection = db[str(ctx.guild.id)]
             except:
-                db.createCollection(ctx.guild.name)
-                collection = db[ctx.guild.name]
+                db.createCollection(str(ctx.guild.id))
+                collection = db[str(ctx.guild.id)]
             if author == None:
                 author = ctx.author
 
@@ -203,12 +203,12 @@ class levels(Cog):
                 global collection
 
                 try:
-                    collection = db[ctx.guild.name]
+                    collection = db[str(ctx.guild.id)]
                 except AttributeError:
                     return
                 except:
-                    db.createCollection(ctx.guild.name)
-                    collection = db[ctx.guild.name]
+                    db.createCollection(str(ctx.guild.id))
+                    collection = db[str(ctx.guild.id)]
 
                 author = ctx.author.id
                 res = collection.find({})

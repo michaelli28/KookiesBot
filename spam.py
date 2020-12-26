@@ -28,3 +28,28 @@ import pytz
 
 list = [1,2,3,4,5]
 print(list[2:])
+
+import asyncio
+import random
+import re
+import requests
+import discord
+from collections import OrderedDict
+import datetime
+import youtube_dl
+from async_timeout import timeout
+from discord.ext import commands
+import httpx
+from bs4 import BeautifulSoup
+import discord
+from discord.ext.menus import MenuPages, ListPageSource
+from discord.utils import get
+from discord import Embed
+from discord.ext import commands
+from typing import Optional
+#import pyprog
+from time import sleep
+from pytz import timezone
+import aiohttp
+from googleapiclient.discovery import build
+#TODO PLAYLIST CMD
