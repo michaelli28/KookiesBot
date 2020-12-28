@@ -14,6 +14,14 @@ import asyncio
 import sys
 import traceback
 import json
+import json
+
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+# URL conversions.
+import urllib.request
+import bs4
+import youtube
 from pymongo import MongoClient
 kclient = ksoftapi.Client('1931343e09f8c6434c51af90c3a602ac06c29211')
 
@@ -79,7 +87,39 @@ class HelpMenu(ListPageSource):
 
         return await self.write_page(menu, fields)
 
+def getTracks(playlistURL):
+    # Creating and authenticating our Spotify app.
+    # client_credentials_manager = SpotifyClientCredentials(APIs["spotify"]["client_id"], APIs["spotify"]["client_secret"])
+    client_credentials_manager = SpotifyClientCredentials('2c0c71f3b5dc43a2a26e6862135b7b68','2419402a673e4774b323f9160aca088d')
+    spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
+    # Getting a playlist.
+    results = spotify.user_playlist_tracks(user="",playlist_id=playlistURL)
+    # print(results)
+
+    # print (yaml.dump(results['items'], default_flow_style=False))
+    # print (json.dumps(results, indent=8))
+    trackList = []
+    # For each track in the playlist.
+    for i in results["items"]:
+        # In case there's only one artist.
+        if (i["track"]["artists"].__len__() == 1):
+            # We add trackName - artist.
+            trackList.append(i["track"]["name"] + " - " + i["track"]["artists"][0]["name"])
+        # In case there's more than one artist.
+        else:
+            nameString = ""
+            # For each artist in the track.
+            for index, b in enumerate(i["track"]["artists"]):
+                nameString += (b["name"])
+                # If it isn't the last artist.
+                if (i["track"]["artists"].__len__() - 1 != index):
+                    nameString += ", "
+            # Adding the track to the list.
+            trackList.append(i["track"]["name"] + " - " + nameString)
+        # trackList.append(i['track']['name'])
+    # print(trackList)
+    return trackList
 
 class Playlist(ListPageSource):
     def __init__(self, ctx, data, saver, playlistname):
@@ -357,7 +397,6 @@ class music(commands.Cog):
             return await ctx.send('You need to input a search')
         try:
             query.strip()
-
             if int(query.find('#')) != -1:
                 query = query.split('#',1)
                 try:
@@ -368,6 +407,7 @@ class music(commands.Cog):
             else:
                 index = None
 
+
             async with ctx.typing():
                 player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
@@ -376,6 +416,37 @@ class music(commands.Cog):
                         return await ctx.send('Index is larger than queue size')
 
                 query = query.strip('<>')
+                if query.find('http') != -1 and query.find('spotify') != -1:
+                    tracks = getTracks(query)
+                    # print("URL LIST: ")
+                    for i in tracks:
+                        # print(i)
+                        query = f'ytsearch:{i}'
+                        results = await player.node.get_tracks(query)
+                        if not results or not results['tracks']:
+                            await ctx.send(f'The song {i} in your playlist was not found')
+                        else:
+                            player.add(requester=ctx.author.id, track=results['tracks'][0])
+                    
+                    em = discord.Embed(color = random.randint(0,0xffffff))
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                    em.timestamp = datetime.datetime.utcnow()
+                    em.title = 'Playlist Enqueued!'
+                    em.description = f'Spotify Playlist - {len(tracks)} tracks'
+                    msg = await ctx.send(embed=em)
+                    await player.set_volume(self.volume)
+
+                    if player.fetch(ctx.message.guild.id) != None:
+                        player.delete(ctx.message.guild.id)
+                    player.store(ctx.message.guild.id, ctx.message.channel.id)
+                    await ctx.send(f'Sending now playing messages in **{ctx.channel.name}**')
+                    
+                    if not player.is_playing:
+                        await player.play()
+                        await player.reset_equalizer()
+                        await msg.delete(delay=1)
+                        # await self.now(ctx)
+                        return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 
                 if not query.startswith('http'):
                     query = f'ytsearch:{query}'
