@@ -23,4 +23,6 @@ lavalink
 googletrans
 jishaku
 gtts
+spotipy
+youtube-python
 psutil
