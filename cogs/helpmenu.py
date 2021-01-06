@@ -117,7 +117,7 @@ class help(commands.Cog):
     @commands.command(name="help", brief='Shows help menu')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def show_help(self, ctx, cmd: Optional[str]):
-        await ctx.send('Please wait while help arrives from somewhere in the US')
+        # await ctx.send('Please wait while help arrives from somewhere in the US')
         async with ctx.typing():
             if self.bot.get_cog(cmd)!= None:
                 cog = self.bot.get_cog(cmd)
@@ -151,9 +151,17 @@ class help(commands.Cog):
             else:
                 if command := get(self.bot.commands, name=cmd):
                     await self.cmd_help(ctx, command)
-
-                else:
-                    return await ctx.send("That command does not exist")
+                commands = []
+                for command in self.bot.commands:
+                    if command.aliases:
+                        commands.append({command.name:list(command.aliases)})
+                for dictionary in commands:
+                    if cmd in list(dictionary.values())[0]:
+                        command = list(dictionary.keys())[0]
+                        command = get(self.bot.commands, name=command)
+                        await self.cmd_help(ctx, command)
+                        return
+                return await ctx.send("That command does not exist")
 
 
 

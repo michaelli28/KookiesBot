@@ -391,10 +391,13 @@ class fun(commands.Cog):
                         async with ctx.typing():
                             async with self.client.get(url, params=params) as r:
                                 response = await r.json()
+                                print(response)
                                 response = response['response']
                     except KeyError:
                         await ctx.send(response['error'])
                         continue
+                    except discord.errors.HTTPException:
+                        await ctx.send(response['error'])
                     await ctx.send(response)
 def setup(bot):
 	bot.add_cog(fun(bot))
