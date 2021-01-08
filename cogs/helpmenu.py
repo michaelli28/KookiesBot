@@ -151,6 +151,7 @@ class help(commands.Cog):
             else:
                 if command := get(self.bot.commands, name=cmd):
                     await self.cmd_help(ctx, command)
+                    return 
                 commands = []
                 for command in self.bot.commands:
                     if command.aliases:

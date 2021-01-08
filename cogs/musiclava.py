@@ -325,6 +325,7 @@ class music(commands.Cog):
                 text=f"Requested by: {requester}", icon_url=requester.avatar_url)
             em.timestamp = datetime.datetime.utcnow()
             await channel.send(embed=em)
+
             await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
             return 
 

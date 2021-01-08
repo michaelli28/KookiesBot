@@ -338,14 +338,12 @@ class fun(commands.Cog):
         try:
             await self.bot.user.edit(nick = member.display_name)
         except:
-            await ctx.send('Too many users have this username')
-            return await ctx.send(repeat)
-        try:
-            await self.bot.user.edit(username = member.display_name)
-            return await ctx.send(repeat)
-        except:
-            await ctx.send('Too many users have this username')
-            return await ctx.send(repeat)
+            try:
+                await self.bot.user.edit(username = member.display_name)
+                return await ctx.send(repeat)
+            except:
+                await ctx.send('Too many users have this username')
+                return await ctx.send(repeat)
 
     # @commands.command(name='insult', aliases=['roast'], brief='Insults people')
     # @commands.is_owner()

@@ -281,7 +281,7 @@ class moderation(commands.Cog):
     @commands.command(aliases=['um'], brief='Unmutes someone, need manage roles, set user as everyone to unmute everyone')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def unmute(self, ctx, user: Union[discord.Member, str]):
+    async def unmute(self, ctx, *, user: Union[discord.Member, str]):
         if user == 'everyone':
             async with ctx.typing():
                 try:
