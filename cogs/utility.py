@@ -456,9 +456,9 @@ class util(commands.Cog):
     @commands.is_owner()
     async def restart(self, ctx):
         await ctx.send("Restarting...")
-        bot_folder=Path('/KookiesBot')
+        bot_folder=Path('/app')
         bot_file=bot_folder / "Kookies-bot.py"
-        Popen("python "+'Kookies-bot.py')
+        Popen("python "+str(bot_file))
         quit()
 
     # @commands.command(name='convert', aliases=['currency'], description = 'Converts currency')
