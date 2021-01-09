@@ -457,7 +457,7 @@ class util(commands.Cog):
     async def restart(self, ctx):
         await ctx.send("Restarting...")
         bot_folder=Path('/app')
-        bot_file=bot_folder / "Kookies-bot.py"
+        bot_file=bot_folder / "Kookies-bot"
         Popen("python "+str(bot_file))
         quit()
 
