@@ -150,7 +150,7 @@ async def on_message(message):
 
 
 #TOKEN = os.getenv('TOKEN')
-bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.YC7CkxByk0-P93Xw7E2ZrOyqvYs')
+bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.5eqdaTAYnnNjPy7HEnxemnLgx_c')
 
 
 
