@@ -22,6 +22,8 @@ from discord.ext.commands.errors import BadArgument
 import nltk
 import io
 from googletrans import Translator, LANGUAGES
+from pathlib import Path
+from subprocess import Popen
 # nltk.download('wordnet')
 from nltk.corpus import wordnet
 import math
@@ -420,7 +422,7 @@ class util(commands.Cog):
                 role = "N/A"
             voice_state = None if not user.voice else user.voice.channel
 
-        em = discord.Embed(colour=0x00CC99)
+        em = discord.Embed(color=random.randint(0,0xffffff))
         em.add_field(name='User ID', value=f'{user.id}')
         if isinstance(user, discord.Member):
             if isinstance(user.activity, discord.Spotify):
@@ -436,6 +438,9 @@ class util(commands.Cog):
             em.add_field(name='In Voice', value=f'{voice_state}')
             em.add_field(name='Activity', value=f'{activity}')
             em.add_field(name='Highest Role', value=f'{role}')
+            for role in user.roles:
+                rolesMsg += str(role) + ', '
+            em.add_field(name='Roles', value=rolesMsg[:-2], inline=False)
         em.add_field(name='Account Created',
                      value=f"{user.created_at.__format__('%A, %d %B %Y @ %H:%M:%S')}", inline=False)
         if isinstance(user, discord.Member):
@@ -446,6 +451,15 @@ class util(commands.Cog):
         em.timestamp = datetime.datetime.utcnow()
 
         return await ctx.send(embed=em)
+
+    @commands.command(name='restart')
+    @commands.is_owner()
+    async def restart(self, ctx):
+        await ctx.send("Restarting...")
+        bot_folder=Path('/KookiesBot')
+        bot_file=bot_folder / "Kookies-bot.py"
+        Popen("python "+'Kookies-bot.py')
+        quit()
 
     # @commands.command(name='convert', aliases=['currency'], description = 'Converts currency')
     # @commands.cooldown(times, cooldown, commands.BucketType.user)
