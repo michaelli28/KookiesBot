@@ -96,6 +96,7 @@ class levels(Cog):
     @commands.command(name='leaderboard', aliases=['lb'], brief='Shows the leaderboard')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def show_leaderboard(self, ctx):
+        #ang is at 189147
         async with ctx.typing():
             cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
 
@@ -117,7 +118,7 @@ class levels(Cog):
             rank+=1
         result = collection.find({})
         sort = sorted(result, key=itemgetter('Xp'), reverse=True)
-        menu1 = menu(source=HelpMenu(ctx, sort), delete_message_after=True)
+        menu1 = menu(source=HelpMenu(ctx, sort))
         return await menu1.start(ctx)
 
     @commands.command(aliases=['xp'], brief='Get your xp and level')

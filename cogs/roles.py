@@ -745,9 +745,9 @@ class HelpMenu(ListPageSource):
             for member in entry.members:
                 memberslist += member.display_name + ', '
             if memberslist == '':
-                fields.append((f'{entry.name}', 'No one has this role right now...'))
+                fields.append((f'{entry.name} - {entry.position}', 'No one has this role right now...'))
             else:
-                fields.append((f'{entry.name}', memberslist[0:-2]))
+                fields.append((f'{entry.name} - {entry.position}', memberslist[0:-2]))
 
         self.place+=1
 
