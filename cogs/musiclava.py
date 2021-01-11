@@ -517,7 +517,7 @@ class music(commands.Cog):
 
         except lavalink.exceptions.NodeException:
             await ctx.send('Node not found, contacting owner for support... please wait while the owner shows up')
-            me = self.bot.fetch_user(587068610237693963)
+            me = await self.bot.fetch_user(587068610237693963)
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
@@ -620,7 +620,14 @@ class music(commands.Cog):
                     return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 
         except lavalink.exceptions.NodeException:
-            return await ctx.send('Node not found, contact owner for support')
+            await ctx.send('Node not found, contacting owner for support... please wait while the owner shows up')
+            me = await self.bot.fetch_user(587068610237693963)
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            return
 
 
     @commands.command(name='search', aliases=['ytsearch'], brief='Searches for a song (youtube) and returns the top 10 results')
@@ -686,7 +693,14 @@ class music(commands.Cog):
                     # await self.now(ctx)
                     return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
         except lavalink.exceptions.NodeException:
-            return await ctx.send('Node not found, contact owner for support')
+            await ctx.send('Node not found, contacting owner for support... please wait while the owner shows up')
+            me = await self.bot.fetch_user(587068610237693963)
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            return
 
 
     @commands.command(name='scsearch', aliases=['soundcloudsearch'], brief='Searches for a song ON SOUNDCLOUD and returns the top 10 results')
@@ -752,7 +766,14 @@ class music(commands.Cog):
                     # await self.now(ctx)
                     return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
         except lavalink.exceptions.NodeException:
-            return await ctx.send('Node not found, contact owner for support')
+            await ctx.send('Node not found, contacting owner for support... please wait while the owner shows up')
+            me = await self.bot.fetch_user(587068610237693963)
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
+            return
 
     @commands.command(name='playlist', brief='Play a saved playlist with ;playlist play playlist_name\nSave a playlist by queuing songs and using ;playlist add playlist_name\nShow your playlists with ;playlist show\nShow the contents of a playlist with ;playlist show playlist_name\nDelete saved playlists with ;playlist remove playlist_name\n(Note: Playlist names are case sensitive)')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
