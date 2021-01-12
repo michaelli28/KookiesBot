@@ -318,11 +318,15 @@ class roles(commands.Cog):
 
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
-            
-    @commands.command(aliases=['rc'], brief='Adds a role claim message, use like this: ;rc toxic pro_player noob with spaces as underscores')
+    @commands.command()
+    async def testing(self,ctx,*role: discord.Role):
+        for r in role:
+            await ctx.author.add_roles(r)
+            await ctx.send(r.name)
+    @commands.command(aliases=['rc'], brief='Adds a role claim message, put 2 quotation marks around roles with spaces like this: ;rc toxic "pro player" "discord user" nerd')
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def roleclaim(self, ctx, *roles, note=None):
+    async def roleclaim(self, ctx, *roles: discord.Role):
         await ctx.message.delete()
         if 1 > len(roles) > 10:
             return await ctx.send('List of roles must be between 1 and 10')
@@ -339,46 +343,46 @@ class roles(commands.Cog):
         reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣',
                     '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
         message = ''
-        rindex = 0
+        # rindex = 0
 
-        for r in rolesR:
-            for char in r:
-                try:
-                    r.find('_')
-                    rindex += 1
-                except:
-                    pass
+        # for r in rolesR:
+        #     for char in r:
+        #         try:
+        #             r.find('_')
+        #             rindex += 1
+        #         except:
+        #             pass
 
-            r = r.replace('_', " ", rindex)
-            #rolesR[index] = r
+        #     r = r.replace('_', " ", rindex)
+        #     #rolesR[index] = r
 
-            role = get(ctx.guild.roles, name=r)
+        #     role = get(ctx.guild.roles, name=r)
             
-            if role == None:
-                return await ctx.send(f'`{r}` is not a valid role')
+        #     if role == None:
+        #         return await ctx.send(f'`{r}` is not a valid role')
+        for role in rolesR:
             if ctx.author.top_role.position < role.position:
-                if str(ctx.author.id) != '587068610237693963':
-                    return await ctx.send(f'Your role position isn\'t high enough to make a role claim for role **{role.name}**')
+                return await ctx.send(f'Your role position isn\'t high enough to make a role claim for role **{role.name}**')
                     
             rolesR[index] = role.id
-
-            message += f'React with {reactions[index]} to receive the `{role}` role!\n'
+            message += f'React with {reactions[index]} to receive the `{role.name}` role!\n'
             index += 1
-        if note == None:
-            embed = Embed(
-                title=f"Role Reactions", color=random.randint(0, 0xffffff), description = message)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            timestamp = datetime.datetime.utcnow()
-            embed.timestamp = timestamp
-            messagesent = await ctx.send(embed=embed)
 
-        else:
-            embed = Embed(
-                title=f"Role Reactions", color=random.randint(0, 0xffffff), description = f'{note}\n{message}')
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            timestamp = datetime.datetime.utcnow()
-            embed.timestamp = timestamp
-            messagesent = await ctx.send(embed=embed)
+        # if note == None:
+        embed = Embed(
+            title=f"Role Reactions", color=random.randint(0, 0xffffff), description = message)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        timestamp = datetime.datetime.utcnow()
+        embed.timestamp = timestamp
+        messagesent = await ctx.send(embed=embed)
+
+        # else:
+        #     embed = Embed(
+        #         title=f"Role Reactions", color=random.randint(0, 0xffffff), description = f'{note}\n{message}')
+        #     embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        #     timestamp = datetime.datetime.utcnow()
+        #     embed.timestamp = timestamp
+        #     messagesent = await ctx.send(embed=embed)
 
         collection.insert_one({'_id':str(messagesent.id),'roles':rolesR})
 
