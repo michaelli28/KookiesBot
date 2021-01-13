@@ -159,6 +159,10 @@ class misc(commands.Cog):
         inp: str
             The input you wish to repeat.
         """
+        if ctx.message.content.find('@everyone') != -1:
+            return await ctx.send('You can\'t ping spam here')
+        if ctx.message.content.find('@here') != -1:
+            return await ctx.send('You can\'t ping spam here')
         self.ctx = ctx
         self.message = inp
         message = ctx.message

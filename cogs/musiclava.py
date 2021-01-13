@@ -348,7 +348,9 @@ class music(commands.Cog):
         
         # if not ctx.author.voice or not ctx.author.voice.channel:
         #     raise commands.CommandInvokeError('Join a voice channel first :loud_stop'sound:')
-        not_connect = ctx.command.name in ('volume', 'disconnect', 'stop', 'join', 'pause', 'resume', 'lyrics')
+        not_connect = ctx.command.name in ('volume', 'disconnect', 'stop', 'join', 'pause', 'resume')
+        if ctx.command.name in ['lyrics']:
+            return
         if not player.is_connected:
             if not should_connect and not not_connect:
                 raise commands.CommandInvokeError('Not connected :mute:')

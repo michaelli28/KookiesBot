@@ -393,6 +393,8 @@ class roles(commands.Cog):
             await messagesent.add_reaction(reactions[i])
         return
 
+
+
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         channel = discord.utils.get(self.bot.get_all_channels(), id=payload.channel_id)

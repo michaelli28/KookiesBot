@@ -33,7 +33,7 @@ class CommandErrorHandler(commands.Cog):
         if isinstance(error, commands.CommandNotFound):
             if ctx.message.content.startswith(';)') or ctx.message.content.startswith(';-;'):
                 return
-            return await ctx.send(f'`{ctx.message.content}` is not a valid command')
+            return await ctx.send(f'`{ctx.invoked_with}` is not a valid command')
 
         elif isinstance(error, commands.BotMissingPermissions):
             missing = [perm.replace('_', ' ').replace(
@@ -67,7 +67,8 @@ class CommandErrorHandler(commands.Cog):
             except:
                 pass
             return await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))
-            
+        elif isinstance(error, commands.RoleNotFound):
+            return await ctx.send('The role you passed in doesn\'t seem to exist. Check capitalization and spelling. If the role has spaces it in, surround the role with quoatation marks like this: "role name here" ')
         elif isinstance(error, commands.MissingPermissions):
             ctx.command.reset_cooldown(ctx)
             missing = [perm.replace('_', ' ').replace(
