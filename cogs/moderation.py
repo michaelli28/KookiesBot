@@ -151,17 +151,18 @@ class moderation(commands.Cog):
     
     @commands.Cog.listener()
     async def on_message(self, message):
-        try:
+        try: #3rd one is my guild
             if str(message.channel.id) == '764120247875272734' or str(message.channel.id) == '751140561255268423' or str(message.guild.id) == '765941083254947911':
                 return
         except AttributeError:
             pass
         if message:
             if message.guild.id == 751137949420224642: #my guild
-                if message.author.id != 587068610237693963:
-                    if 'weary' in message.content or 'moan' in message.content or '😩' in message.content:
-                        await message.delete()
-                        await message.channel.send(f'{message.author.mention}, That word/emoji has been banned')
+                if message.channel.id != 763009310380654593: #league channel
+                    if message.author.id != 587068610237693963: #me
+                        if 'weary' in message.content or 'moan' in message.content or '😩' in message.content:
+                            await message.delete()
+                            await message.channel.send(f'{message.author.mention}, That word/emoji has been banned')
 
         now = datetime.datetime.utcnow()
         current_time = now.strftime("%H:%M|%m/%d/%Y")
