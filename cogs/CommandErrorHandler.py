@@ -66,7 +66,7 @@ class CommandErrorHandler(commands.Cog):
                 await ctx.message.delete()
             except:
                 pass
-            return await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#3360)'.format(ctx.author.mention))
+            return await ctx.send('{}, That command is for the owner of the bot only (NotThatBot#1732)'.format(ctx.author.mention))
         elif isinstance(error, commands.RoleNotFound):
             return await ctx.send('The role you passed in doesn\'t seem to exist. Check capitalization and spelling. If the role has spaces it in, surround the role with quoatation marks like this: "role name here" ')
         elif isinstance(error, commands.MissingPermissions):

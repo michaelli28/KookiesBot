@@ -156,7 +156,13 @@ class moderation(commands.Cog):
                 return
         except AttributeError:
             pass
-        
+        if message:
+            if message.guild.id == 751137949420224642: #my guild
+                if message.author.id != 587068610237693963:
+                    if 'weary' in message.content or 'moan' in message.content or '😩' in message.content:
+                        await message.delete()
+                        await message.channel.send(f'{message.author.mention}, That word/emoji has been banned')
+
         now = datetime.datetime.utcnow()
         current_time = now.strftime("%H:%M|%m/%d/%Y")
         if message.author.id != self.bot.user.id:
