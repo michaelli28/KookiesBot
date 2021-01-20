@@ -158,7 +158,7 @@ class moderation(commands.Cog):
             pass
         if message:
             if message.guild.id == 751137949420224642: #my guild
-                if message.channel.id != 763009310380654593: #league channel
+                if message.channel.id != 763009310380654593 and message.channel.id != 761562127617359912: #league channel and r
                     if message.author.id != 587068610237693963: #me
                         if 'weary' in message.content or 'moan' in message.content or '😩' in message.content:
                             await message.delete()

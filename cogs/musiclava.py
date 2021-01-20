@@ -1032,7 +1032,7 @@ class music(commands.Cog):
                     player.current.duration).lstrip('00:')
             song = f'[{player.current.title}]({player.current.uri})'
             em = discord.Embed(colour=discord.Color(random.randint(0,0xffffff)), description=song)
-            em.set_author(name="Now Playing 🎵",
+            em.set_author(name="Saved Song 🎵",
                           icon_url="https://i.ibb.co/DGsmTvh/star.gif")
             em.set_thumbnail(
                 url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
