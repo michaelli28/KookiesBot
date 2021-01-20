@@ -247,7 +247,7 @@ class roles(commands.Cog):
         r = name.replace('_', " ", rindex)
         r = get(ctx.message.guild.roles, name=r)
         if ctx.author.top_role.position <= r.position or ctx.author.top_role.position <= position:
-            return await ctx.send(f'You do not have permissions to change this role. Your top role position **{ctx.author.top_role.position}** is less than {r.name}\'s **{r.position}** or the position you are trying to change {r.name} to is less than your role position ({position})')
+            return await ctx.send(f'You do not have permissions to change this role. Your top role position **{ctx.author.top_role.position}** is less than or equal to {r.name}\'s (**{r.position}**) or the position you are trying to change {r.name} to is more than or equal to your role position ')
         if r == None:
             return await ctx.send(f'{name} is not a role')
         try:
@@ -713,7 +713,7 @@ class roles(commands.Cog):
         async with ctx.typing():
             roles = ctx.guild.roles
             roles.reverse()
-            menu1 = menu(source=HelpMenu(ctx, roles), delete_message_after=True)
+            menu1 = menu(source=HelpMenu(ctx, roles))
             return await menu1.start(ctx)
 
 
@@ -732,7 +732,7 @@ class HelpMenu(ListPageSource):
                 title=f"List of roles for {self.ctx.guild.name}", color=random.randint(0, 0xffffff))
         embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
         embed.set_footer(
-                text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} roles")
+                text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:, -1} roles")
         timestamp = datetime.datetime.utcnow()
         embed.timestamp = timestamp
         for name, value in fields:
