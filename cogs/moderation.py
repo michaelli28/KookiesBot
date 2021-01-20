@@ -388,7 +388,7 @@ class moderation(commands.Cog):
 
     @commands.command(aliases=['ba'], brief='Adds someone to a blacklist so they can\'t use commands')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissions(administrator=True)
     async def blacklistadd(self, ctx, *, member: discord.Member=None):
         if member==None:
             return await ctx.send('Input a member to add to blacklist')
@@ -409,7 +409,7 @@ class moderation(commands.Cog):
 
     @commands.command(aliases=['br'], brief='Removes someone to a blacklist so they can use commands again')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissions(administrator=True)
     async def blacklistremove(self, ctx, *, member: discord.Member = None):
         if member == None:
             return await ctx.send('Input a member to remove from blacklist')
