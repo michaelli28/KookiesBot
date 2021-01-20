@@ -60,9 +60,9 @@ async def startup():
     #bot.load_extension('cogs.school')
 
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True, intents=intents, owner_ids=[587068610237693963,630499390938808379])
+bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True, intents=intents, owner_id=587068610237693963)
 bot.loop.create_task(startup())
-
+# 630499390938808379 hurb id
 
 # youtube_dl.utils.bug_reports_message = lambda: ''
 # ydl = youtube_dl.YoutubeDL({"format": "bestaudio/best", "restrictfilenames": True, "noplaylist": True, "nocheckcertificate": True,
@@ -80,8 +80,9 @@ async def blacklisted(ctx):
         blacklist = json.load(thing)
         blacklist = blacklist['list']
         thing.close()
-    if str(ctx.author.id) in blacklist and str(ctx.author.id) != '587068610237693963':
-        await ctx.send(f'{ctx.author.mention}, you have been blacklisted from this bot')
+    id = str(ctx.author.id) + " " + str(ctx.guild.id)
+    if id in blacklist and id.split()[0] != '587068610237693963':
+        await ctx.send(f'{ctx.author.mention}, you have been blacklisted from this bot in **{ctx.guild.name}**')
         return False
     else:
         return True

@@ -148,7 +148,7 @@ class roles(commands.Cog):
     @commands.has_permissions(manage_roles=True)
     async def createrole(self, ctx, name, color=None, permission=None):
         rindex = 0
-        for char in name:
+        for _ in name:
             try:
                 name.find('_')
                 rindex += 1
@@ -207,7 +207,7 @@ class roles(commands.Cog):
         if newname == None:
             return await ctx.send('You need to specify the new name to change to')
         rindex = 0
-        for char in name:
+        for _ in name:
             try:
                 name.find('_')
                 rindex += 1
@@ -237,7 +237,7 @@ class roles(commands.Cog):
             return await ctx.send('You need to specify the new position to change to')
         rindex = 0
         
-        for char in name:
+        for _ in name:
             try:
                 name.find('_')
                 rindex += 1
@@ -266,7 +266,7 @@ class roles(commands.Cog):
         if mentionable == None:
             return await ctx.send('You need to specify the new mentionability to change to')
         rindex = 0
-        for char in name:
+        for _ in name:
             try:
                 name.find('_')
                 rindex += 1
@@ -296,7 +296,7 @@ class roles(commands.Cog):
             return await ctx.send('You need to specify if the role is shown separately in the memberlist')
 
         rindex = 0
-        for char in name:
+        for _ in name:
             try:
                 name.find('_')
                 rindex += 1
@@ -318,11 +318,7 @@ class roles(commands.Cog):
 
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
-    @commands.command()
-    async def testing(self,ctx,*role: discord.Role):
-        for r in role:
-            await ctx.author.add_roles(r)
-            await ctx.send(r.name)
+
     @commands.command(aliases=['rc'], brief='Adds a role claim message, put 2 quotation marks around roles with spaces like this: ;rc toxic "pro player" "discord user" nerd')
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)

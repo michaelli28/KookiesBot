@@ -389,61 +389,69 @@ class moderation(commands.Cog):
     @commands.command(aliases=['ba'], brief='Adds someone to a blacklist so they can\'t use commands')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def blacklistadd(self, ctx, *, user: discord.Member=None):
-        if user==None:
-            return await ctx.send('Input a user to add to blacklist')
+    async def blacklistadd(self, ctx, *, member: discord.Member=None):
+        if member==None:
+            return await ctx.send('Input a member to add to blacklist')
         else:
             with open('blacklist.json', 'r') as blacklist:
                 people = json.load(blacklist)
-                if str(user.id) in people['list']:
-                    return await ctx.send('User already in blacklist')
+                id = str(member.id) + ' ' + str(ctx.guild.id)
+                if id in people['list']:
+                    return await ctx.send(f'Member already in blacklist in {ctx.guild.name}')
                 else:
-                    people['list'].append(str(user.id))
+                    people['list'].append(id)
                 blacklist.close()
+
             with open('blacklist.json', 'w') as blacklist:
                 json.dump(people, blacklist)
                 blacklist.close()
-        return await ctx.send(f'{user.display_name} has been added to the blacklist')
+        return await ctx.send(f'{member.display_name} has been added to the blacklist in {ctx.guild.name}')
 
     @commands.command(aliases=['br'], brief='Removes someone to a blacklist so they can use commands again')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def blacklistremove(self, ctx, *, user: discord.Member = None):
-        if user == None:
-            return await ctx.send('Input a user to remove from blacklist')
+    async def blacklistremove(self, ctx, *, member: discord.Member = None):
+        if member == None:
+            return await ctx.send('Input a member to remove from blacklist')
         else:
             with open('blacklist.json', 'r') as blacklist:
                 people = json.load(blacklist)
-                if str(user.id) not in people['list']:
-                    return await ctx.send('User not in blacklist')
+                id = str(member.id) + ' ' + str(ctx.guild.id)
+                if id not in people['list']:
+                    return await ctx.send(f'Member not in blacklist in {ctx.guild.name}')
                 else:
-                    people['list'].remove(str(user.id))
+                    people['list'].remove(id)
                 blacklist.close()
+
             with open('blacklist.json', 'w') as blacklist:
                 json.dump(people, blacklist)
                 blacklist.close()
-        return await ctx.send(f'{user.display_name} has been removed from the blacklist')
+        return await ctx.send(f'{member.display_name} has been removed from the blacklist in {ctx.guild.name}')
 
     @commands.command(aliases=['bls'], brief='Shows the people in the blacklist')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    @commands.has_permissions(manage_roles=True)
     async def blacklistshow(self, ctx):
         with open('blacklist.json', 'r') as blacklist:
             people = json.load(blacklist)
             blacklist.close()
-        embed = discord.Embed(title='Blacklisted People', color = random.randint(0, 0xffffff))
+        
+        if len(people['list']) == 0:
+            return await ctx.send('No blacklisted people!')
+
+        embed = discord.Embed(title=f'Blacklisted People in {ctx.guild.name}', color = random.randint(0, 0xffffff))
         embed.set_author(name=ctx.author.display_name,
                         icon_url=ctx.author.avatar_url)
 
         embed.timestamp = datetime.datetime.utcnow()
-        
-        if len(people['list']) == 0:
-            return await ctx.send('No blacklisted people!')
+
         n=1
-        for userid in people['list']:
-            user = self.bot.get_user(int(userid))
-            embed.add_field(name=f'{n})', value = f'{user.name}', inline=False)
-            n+=1
+        for id in people['list']:
+            guildid = id.split()[1]
+            if int(guildid) == ctx.guild.id: 
+                memberid = id.split()[0]
+                member = self.bot.get_user(int(memberid))
+                embed.add_field(name=f'{n})', value = f'{member.name}', inline=False)
+                n+=1
         return await ctx.send(embed=embed)
                 
     @commands.command(aliases=["slowm"], brief="Custom Slow Mode")

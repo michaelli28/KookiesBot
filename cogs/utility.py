@@ -371,7 +371,7 @@ class util(commands.Cog):
         voice = channel_types[discord.channel.VoiceChannel]
         text = channel_types[discord.channel.TextChannel]
         NotThatBot = self.bot.get_user(587068610237693963)
-        hurb = self.bot.get_user(630499390938808379)
+        # hurb = self.bot.get_user(630499390938808379)
         embed = discord.Embed(
             title="Bot Info:",
             description=(
@@ -387,7 +387,8 @@ class util(commands.Cog):
                 f"CPU Count: **{multiprocessing.cpu_count()}**\n"
                 f"CPU Usage: **{psutil.cpu_percent()}%**\n"
                 f"RAM: **{psutil.virtual_memory().percent}%**\n"
-                f"Creators: **{str(NotThatBot)}** and **{str(hurb)}**"
+                f"Creator: **{str(NotThatBot)}**"
+                # f"Creators: **{str(NotThatBot)}** and **{str(hurb)}**"
             ),
             color=random.randint(0,0xffffff))
         embed.set_author(name=ctx.guild.me.name, icon_url=ctx.guild.me.avatar_url)
