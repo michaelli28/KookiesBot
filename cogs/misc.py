@@ -66,20 +66,21 @@ class misc(commands.Cog):
         perms = discord.Permissions(administrator=True)
         return await ctx.send(f"Use this URL to invite me\n<{discord.utils.oauth_url(self.bot.user.id,permissions=perms)}>")
 
-    async def _join(self, ctx: commands.Context, channel: discord.VoiceChannel = None):
+    async def _join(self, ctx: commands.Context):
         """Joins a voice channel"""
         #await ctx.message.delete()
-        if not channel:
-            try:
-                channel = ctx.author.voice.channel
-            except AttributeError:
-                return await ctx.send(f'{ctx.author.mention}, specify a channel for me to join or join one')
+
+
+        channel = ctx.author.voice.channel
+
 
         try:
             channel = await channel.connect()
+            return channel
         except:
-            return await ctx.send('The bot seems to be in a voice channel although this might not always be the case (it was kicked out) or it is playing music in which case tts won\'t work')
-        return channel
+            # await ctx.send('The bot seems to be in a voice channel although this might not always be the case (it was kicked out) or it is playing music in which case tts won\'t work')
+            return None
+        
 
     @commands.command(aliases=['talk'], brief='Speaks a message into the voice channel that you are in')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
@@ -87,15 +88,19 @@ class misc(commands.Cog):
         voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
         if not voiceconnect or not voiceconnect.is_connected():
             channel = await self._join(ctx)
-            self.channels[ctx.guild.id] = channel
+            if channel:
+                self.channels[ctx.guild.id] = channel
         else:
             channel = self.channels[ctx.guild.id]
-            
+        if not channel:
+            return await ctx.send('The bot seems to have joined the voice channel via a music command, do ;stop to remove the bot from the channel. Then use the tts command again to get the bot to rejoin')
         # if not ctx.author.voice.channel or ctx.author.voice.channel != channel.channel:
         #     return await ctx.send('Join the same channel as the bot')
-
+        if channel.is_playing():
+            return await ctx.send(f'{ctx.author.mention}, the bot is currently speaking, please wait until it is finished')
         speech = gtts.gTTS(text, lang=f"{self.lang}")
         speech.save('tts.mp3')
+
         channel.play(discord.FFmpegOpusAudio("tts.mp3"))
         return
         # if os.path.exists("tts.mp3"):
@@ -106,10 +111,10 @@ class misc(commands.Cog):
         # obj.seek(0)
         # return await ctx.send(discord.File(obj, "tts.mp3"))
 
-    @commands.command(brief='Changes the language of the tts, use list for language argument to get a list of languages')
+    @commands.command(brief='Changes the language of the tts, use list for language argument to get a list of languages (en-us is the default)')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def ttsset(self, ctx, language: str):
-        if language == 'list':
+    async def ttsset(self, ctx, language: str = None):
+        if language == 'list' or language == None:
             string = ''
 
             for abb,lan in gtts.lang.tts_langs().items():
@@ -143,7 +148,7 @@ class misc(commands.Cog):
         if not voiceconnect or not voiceconnect.is_connected():
             return await ctx.send('Not in a voice channel')
         else:
-            await ctx.send('Stopping tts')
+            await ctx.send('Stopping tts session, leaving voice channel')
             try:
                 del self.channels[ctx.guild.id]
             except:
