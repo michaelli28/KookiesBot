@@ -99,10 +99,12 @@ class misc(commands.Cog):
         #     return await ctx.send('Join the same channel as the bot')
         if channel.is_playing():
             return await ctx.send(f'{ctx.author.mention}, the bot is currently speaking, please wait until it is finished')
-        lang = self.lang[ctx.guild.id]
-        if not lang:
+        try:
+            lang = self.lang[ctx.guild.id]
+        except KeyError:
             self.lang[ctx.guild.id] = 'en-us'
             lang = 'en-us'
+            
         speech = gtts.gTTS(text, lang=f"{lang}")
         speech.save('tts.mp3')
 
