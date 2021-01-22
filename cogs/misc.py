@@ -138,6 +138,8 @@ class misc(commands.Cog):
             return await ctx.send(f'Set the language of tts to {gtts.lang.tts_langs()[language]}')
 
         else:
+            string = ''
+
             for abb,lan in gtts.lang.tts_langs().items():
                 add = f'{abb} ({lan})\n'
                 string+=add
