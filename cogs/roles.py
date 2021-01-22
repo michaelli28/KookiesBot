@@ -732,7 +732,7 @@ class HelpMenu(ListPageSource):
                 title=f"List of roles for {self.ctx.guild.name}", color=random.randint(0, 0xffffff))
         embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
         embed.set_footer(
-                text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:, -1} roles")
+                text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} roles")
         timestamp = datetime.datetime.utcnow()
         embed.timestamp = timestamp
         for name, value in fields:
