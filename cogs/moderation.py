@@ -157,12 +157,13 @@ class moderation(commands.Cog):
         except AttributeError:
             pass
         if message:
-            if message.guild.id == 751137949420224642: #my guild
-                if message.channel.id != 763009310380654593 and message.channel.id != 761562127617359912: #league channel and r
-                    if message.author.id != 587068610237693963: #me
-                        if 'weary' in message.content or 'moan' in message.content or '😩' in message.content:
-                            await message.delete()
-                            await message.channel.send(f'{message.author.mention}, That word/emoji has been banned')
+            if message.author != self.bot.user:
+                if message.guild.id == 751137949420224642: #my guild
+                    if message.channel.id != 763009310380654593 and message.channel.id != 761562127617359912: #league channel and r
+                        if message.author.id != 587068610237693963: #me
+                            if 'weary' in message.content or 'moan' in message.content or '😩' in message.content:
+                                await message.delete()
+                                await message.channel.send(f'{message.author.mention}, That word/emoji has been banned')
 
         now = datetime.datetime.utcnow()
         current_time = now.strftime("%H:%M|%m/%d/%Y")

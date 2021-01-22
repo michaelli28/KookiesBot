@@ -439,8 +439,10 @@ class util(commands.Cog):
             em.add_field(name='In Voice', value=f'{voice_state}')
             em.add_field(name='Activity', value=f'{activity}')
             em.add_field(name='Highest Role', value=f'{role}')
+            rolesMsg = ''
             for role in user.roles:
-                rolesMsg += str(role) + ', '
+                if role.name != '@everyone':
+                    rolesMsg += str(role) + ', '
             em.add_field(name='Roles', value=rolesMsg[:-2], inline=False)
         em.add_field(name='Account Created',
                      value=f"{user.created_at.__format__('%A, %d %B %Y @ %H:%M:%S')}", inline=False)

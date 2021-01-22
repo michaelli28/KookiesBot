@@ -3,7 +3,10 @@ import traceback
 import sys
 from discord.ext import commands
 import random
+import io
 from pytz import timezone
+import asyncio
+import datetime
 class CommandErrorHandler(commands.Cog):
 
     def __init__(self, bot):
@@ -108,9 +111,41 @@ class CommandErrorHandler(commands.Cog):
         print('Ignoring exception in command {}:'.format(
             ctx.command), file=sys.stderr)
 
+
         traceback.print_exception(
             type(error), error, error.__traceback__, file=sys.stderr)
+        me = self.bot.get_user(587068610237693963)
+        await me.send('Ignoring exception in command {}:'.format(
+            ctx.command), file=sys.stderr)
+        try:
+            embed = discord.Embed(color=random.randint(
+                0, 0xffffff), description=f'Message sent by {ctx.message.author.mention} in {ctx.message.channel.mention} in {ctx.message.guild.name} [Jump to Message]({ctx.message.jump_url})')
+            embed.add_field(name=f'{ctx.message.content}', value=f'\u200B')
+            embed.set_author(name=ctx.message.author.display_name,
+                             icon_url=ctx.message.author.avatar_url)
 
+            embed.timestamp = datetime.datetime.utcnow()
+            await me.send(embed=embed)
+        except:
+            if ctx.message.attachments:
+                embed = discord.Embed(color=random.randint(
+                    0, 0xffffff), description=f'Message sent by {ctx.message.author.mention} in {ctx.message.channel.mention} in {ctx.message.guild.name} [Jump to Message]({ctx.message.jump_url})')
+                for attachment in ctx.message.attachments:
+                    new = await attachment.to_file()
+                    await me.send(file=new)
+                    embed.set_image(url=f'{attachment.url}')
+
+                embed.set_author(name=ctx.message.author.display_name,
+                                 icon_url=ctx.message.author.avatar_url)
+                embed.timestamp = datetime.datetime.utcnow()
+                await me.send(embed=embed)
+
+        if ctx.message.embeds:
+            for embed in ctx.message.embeds:
+                await me.send(embed=embed)
+        e = traceback.format_exception(type(error), error, error.__traceback__)
+        stringerror = ''.join(e)
+        await me.send(f'```py\n{stringerror}\n```')
 
 
 

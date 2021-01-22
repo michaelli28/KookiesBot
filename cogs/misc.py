@@ -10,6 +10,7 @@ from discord.ext.commands import Cog
 from discord.utils import get
 from discord import Embed
 from typing import Optional, Union
+
 import json
 import discord
 from discord.ext import commands
@@ -58,7 +59,7 @@ class misc(commands.Cog):
         self.client = bot.client
         self.message = None
         self.ctx = None
-        self.lang = 'en-us'
+        self.lang = {}
         self.channels = {}
     @commands.command(aliases=['botinvite'], brief='Sends an invite link')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
@@ -98,7 +99,11 @@ class misc(commands.Cog):
         #     return await ctx.send('Join the same channel as the bot')
         if channel.is_playing():
             return await ctx.send(f'{ctx.author.mention}, the bot is currently speaking, please wait until it is finished')
-        speech = gtts.gTTS(text, lang=f"{self.lang}")
+        lang = self.lang[ctx.guild.id]
+        if not lang:
+            self.lang[ctx.guild.id] = 'en-us'
+            lang = 'en-us'
+        speech = gtts.gTTS(text, lang=f"{lang}")
         speech.save('tts.mp3')
 
         channel.play(discord.FFmpegOpusAudio("tts.mp3"))
@@ -127,7 +132,7 @@ class misc(commands.Cog):
             return await ctx.send(embed=embed)
 
         elif language in gtts.lang.tts_langs():
-            self.lang = language
+            self.lang[ctx.guild.id] = language
             return await ctx.send(f'Set the language of tts to {gtts.lang.tts_langs()[language]}')
 
         else:
@@ -290,8 +295,8 @@ class misc(commands.Cog):
             with redirect_stdout(stdout):
                 ret = await func()
         except Exception as e:
-            value = stdout.getvalue()
-            err = await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+            # value = stdout.getvalue()
+            err = await ctx.send(f'```py\n{traceback.format_exc()}\n```')
         # else:
         #     value = stdout.getvalue()
         #     print(value)

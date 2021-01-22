@@ -777,14 +777,14 @@ class music(commands.Cog):
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
             return
 
-    @commands.command(name='playlist', brief='Play a saved playlist with ;playlist play playlist_name\nSave a playlist by queuing songs and using ;playlist add playlist_name\nShow your playlists with ;playlist show\nShow the contents of a playlist with ;playlist show playlist_name\nDelete saved playlists with ;playlist remove playlist_name\n(Note: Playlist names are case sensitive)')
+    @commands.command(name='playlist', aliases = ['pl'], brief='Play a saved playlist with ;playlist play playlist_name\nSave a playlist by queuing songs and using **;playlist add name**\nShow your playlists with **;playlist show**\nShow the contents of a playlist with **;playlist show name**\nDelete saved playlists with **;playlist remove name**\n(Note: Playlist names are case sensitive)')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def playlist(self, ctx, operation, *, name=None):
         async with ctx.typing():
             cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
             db = cluster.Other
             collection = db['Playlists']
-            help_message = 'Play a saved playlist with ;playlist play playlist_name\nSave a playlist by queuing songs and using ;playlist add playlist_name\nShow your playlists with ;playlist show\nShow the contents of a playlist with ;playlist show playlist_name\nDelete saved playlists with ;playlist remove playlist_name\n(Note: Playlist names are case sensitive)'
+            help_message = 'Play a saved playlist with ;playlist play playlist_name\nSave a playlist by queuing songs and using **;playlist add name**\nShow your playlists with **;playlist show**\nShow the contents of a playlist with **;playlist show name**\nDelete saved playlists with **;playlist remove name**\n(Note: Playlist names are case sensitive)'
             if operation.lower() in ['show','list']:
  
                 if name == None:
@@ -868,7 +868,7 @@ class music(commands.Cog):
                 player = self.bot.lavalink.player_manager.get(ctx.guild.id)
                 songs = []
 
-                if len(player.queue)==0:
+                if len(player.queue)==0 and not player.is_playing():
                     return await ctx.send('Queue is empty and nothing is playing, so there is nothing to save! Add songs to the queue with ;play')
                 playlist = collection.find_one({'id':ctx.author.id,'name':name})
                 if playlist != None:
