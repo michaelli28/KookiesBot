@@ -116,7 +116,7 @@ class CommandErrorHandler(commands.Cog):
             type(error), error, error.__traceback__, file=sys.stderr)
         me = self.bot.get_user(587068610237693963)
         await me.send('Ignoring exception in command {}:'.format(
-            ctx.command), file=sys.stderr)
+            ctx.command))
         try:
             embed = discord.Embed(color=random.randint(
                 0, 0xffffff), description=f'Message sent by {ctx.message.author.mention} in {ctx.message.channel.mention} in {ctx.message.guild.name} [Jump to Message]({ctx.message.jump_url})')
