@@ -131,7 +131,7 @@ class help(commands.Cog):
 
             elif cmd == 'all':
                 menu1 = menu2(source=HelpMenu(ctx, list(self.bot.commands)))
-                await menu1.start(ctx)
+                return await menu1.start(ctx)
             
             elif cmd is None:
                 cogs = self.bot.cogs

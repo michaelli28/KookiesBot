@@ -78,7 +78,8 @@ class misc(commands.Cog):
         try:
             channel = await channel.connect()
             return channel
-        except:
+        except Exception as e:
+            print(e)
             # await ctx.send('The bot seems to be in a voice channel although this might not always be the case (it was kicked out) or it is playing music in which case tts won\'t work')
             return None
         
@@ -92,9 +93,16 @@ class misc(commands.Cog):
             if channel:
                 self.channels[ctx.guild.id] = channel
         else:
-            channel = self.channels[ctx.guild.id]
+            try:
+                channel = self.channels[ctx.guild.id]
+            except KeyError:
+                await ctx.send(self.channels)
+                return await ctx.send('The bot seems to have joined the voice channel via a music command, do ;stop to remove the bot from the channel. Then use the tts command again to get the bot to rejoin')
+
         if not channel:
-            return await ctx.send('The bot seems to have joined the voice channel via a music command, do ;stop to remove the bot from the channel. Then use the tts command again to get the bot to rejoin')
+            return await ctx.send('The bot may be in voice channel from music commands, at this moment, there is no way to fix this if bot isn\'t ACTUALLY in a voice channel')
+
+            
         # if not ctx.author.voice.channel or ctx.author.voice.channel != channel.channel:
         #     return await ctx.send('Join the same channel as the bot')
         if channel.is_playing():
@@ -121,7 +129,7 @@ class misc(commands.Cog):
     @commands.command(brief='Changes the language of the tts, use list for language argument to get a list of languages (en-us is the default)')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def ttsset(self, ctx, language: str = None):
-        if language == 'list' or language == None:
+        if language == 'list':
             string = ''
 
             for abb,lan in gtts.lang.tts_langs().items():
@@ -136,6 +144,8 @@ class misc(commands.Cog):
         elif language in gtts.lang.tts_langs():
             self.lang[ctx.guild.id] = language
             return await ctx.send(f'Set the language of tts to {gtts.lang.tts_langs()[language]}')
+        elif language == None:
+            return await ctx.send(f'Current language is {self.lang[ctx.guild.id]} ({gtts.lang.tts_langs()[self.lang[ctx.guild.id]]})')
 
         else:
             string = ''

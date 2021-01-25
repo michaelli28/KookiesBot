@@ -640,18 +640,18 @@ class music(commands.Cog):
         try:
             async with ctx.typing():
                 player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-                query = f'ytsearch:{query}'
-                results = await player.node.get_tracks(query)
+                query1 = f'ytsearch:{query}'
+                results = await player.node.get_tracks(query1)
                 tracks = results['tracks'][0:10]
                 i = 0
                 query_result = ''
-                embed = discord.Embed()
+                embed = discord.Embed(title=f'Search results for: {query}')
                 
                 embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
                 embed.timestamp = datetime.datetime.utcnow()
                 for track in tracks:
                     i = i + 1
-                    query_result = query_result + f'{i}) {track["info"]["title"]}\n{track["info"]["uri"]}\n\n'
+                    query_result = query_result + f'{i}) [{track["info"]["title"]}]({track["info"]["uri"]})\nChannel: {track["info"]["author"]}\n\n'
 
                 embed.description = query_result
                 await ctx.send(embed=embed)
@@ -662,7 +662,7 @@ class music(commands.Cog):
                 try:
                     response = await self.bot.wait_for('message', check=check, timeout=30)
                 except asyncio.TimeoutError:
-                    return await ctx.send('Please respond with a number between one through ten to select a song or stop to cancel')
+                    return await ctx.send('Timed out, please respond with a number between one through ten to select a song or stop to cancel')
                 if response.content.lower() == 'cancel' or response.content.lower() == 'stop':
                     return await ctx.send('Stopping')
                 elif int(response.content) > 10:
