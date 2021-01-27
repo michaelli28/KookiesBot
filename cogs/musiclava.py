@@ -1186,6 +1186,13 @@ class music(commands.Cog):
         return await self.connect_to(ctx.guild.id, None)
         
 
+    @commands.command(name='qc', aliases=['cq', 'clearq', 'qclear'], brief='Clears all the songs in the queue')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def queueclear(self, ctx):
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        num = len(player.queue)
+        player.queue.clear()
+        return await ctx.send(f'Cleared {num} songs from the queue')
 
     @commands.command(name='lyrics', aliases=['ly'], brief='Get the lyrics of a song')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
