@@ -86,7 +86,7 @@ class moderation(commands.Cog):
         # except discord.errors.HTTPException:
         #     return await ctx.send('Nickname must be 32 or fewer characters in length')
 
-    @commands.command(brief='Locks the server from messages')
+    @commands.command(aliases = ['lockserver'], brief='Locks the server from messages')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def serverlock(self, ctx):
@@ -98,7 +98,7 @@ class moderation(commands.Cog):
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
 
-    @commands.command(brief='Unlocks the server')
+    @commands.command(aliases = ['unlockserver'], brief='Unlocks the server')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def serverunlock(self, ctx):
@@ -110,7 +110,7 @@ class moderation(commands.Cog):
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
 
-    @commands.command(brief='Locks the channel from messages')
+    @commands.command(aliases=['lockchannel'], brief='Locks the channel from messages')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def channellock(self, ctx):
@@ -122,7 +122,7 @@ class moderation(commands.Cog):
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
 
-    @commands.command(brief='Unlocks the channel')
+    @commands.command(aliases=['unlockchannel'], brief='Unlocks the channel')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def channelunlock(self, ctx):
