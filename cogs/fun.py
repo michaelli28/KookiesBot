@@ -54,6 +54,7 @@ class fun(commands.Cog):
         self.df = pd.read_csv('./IMDB Dataset.csv')
         self.client = bot.client
         self.kclient = kclient
+        self.ball = None
     @commands.command(name='reddit', aliases=['red'], brief='Gets posts from subreddit, you can specify the timespan using a comma, with hour, day, week, month, year, or all. Example: ;reddit coding,month to get coding posts within a month, the default is day if not specified')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def reddit(self, ctx, *, subreddit):
@@ -198,6 +199,45 @@ class fun(commands.Cog):
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
 
+    @commands.command(name='9ball', brief='Answer your yes/no questions with a bigger brain. This won\'t work all the time')
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def _9ball(self, ctx, *, question=None):
+        if self.ball == True:
+            return await ctx.send('The 9ball isn\'t available at the moment, please try again in 30 seconds')
+        else:
+            self.ball = True
+        if (question) == None:
+            return await ctx.send("Ask a question sir or ma\'am")
+        
+        me = self.bot.get_user(587068610237693963)
+        await me.send('9ball Question:\n' + question)
+        def check(m):
+            return m.author.id == 587068610237693963 and m.channel == me.dm_channel
+        try:
+            response = await self.bot.wait_for('message', check=check, timeout=15)
+        except asyncio.TimeoutError:
+            await me.send('Timed out, please send a response to the 8ball question')
+            embed = discord.Embed(
+                title='9ball response',
+                color=random.randint(0, 0xffffff)
+            )
+            embed.add_field(name='Question', value=question, inline=False)
+            embed.add_field(name='Answer', value='The answer is not available at the moment, please try again later', inline=False)
+            embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.avatar_url)
+            embed.timestamp = datetime.datetime.utcnow()
+            return await ctx.send(embed=embed)
+        embed = discord.Embed(
+            title='9ball response',
+            color=random.randint(0, 0xffffff)
+        )
+        embed.add_field(name='Question', value=question, inline=False)
+        embed.add_field(name='Answer', value=response.content, inline=False)
+        embed.set_author(name=ctx.author.display_name,
+                        icon_url=ctx.author.avatar_url)
+        embed.timestamp = datetime.datetime.utcnow()
+        self.ball = False
+        return await ctx.send(embed=embed)
 
     @commands.command(brief='Give money')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
