@@ -704,7 +704,9 @@ class moderation(commands.Cog):
                     return await ctx.send('You tried to unmute yourself when a mod muted you... it failed (this may be false)')
                 
                 await ctx.author.remove_roles(role)
-                await ctx.send('Unmuting!')
+                await ctx.send('Unmuting! (This is selfunmute)')
+                if doc['roles'] == None:
+                    return await ctx.send('Kookies has never muted you, although you may have the muted role')
                 for role in doc['roles']:
                     try:
                         if role == '@everyone':
