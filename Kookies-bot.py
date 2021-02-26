@@ -114,6 +114,7 @@ async def on_message(message):
 
             if str(message.guild.id) not in info:
                 return
+                
             elif info[str(message.guild.id)]['prune']:
                 await asyncio.sleep(int(info[str(message.guild.id)]['time']))
                 try:
