@@ -175,9 +175,9 @@ class music(commands.Cog):
 
             # bot.lavalink.add_node('kookiesll1.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             
-            bot.lavalink.add_node('kookiesll2.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            # bot.lavalink.add_node('kookiesll2.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             
-            # bot.lavalink.add_node('kookiesll3.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            bot.lavalink.add_node('kookiesll3.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
 
             bot.add_listener(bot.lavalink.voice_update_handler,
                             'on_socket_response')
@@ -518,7 +518,7 @@ class music(commands.Cog):
                     return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 
         except lavalink.exceptions.NodeException:
-            await ctx.send('Node not found, contacting owner for support... please wait while the owner shows up')
+            await ctx.send('Node not found, contacting owner for support...')
             me = await self.bot.fetch_user(587068610237693963)
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
@@ -622,7 +622,7 @@ class music(commands.Cog):
                     return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 
         except lavalink.exceptions.NodeException:
-            await ctx.send('Node not found, contacting owner for support... please wait while the owner shows up')
+            await ctx.send('Node not found, contacting owner for support...')
             me = await self.bot.fetch_user(587068610237693963)
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
@@ -695,7 +695,7 @@ class music(commands.Cog):
                     # await self.now(ctx)
                     return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
         except lavalink.exceptions.NodeException:
-            await ctx.send('Node not found, contacting owner for support... please wait while the owner shows up')
+            await ctx.send('Node not found, contacting owner for support...')
             me = await self.bot.fetch_user(587068610237693963)
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
@@ -768,7 +768,7 @@ class music(commands.Cog):
                     # await self.now(ctx)
                     return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
         except lavalink.exceptions.NodeException:
-            await ctx.send('Node not found, contacting owner for support... please wait while the owner shows up')
+            await ctx.send('Node not found, contacting owner for support...')
             me = await self.bot.fetch_user(587068610237693963)
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
             await me.send(f'Please restart the lavalink server, {ctx.author.name} in the server {ctx.guild.name} want\'s to use voice')
