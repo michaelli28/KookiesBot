@@ -102,7 +102,8 @@ class CommandErrorHandler(commands.Cog):
             except:
                 pass
             return await ctx.send(f'The maximum amount of **{ctx.command.name}** commands as been reached for **{ctx.guild.name}**, please wait')
-
+        elif isinstance(error, discord.errors.HTTPException):
+            return await ctx.send('There was an error with the message being sent, try again later')
         # elif isinstance(error, commands.CheckFailure):
         #     await ctx.send("You do not have permission to use this command")
 

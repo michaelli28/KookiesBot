@@ -175,9 +175,9 @@ class music(commands.Cog):
 
             # bot.lavalink.add_node('kookiesll1.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             
-            # bot.lavalink.add_node('kookiesll2.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            bot.lavalink.add_node('kookiesll2.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             
-            bot.lavalink.add_node('kookiesll3.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            # bot.lavalink.add_node('kookiesll3.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
 
             bot.add_listener(bot.lavalink.voice_update_handler,
                             'on_socket_response')
@@ -882,6 +882,7 @@ class music(commands.Cog):
                         return await ctx.send('Timed out after 120 seconds, cancelling')
                     if response.content.lower() in ['y','yes']:
                         await ctx.send('Overriding the old playlist')
+                        collection.find_one_and_delete({'id':ctx.author.id,'name':name})
                     else:
                         return await ctx.send('Cancelling the override')
 
