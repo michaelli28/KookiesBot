@@ -482,10 +482,10 @@ class moderation(commands.Cog):
 
                 
         embed = discord.Embed(
-            title=f"{member.display_name}'s Permissions", description=permstr, color=0x2F3136
+            title=f"{member.display_name}'s Permissions", description=permstr, color=random.randint(0,0xffffff)
         )
-        embed.set_author(name=ctx.author.display_name,
-                            icon_url=ctx.author.avatar_url)
+        embed.set_author(name=member.display_name,
+                            icon_url=member.avatar_url)
 
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)

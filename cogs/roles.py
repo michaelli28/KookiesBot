@@ -48,11 +48,11 @@ class roles(commands.Cog):
         self.bot = bot
 
 
-    @commands.command(aliases=['ar'], brief='Gives someone a role, need manage roles')
+    @commands.command(aliases=['ar'], brief='Gives someone a role, need manage roles permission, if the user has a space in the name, mention them or')
     # This must be exactly the name of the appropriate role
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def addrole(self, ctx, user: Union[discord.Member, str], *, role: discord.Role):
+    async def addrole(self, ctx, user: Union[discord.Member, str], role: discord.Role):
         # rindex = 0
         # for char in role:
         #     try:
@@ -101,7 +101,7 @@ class roles(commands.Cog):
     @commands.command(aliases=['rr'], brief='Removes a role, need manage roles')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def removerole(self, ctx, user: Union[discord.Member, str], *, role: discord.Role):
+    async def removerole(self, ctx, user: Union[discord.Member, str], role: discord.Role):
         # rindex = 0
         # for char in role:
         #     try:
@@ -143,7 +143,7 @@ class roles(commands.Cog):
             return await ctx.send('I\'m not allowed to do that')
 
 
-    @commands.command(aliases=['cr'], brief='Creates a role; Using `random` for color sets a random color, use _ as spaces')
+    @commands.command(aliases=['cr'], brief='Creates a role; Using `random` for color sets a random color')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def createrole(self, ctx, name, color=None, permission=None):
@@ -180,7 +180,7 @@ class roles(commands.Cog):
     @commands.command(aliases=['dr'], brief='Deletes a role')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def deleterole(self, ctx, *, role: discord.Role):
+    async def deleterole(self, ctx, role: discord.Role):
         if ctx.author.top_role.position <= role.position:
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send(f'Your role position isn\'t high enough to delete role **{role.name}**')
@@ -194,7 +194,7 @@ class roles(commands.Cog):
     @commands.command(aliases=['rn'], brief='Edits a role\'s name')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def rolename(self, ctx, name, *, newname: str = None):
+    async def rolename(self, ctx, role: discord.Role, newname: str = None):
         
         # if mentionable != None:
         #         await r.edit(mentionable=mentionable)
@@ -206,25 +206,28 @@ class roles(commands.Cog):
         
         if newname == None:
             return await ctx.send('You need to specify the new name to change to')
-        rindex = 0
-        for _ in name:
-            try:
-                name.find('_')
-                rindex += 1
-            except:
-                pass
+        # rindex = 0
+        # for _ in name:
+        #     try:
+        #         name.find('_')
+        #         rindex += 1
+        #     except:
+        #         pass
         
-        r = name.replace('_', " ", rindex)
-        r = get(ctx.message.guild.roles, name=r)
-        if r == None:
-            return await ctx.send(f'{name} is not a role')
+        # r = name.replace('_', " ", rindex)
+        # r = get(ctx.message.guild.roles, name=r)
+        # if r == None:
+        #     return await ctx.send(f'{name} is not a role')
+        
+        r = role
+        pname = r.name
         if ctx.author.top_role.position <= r.position:
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send(f'Your role position isn\'t high enough to rename role **{r.name}**')
         try:
             await r.edit(name = newname)
             if newname != None:
-                await ctx.send(f'Changed the name of role {r} to `{newname}`') 
+                await ctx.send(f'Changed the name of role {pname} to `{newname}`') 
             return
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
@@ -232,51 +235,54 @@ class roles(commands.Cog):
     @commands.command(aliases=['rp'], brief='Edits a role\'s position')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def roleposition(self, ctx, name, position: int = None):
+    async def roleposition(self, ctx, role: discord.Role, position: int = None):
         if position == None:
             return await ctx.send('You need to specify the new position to change to')
-        rindex = 0
+        # rindex = 0
         
-        for _ in name:
-            try:
-                name.find('_')
-                rindex += 1
-            except:
-                pass
+        # for _ in name:
+        #     try:
+        #         name.find('_')
+        #         rindex += 1
+        #     except:
+        #         pass
         
-        r = name.replace('_', " ", rindex)
-        r = get(ctx.message.guild.roles, name=r)
+        # r = name.replace('_', " ", rindex)
+        # r = get(ctx.message.guild.roles, name=r)
+        r=role
+        ppos = r.position
         if ctx.author.top_role.position <= r.position or ctx.author.top_role.position <= position:
             return await ctx.send(f'You do not have permissions to change this role. Your top role position **{ctx.author.top_role.position}** is less than or equal to {r.name}\'s (**{r.position}**) or the position you are trying to change {r.name} to is more than or equal to your role position ')
-        if r == None:
-            return await ctx.send(f'{name} is not a role')
+        # if r == None:
+        #     return await ctx.send(f'{name} is not a role')
         try:
             await r.edit(position = position)
 
             if position != None:
-                await ctx.send(f'Changed the position of role {r} to `{position}`')
+                await ctx.send(f'Changed the position of role {r} from {ppos} to `{position}`')
             return
         except discord.errors.HTTPException:
             return await ctx.send('Missing permissions')
     @commands.command(aliases=['rm'], brief='Edits a role\'s mentionability')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def rolemention(self, ctx, name, mentionable: bool = None):
+    async def rolemention(self, ctx, role: discord.Role, mentionable: bool = None):
 
         if mentionable == None:
             return await ctx.send('You need to specify the new mentionability to change to')
-        rindex = 0
-        for _ in name:
-            try:
-                name.find('_')
-                rindex += 1
-            except:
-                pass
+        # rindex = 0
+        # for _ in name:
+        #     try:
+        #         name.find('_')
+        #         rindex += 1
+        #     except:
+        #         pass
         
-        r = name.replace('_', " ", rindex)
-        r = get(ctx.message.guild.roles, name=r)
-        if r == None:
-            return await ctx.send(f'{name} is not a role')
+        # r = name.replace('_', " ", rindex)
+        # r = get(ctx.message.guild.roles, name=r)
+        # if r == None:
+        #     return await ctx.send(f'{name} is not a role')
+        r = role
         if ctx.author.top_role.position <= r.position:
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send(f'Your role position isn\'t high enough to change role mentionability of role **{r.name}**')
@@ -291,22 +297,23 @@ class roles(commands.Cog):
     @commands.command(aliases=['rh'], brief='Sets the role hoist (shown separately on member list or not)')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def rolehoist(self, ctx, name, hoist: bool = None):
+    async def rolehoist(self, ctx, role: discord.Role, hoist: bool = None):
         if hoist == None:
             return await ctx.send('You need to specify if the role is shown separately in the memberlist')
 
-        rindex = 0
-        for _ in name:
-            try:
-                name.find('_')
-                rindex += 1
-            except:
-                pass
+        # rindex = 0
+        # for _ in name:
+        #     try:
+        #         name.find('_')
+        #         rindex += 1
+        #     except:
+        #         pass
 
-        r = name.replace('_', " ", rindex)
-        r = get(ctx.message.guild.roles, name=r)
-        if r == None:
-            return await ctx.send(f'{name} is not a role')
+        # r = name.replace('_', " ", rindex)
+        # r = get(ctx.message.guild.roles, name=r)
+        # if r == None:
+        #     return await ctx.send(f'{name} is not a role')
+        r=role
         if ctx.author.top_role.position <= r.position:
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send(f'Your role position isn\'t high enough to change role hoist of role **{r.name}**')
@@ -319,7 +326,7 @@ class roles(commands.Cog):
         except discord.Forbidden:
             return await ctx.send('I don\'t have the permissions to do that')
 
-    @commands.command(aliases=['rc'], brief='Adds a role claim message, put 2 quotation marks around roles with spaces like this: ;rc toxic "pro player" "discord user" nerd')
+    @commands.command(aliases=['rc'], brief='Adds a role claim message, put 2 quotation marks around roles with spaces like this: ;rc toxic "person 1" "discord user" person2')
     @commands.has_permissions(manage_roles=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def roleclaim(self, ctx, *roles: discord.Role):
