@@ -264,8 +264,8 @@ class music(commands.Cog):
             player = event.player
             channel = self.bot.get_channel(player.fetch(guild_id))
             player.delete(guild_id)
-            activity = discord.Game(name=";help")
-            await self.bot.change_presence(activity=activity)
+            # activity = discord.Game(name=";help")
+            # await self.bot.change_presence(activity=activity)
             await channel.send('Queue ended, leaving channel')
             return await self.connect_to(guild_id, None)
         if isinstance(event, lavalink.events.TrackStartEvent):
@@ -326,7 +326,7 @@ class music(commands.Cog):
             em.timestamp = datetime.datetime.utcnow()
             await channel.send(embed=em)
 
-            await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+            # await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
             return 
 
     async def cog_before_invoke(self, ctx):
@@ -449,7 +449,8 @@ class music(commands.Cog):
                         await player.reset_equalizer()
                         await msg.delete(delay=1)
                         # await self.now(ctx)
-                        return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                        return
+                        # return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 
                 if not query.startswith('http'):
                     query = f'ytsearch:{query}'
@@ -515,7 +516,8 @@ class music(commands.Cog):
                     await player.reset_equalizer()
                     await msg.delete(delay=1)
                     # await self.now(ctx)
-                    return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                    return
+                    # return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
 
         except lavalink.exceptions.NodeException:
             await ctx.send('Node not found, contacting owner for support...')
@@ -619,7 +621,8 @@ class music(commands.Cog):
                     await player.reset_equalizer()
                     await msg.delete(delay=1)
                     # await self.now(ctx)
-                    return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                    # return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                    return
 
         except lavalink.exceptions.NodeException:
             await ctx.send('Node not found, contacting owner for support...')
@@ -693,7 +696,9 @@ class music(commands.Cog):
                     await player.reset_equalizer()
                     await msg.delete(delay=1)
                     # await self.now(ctx)
-                    return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                    # return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                    return
+
         except lavalink.exceptions.NodeException:
             await ctx.send('Node not found, contacting owner for support...')
             me = await self.bot.fetch_user(587068610237693963)
@@ -766,7 +771,9 @@ class music(commands.Cog):
                     await player.reset_equalizer()
                     await msg.delete(delay=1)
                     # await self.now(ctx)
-                    return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                    # return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                    return
+
         except lavalink.exceptions.NodeException:
             await ctx.send('Node not found, contacting owner for support...')
             me = await self.bot.fetch_user(587068610237693963)
@@ -861,7 +868,8 @@ class music(commands.Cog):
                     await player.reset_equalizer()
                     await msg.delete(delay=1)
                     # await self.now(ctx)
-                    return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                    # return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+                    return
                 return
 
             elif operation.lower() in ['save', 'add']:
@@ -1017,7 +1025,8 @@ class music(commands.Cog):
                 text=f"Requested by: {requester}", icon_url=requester.avatar_url)
             em.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=em)
-            return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+            # return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
+            return
         else:
             return await ctx.send('Not playing anything :mute:')
 
@@ -1181,8 +1190,8 @@ class music(commands.Cog):
         # Stop the current track so Lavalink consumes less resources.
         await player.stop()
         # Disconnect from the voice channel.
-        activity = discord.Game(name=";help")
-        await self.bot.change_presence(activity=activity)
+        # activity = discord.Game(name=";help")
+        # await self.bot.change_presence(activity=activity)
         await ctx.send('Stopping :mute:')
         return await self.connect_to(ctx.guild.id, None)
         

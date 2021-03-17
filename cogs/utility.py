@@ -289,6 +289,8 @@ class util(commands.Cog):
                          icon_url=ctx.author.avatar_url)
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
+        # ext = 'gif' if user.is_avatar_animated() else 'png'
+        # await ctx.send(file=discord.File(BytesIO(await user.avatar_url.read()), f"{user.id}.{ext}"))
 
     @commands.command(name='serverinfo', aliases=['server', 'sinfo'], brief='Gets info about the server')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
