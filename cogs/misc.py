@@ -244,7 +244,7 @@ class misc(commands.Cog):
         else:
             if times < 1:
                 return await ctx.send('I can\'t send a message less than once!')
-            for i in range(times):
+            for _ in range(times):
                 await ctx.send(message)
             return await ctx.send('Done!', delete_after=2)
 

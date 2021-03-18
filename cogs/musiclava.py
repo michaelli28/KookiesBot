@@ -349,7 +349,7 @@ class music(commands.Cog):
         # if not ctx.author.voice or not ctx.author.voice.channel:
         #     raise commands.CommandInvokeError('Join a voice channel first :loud_stop'sound:')
         not_connect = ctx.command.name in ('volume', 'disconnect', 'stop', 'join', 'pause', 'resume')
-        if ctx.command.name in ['lyrics']:
+        if ctx.command.name in ['lyrics', 'searchlyrics']:
             return
         if not player.is_connected:
             if not should_connect and not not_connect:
@@ -1204,7 +1204,7 @@ class music(commands.Cog):
         player.queue.clear()
         return await ctx.send(f'Cleared {num} songs from the queue')
 
-    @commands.command(name='lyrics', aliases=['ly'], brief='Get the lyrics of a song')
+    @commands.command(name='lyrics', aliases=['ly'], brief='Get the lyrics of a song, if the lyrics given are incorrect, use the searchlyrics command')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def get_lyrics(self, ctx, *, query: str = ""):
         if not query:
@@ -1224,6 +1224,63 @@ class music(commands.Cog):
             result = results[0]
             embed = discord.Embed(title=f'{result.name} - {result.artist}',
                                   color=random.randint(0,0xffffff), description=lyrics[:2048])
+            embed.set_thumbnail(url=result.album_art)
+            embed.set_author(name="Lyrics:")
+            embed.timestamp = datetime.datetime.utcnow()
+            lyrics = lyrics[2048:]
+            embeds = [embed]  # create embeds' list for long lyrics
+            while len(lyrics) > 0 and len(embeds) < 10:  # limiting embeds to 10
+                embed = discord.Embed(color=random.randint(0,0xffffff), description=lyrics[:2048])
+                lyrics = lyrics[len(embeds)*2048:]
+                embed.timestamp = datetime.datetime.utcnow()
+                embeds.append(embed)
+            # set footer for last embed
+            embeds[-1].set_footer(text="Source: KSoft.Si")
+            for embed in embeds:
+                await ctx.send(embed=embed)
+            
+            return
+
+    @commands.command(name='searchlyrics', aliases=['sly'], brief='Get the lyrics of a song, but with multiple options given')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def searchly(self, ctx, number: Optional[int]=3, *, query: str = ""):
+        if number > 10:
+            return await ctx.send('The amount of lyrics cannot exceed 10')
+        if not query:
+            player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+
+            if not player.is_playing:
+                return await ctx.send('I\'m not currently playing anything :warning:')
+            query = player.current.title
+
+        try:
+            async with ctx.typing():
+                Results = await self.kclient.music.lyrics(query, limit=number)
+        except ksoftapi.NoResults:
+            await ctx.send(f'No lyrics found for `{query}`')
+        else:
+            embed = discord.Embed(title=f'Lyrics for the Song `{query}`', description='React with the number to get the lyrics for that song', color=random.randint(0,0xffffff))
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            timestamp = datetime.datetime.utcnow()
+            embed.timestamp = timestamp
+            for i in range(len(Results)):
+                embed.add_field(name=f'{i+1})', value=f'{Results[i].name}-{Results[i].artist}', inline=False)
+            msg = await ctx.send(embed=embed)
+            reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣',
+                    '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+            for i in range(len(Results)):
+                await msg.add_reaction(reactions[i])
+            def check(reaction,user):
+                return user == ctx.author and reaction.emoji in reactions and reaction.message == msg
+            try:
+                reaction,user = await self.bot.wait_for('reaction_add', check=check, timeout=20)
+            except asyncio.TimeoutError:
+                return await ctx.send("Timed out please try again")
+            em = reactions.index(reaction.emoji)
+            lyrics = Results[em].lyrics
+            result = Results[em]
+            embed = discord.Embed(title=f'{result.name} - {result.artist}',
+                                color=random.randint(0,0xffffff), description=lyrics[:2048])
             embed.set_thumbnail(url=result.album_art)
             embed.set_author(name="Lyrics:")
             embed.timestamp = datetime.datetime.utcnow()

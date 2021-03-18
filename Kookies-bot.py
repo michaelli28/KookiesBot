@@ -39,6 +39,9 @@ PREFIX = ';'
 #᲼᲼᲼᲼᲼᲼#
 intents = discord.Intents.all()
 
+os.environ['JISHAKU_NO_UNDERSCORE'] = 'True'
+os.environ['JISHAKU_RETAIN'] = 'True'
+
 async def startup():
     await bot.wait_until_ready()
     activity = discord.Game(name=";help")
