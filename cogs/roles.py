@@ -71,12 +71,22 @@ class roles(commands.Cog):
             async with ctx.typing():
                 try:
                     #r = get(ctx.guild.roles, name=r)
-                    
+                    people = []
                     for person in ctx.guild.members:
                         if r in person.roles:
-                            await ctx.send(f'{person.display_name} already has role {r.name}')
+                            people.append(f'{person.display_name}')
+
+                            # await ctx.send(f'{person.display_name} already has role {r.name}')
                             continue
                         await person.add_roles(r)
+                    msg = ''
+                    for p in people:
+                        msg += p
+                        msg += ', '
+                    msg = msg[0:-2]
+                    
+                    msg += f' already has/have the role {r.name}'
+                    await ctx.send(msg)
 
                     return await ctx.send(f'Gave everyone the {r} role')
                 except AttributeError:
@@ -91,10 +101,11 @@ class roles(commands.Cog):
                 else:
                     await user.add_roles(r)
                     return await ctx.send(f'`{r}` role was given to `{user.display_name}`')
-            except AttributeError:
-                return await ctx.send('That is not a valid role')
             except BadArgument:
                 return await ctx.send(f'`{user.display_name}` user not found')
+            except AttributeError:
+                return await ctx.send('That is not a valid role or the person you passed in isn\'t a user or you spelled everyone wrong')
+
             except discord.Forbidden:
                 return await ctx.send('I\'m not allowed to do that')
 
@@ -120,13 +131,23 @@ class roles(commands.Cog):
             async with ctx.typing():
                 try:
                     #r = get(ctx.guild.roles, name=r)                    
+                    people = []
                     for person in ctx.guild.members:
-                        if r not in person.roles:
-                            await ctx.send(f'{person.display_name} doesn\'t have role {r.name}')
-                            continue
+                        if r in person.roles:
+                            people.append(f'{person.display_name}')
 
+                            # await ctx.send(f'{person.display_name} already has role {r.name}')
+                            continue
                         await person.remove_roles(r)
+                    msg = ''
+                    for p in people:
+                        msg += p
+                        msg += ', '
+                    msg = msg[0:-2]
+                    msg += f' don\'t has/have the role {r.name}'
+                    await ctx.send(msg)
                     return await ctx.send(f'Everyone\'s {r} role has been removed')
+
                 except AttributeError:
                     return await ctx.send('That is not a valid role')
                 except discord.Forbidden:
@@ -135,10 +156,11 @@ class roles(commands.Cog):
             #r = get(ctx.guild.roles, name=r)
             await user.remove_roles(r)
             await ctx.send(f'`{r}` role was removed from `{user.display_name}`')
-        except AttributeError:
-            return await ctx.send('That is not a valid role')
         except BadArgument:
             return await ctx.send(f'`{user}` user not found')
+        except AttributeError:
+            return await ctx.send('That is not a valid role or the person you passed in isn\'t a user or you spelled everyone wrong')
+
         except discord.Forbidden:
             return await ctx.send('I\'m not allowed to do that')
 

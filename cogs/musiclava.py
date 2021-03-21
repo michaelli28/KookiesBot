@@ -427,7 +427,16 @@ class music(commands.Cog):
                         query = f'ytsearch:{i}'
                         results = await player.node.get_tracks(query)
                         if not results or not results['tracks']:
-                            await ctx.send(f'The song {i} in your playlist was not found')
+                            q = i.split(' - ')
+                            qu = q[1]
+                            qu += ' - '
+                            qu += q[0]
+                            query = f'ytsearch:{qu}'
+                            results = await player.node.get_tracks(query)
+                            if not results or not results['tracks']:
+                                await ctx.send(f'The song {i} in your playlist was not found, try adding the song manually')
+                            else:
+                                player.add(requester=ctx.author.id, track=results['tracks'][0])
                         else:
                             player.add(requester=ctx.author.id, track=results['tracks'][0])
                     
