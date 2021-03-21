@@ -237,8 +237,8 @@ class misc(commands.Cog):
             return await ctx.send('Please respond the number of times you would like to spam the message next time')
         try:
             times = int(msg.content)
-            # if times > 50 and str(ctx.author.id) != '587068610237693963':
-            #     return await ctx.send('Number of messages must be below 50, ask owner')
+            if times > 50 and str(ctx.author.id) != '587068610237693963':
+                return await ctx.send('Number of messages must be below 50, ask owner')
         except:
             return await ctx.send('The number of times must be an integer')
         else:
