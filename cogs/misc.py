@@ -64,8 +64,9 @@ class misc(commands.Cog):
     @commands.command(aliases=['botinvite'], brief='Sends an invite link')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def invite(self, ctx):
-        perms = discord.Permissions(administrator=True)
-        return await ctx.send(f"Use this URL to invite me\n<{discord.utils.oauth_url(self.bot.user.id,permissions=perms)}>")
+        # perms = discord.Permissions(administrator=True)
+        # return await ctx.send(f"Use this URL to invite me\n<{discord.utils.oauth_url(self.bot.user.id,permissions=perms)}>")
+        return await ctx.send(f"Use this URL to invite me \n<https://discord.com/api/oauth2/authorize?client_id=743859420798124043&permissions=0&scope=applications.commands%20bot>")
 
     async def _join(self, ctx: commands.Context):
         """Joins a voice channel"""

@@ -28,6 +28,11 @@ from time import time
 from aiohttp import ClientSession
 import io
 import logging
+import discord_slash
+from discord_slash import SlashCommand
+from discord_slash.utils.manage_commands import create_option, create_choice
+
+
 #import jishaku
 # from dotenv import load_dotenv
 # load_dotenv()
@@ -60,10 +65,16 @@ async def startup():
     bot.load_extension('cogs.utility')
     bot.load_extension('cogs.games')
     bot.load_extension('jishaku')
+    # bot.load_extension('cogs.slash')
     #bot.load_extension('cogs.school')
 
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True, intents=intents, owner_id=587068610237693963)
+
+slash = SlashCommand(bot, sync_commands=True, override_type=True)
+# bot.load_extension('cogs.slash')
+
+
 bot.loop.create_task(startup())
 # 630499390938808379 hurb id
 
