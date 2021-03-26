@@ -26,3 +26,4 @@ gtts
 spotipy
 youtube-python
 psutil
+discord-py-slash-command

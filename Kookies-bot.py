@@ -72,6 +72,7 @@ async def startup():
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True, intents=intents, owner_id=587068610237693963)
 
 slash = SlashCommand(bot, sync_commands=True, override_type=True)
+bot.load_extension('cogs.slash')
 # bot.load_extension('cogs.slash')
 
 

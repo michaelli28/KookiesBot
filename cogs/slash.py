@@ -20,14 +20,29 @@ class slash(commands.Cog):
         await ctx.send(f"Pong! ({self.bot.latency*1000}ms)")
 
     @cog_ext.cog_slash(name="test",
+                guild_ids=guild_ids,
+                description="This is just a test command, nothing more.",
+                options=[
+                create_option(
+                    name="optone",
+                    description="This is the first option we have.",
+                    option_type=3,
+                    required=False
+                )
+                ])
+    async def test(self,ctx, optone: str):
+        await ctx.respond()
+        return await ctx.send(content=f"I got you, you said {optone}!")
+
+    @cog_ext.cog_slash(name="testing",
             guild_ids=guild_ids,
             description="This is just a test command, nothing more.",
             options=[
             create_option(
-                name="optonee",
+                name="optone",
                 description="This is the first option we have.",
                 option_type=3,
-                required=True,
+                required=False,
                 choices=[
                 create_choice(
                     name="ChoiceOne",
@@ -40,34 +55,9 @@ class slash(commands.Cog):
                 ]
             )
             ])
-    async def test(self,ctx, optonee: str='test'):
+    async def testing(self, ctx, optone: str):
         await ctx.respond()
-        return await ctx.send(content=f"I got you, you saiddd {optonee}!")
-
-    # @cog_ext.cog_slash(name="testing",
-    #         guild_ids=guild_ids,
-    #         description="This is just a test command, nothing more.",
-    #         options=[
-    #         create_option(
-    #             name="optone",
-    #             description="This is the first option we have.",
-    #             option_type=3,
-    #             required=False,
-    #             choices=[
-    #             create_choice(
-    #                 name="ChoiceOne",
-    #                 value="DOGE!"
-    #             ),
-    #             create_choice(
-    #                 name="ChoiceTwo",
-    #                 value="NO DOGE"
-    #             )
-    #             ]
-    #         )
-    #         ])
-    # async def testing(self, ctx, optone: str):
-    #     await ctx.respond()
-    #     await ctx.send(content=f"Wow, you actually chose {optone}? :(")
+        await ctx.send(content=f"Wow, you actually chose {optone}? :(")
 
 def setup(bot):
     bot.add_cog(slash(bot))
