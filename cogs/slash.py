@@ -16,8 +16,8 @@ class slash(commands.Cog):
 
     @cog_ext.cog_slash(name="ping", guild_ids=guild_ids, description = 'description here')
     async def _ping(self,ctx):
-        await ctx.respond()
-        await ctx.send(f"Pong! ({self.bot.latency*1000}ms)")
+        # await ctx.defer()
+        return await ctx.send(f"Pong! ({self.bot.latency*1000}ms)")
 
     @cog_ext.cog_slash(name="test",
                 guild_ids=guild_ids,
@@ -31,7 +31,7 @@ class slash(commands.Cog):
                 )
                 ])
     async def test(self,ctx, optone: str):
-        await ctx.respond()
+        # await ctx.defer()
         return await ctx.send(content=f"I got you, you said {optone}!")
 
     @cog_ext.cog_slash(name="testing",
@@ -56,8 +56,8 @@ class slash(commands.Cog):
             )
             ])
     async def testing(self, ctx, optone: str):
-        await ctx.respond()
-        await ctx.send(content=f"Wow, you actually chose {optone}? :(")
+        # await ctx.defer()
+        return await ctx.send(content=f"Wow, you actually chose {optone}? :(")
 
 def setup(bot):
     bot.add_cog(slash(bot))
