@@ -133,7 +133,7 @@ class roles(commands.Cog):
                     #r = get(ctx.guild.roles, name=r)                    
                     people = []
                     for person in ctx.guild.members:
-                        if r in person.roles:
+                        if r not in person.roles:
                             people.append(f'{person.display_name}')
 
                             # await ctx.send(f'{person.display_name} already has role {r.name}')
