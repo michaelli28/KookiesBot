@@ -80,15 +80,18 @@ class roles(commands.Cog):
                             continue
                         await person.add_roles(r)
                     msg = ''
-                    for p in people:
-                        msg += p
-                        msg += ', '
-                    msg = msg[0:-2]
-                    
-                    msg += f' already has/have the role {r.name}'
-                    await ctx.send(msg)
+                    if len(people) == 0:
+                        return await ctx.send(f'Gave everyone the {r} role')
+                    else:
+                        for p in people:
+                            msg += p
+                            msg += ', '
+                        msg = msg[0:-2]
+                        
+                        msg += f' already has/have the role {r.name}'
+                        await ctx.send(msg)
 
-                    return await ctx.send(f'Gave everyone the {r} role')
+                        return await ctx.send(f'Gave everyone the {r} role')
                 except AttributeError:
                     return await ctx.send('That is not a valid role')
                 except discord.Forbidden:
@@ -140,13 +143,16 @@ class roles(commands.Cog):
                             continue
                         await person.remove_roles(r)
                     msg = ''
-                    for p in people:
-                        msg += p
-                        msg += ', '
-                    msg = msg[0:-2]
-                    msg += f' don\'t has/have the role {r.name}'
-                    await ctx.send(msg)
-                    return await ctx.send(f'Everyone\'s {r} role has been removed')
+                    if len(people) == 0:
+                        return await ctx.send(f'Everyone\'s {r} role has been removed')
+                    else:
+                        for p in people:
+                            msg += p
+                            msg += ', '
+                        msg = msg[0:-2]
+                        msg += f' don\'t has/have the role {r.name}'
+                        await ctx.send(msg)
+                        return await ctx.send(f'Everyone\'s {r} role has been removed')
 
                 except AttributeError:
                     return await ctx.send('That is not a valid role')
