@@ -460,7 +460,7 @@ class util(commands.Cog):
         em.set_thumbnail(url=user.avatar_url)
         em.set_author(name=user, icon_url=user.avatar_url)
         em.timestamp = datetime.datetime.utcnow()
-        print(em.to_dict())
+
         return await ctx.send(embed=em)
 
     @commands.command(name='restart')
