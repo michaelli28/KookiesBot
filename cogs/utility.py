@@ -440,12 +440,18 @@ class util(commands.Cog):
             em.add_field(name='Status', value=f'{user.status}')
             em.add_field(name='In Voice', value=f'{voice_state}')
             em.add_field(name='Activity', value=f'{activity}')
+
             em.add_field(name='Highest Role', value=f'{role}')
+
             rolesMsg = ''
             for role in user.roles:
                 if role.name != '@everyone':
                     rolesMsg += str(role) + ', '
-            em.add_field(name='Roles', value=rolesMsg[:-2], inline=False)
+            if len(rolesMsg)>0:
+                em.add_field(name='Roles', value=rolesMsg[:-2], inline=False)
+            else:
+                em.add_field(name='Roles', value='None', inline=False)
+
         em.add_field(name='Account Created',
                      value=f"{user.created_at.__format__('%A, %d %B %Y @ %H:%M:%S')}", inline=False)
         if isinstance(user, discord.Member):
@@ -454,7 +460,7 @@ class util(commands.Cog):
         em.set_thumbnail(url=user.avatar_url)
         em.set_author(name=user, icon_url=user.avatar_url)
         em.timestamp = datetime.datetime.utcnow()
-
+        print(em.to_dict())
         return await ctx.send(embed=em)
 
     @commands.command(name='restart')
