@@ -164,6 +164,32 @@ class moderation(commands.Cog):
         #                     if 'weary' in message.content or 'moan' in message.content or '😩' in message.content:
         #                         await message.delete()
         #                         await message.channel.send(f'{message.author.mention}, That word/emoji has been banned')
+        # me = ['you', 'micha', 'michael', 'mocha', 'u', 'yu', 'micheal', 'mich', 'miche', 'mical']
+        # me_said = False
+        # voices = ['voice', 'voic3','v o i c e', 'v0ic3', 'v0ice', 'v o i ce', 'vo i ce', 'vo ic e', 'voi c e', 'voi ce', 'vo i c e']
+        # first = False
+        # letters = ['v','o','i','c','e']
+        # second = True
+        # if message:
+        #     if message.author != self.bot.user:
+        #         if message.guild.id == 751137949420224642: #my guild
+        #             for word in voices:
+        #                 if word in message.content.lower():
+        #                     await message.delete()
+                    #         first = True
+                    # if not first:
+                    #     for letter in letters:
+                    #         if letter not in message.content.lower():
+                    #             second = False
+                    #     if second:
+                    #         await message.delete()
+
+                    # if message.author.id != 587068610237693963: #me
+                    # for word in me:
+                    #     if word in message.content.lower():
+                    #         me_said = True
+                    # if 'voice' in message.content.lower() and me_said:
+                    #     await message.delete()
 
         now = datetime.datetime.utcnow()
         current_time = now.strftime("%H:%M|%m/%d/%Y")
