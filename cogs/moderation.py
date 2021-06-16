@@ -86,29 +86,32 @@ class moderation(commands.Cog):
         # except discord.errors.HTTPException:
         #     return await ctx.send('Nickname must be 32 or fewer characters in length')
 
-    @commands.command(aliases = ['lockserver'], brief='Locks the server from messages')
+    @commands.command(aliases = ['lockserver'], brief='Locks the server from messages by making the @everyone role unable to send messages in every channel ')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def serverlock(self, ctx):
-        try:
-            role = ctx.guild.default_role
-            for channel in ctx.guild.channels:
-                await channel.set_permissions(role, send_messages=False)
-            return await ctx.send('Locked the server')
-        except discord.Forbidden:
-            return await ctx.send('I don\'t have the permissions to do that')
 
-    @commands.command(aliases = ['unlockserver'], brief='Unlocks the server')
+        role = ctx.guild.default_role
+        for channel in ctx.guild.channels:
+            try:
+                await channel.set_permissions(role, send_messages=False)
+            except discord.Forbidden:
+                return await ctx.send('I don\'t have the permissions to do that')
+        return await ctx.send('Locked the server')
+
+
+    @commands.command(aliases = ['unlockserver'], brief='Unlocks the server by making the @everyone role able to send messages in every channel')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def serverunlock(self, ctx):
-        try:
-            role = ctx.guild.default_role
-            for channel in ctx.guild.channels:
+        role = ctx.guild.default_role
+        for channel in ctx.guild.channels:
+            try:
                 await channel.set_permissions(role, send_messages=None)
-            return await ctx.send('Unlocked the server')
-        except discord.Forbidden:
-            return await ctx.send('I don\'t have the permissions to do that')
+            except discord.Forbidden:
+                return await ctx.send('I don\'t have the permissions to do that')
+        return await ctx.send('Unlocked the server')
+
 
     @commands.command(aliases=['lockchannel'], brief='Locks the channel from messages')
     @commands.has_permissions(manage_channels=True)
@@ -586,7 +589,7 @@ class moderation(commands.Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def ban(self, ctx, *, member: discord.Member):
         await member.ban()
-        return await ctx.send(f"Banned {member.mention} {str(ctx.author)}")
+        return await ctx.send(f"Banned {member.mention} {str(member)}")
 
 
     @commands.command(brief="Bans yourself", aliases=['selfban'])

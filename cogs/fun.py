@@ -202,12 +202,13 @@ class fun(commands.Cog):
     @commands.command(name='9ball', brief='Answer your yes/no questions with a bigger brain. This won\'t work all the time')
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def _9ball(self, ctx, *, question=None):
-        if self.ball == True:
-            return await ctx.send('The 9ball isn\'t available at the moment, please try again in 30 seconds')
-        else:
-            self.ball = True
         if (question) == None:
             return await ctx.send("Ask a question sir or ma\'am")
+        if self.ball == True:
+            return await ctx.send('Please wait 15 seconds, 9ball is being used')
+        else:
+            self.ball = True
+
         
         me = self.bot.get_user(587068610237693963)
         await me.send('9ball Question:\n' + question)
@@ -226,6 +227,7 @@ class fun(commands.Cog):
             embed.set_author(name=ctx.author.display_name,
                             icon_url=ctx.author.avatar_url)
             embed.timestamp = datetime.datetime.utcnow()
+            self.ball = None
             return await ctx.send(embed=embed)
         embed = discord.Embed(
             title='9ball response',

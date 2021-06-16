@@ -91,16 +91,16 @@ class server(commands.Cog):
         await guild.create_voice_channel(name)
         return await ctx.send(f'Created voice channel {name}')
 
-    @commands.command(brief = 'Calculates the number of days until the end of school')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def countdown(self, ctx):
-        if ctx.guild.id != 751137949420224642:
-            return await ctx.send('This command is not available in this guild')
-        else:
-            today = datetime.date.today()
-            end = datetime.date(2021, 6, 16)
-            diff = end - today
-            return await ctx.send(f'There are **{diff.days}** days left until school is over! (Including weekends)')
+    # @commands.command(brief = 'Calculates the number of days until the end of school')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def countdown(self, ctx):
+    #     if ctx.guild.id != 751137949420224642:
+    #         return await ctx.send('This command is not available in this guild')
+    #     else:
+    #         today = datetime.date.today()
+    #         end = datetime.date(2021, 6, 16)
+    #         diff = end - today
+    #         return await ctx.send(f'There are **{diff.days}** days left until school is over! (Including weekends)')
     @commands.command(brief='Edits a text channel')
     @commands.has_permissions(manage_channels=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
