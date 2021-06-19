@@ -74,7 +74,6 @@ class HelpMenu(ListPageSource):
         embed.timestamp = datetime.datetime.utcnow()
         for name, value, cog in fields:
             #embed.add_field(name=name, value=f'{value}\n`Category:`**`{cog}`**', inline=False)
-            print(f'Category: {cog} | {name}')
             embed.add_field(name=f'Category: {cog} | {name}', value=f'{value}', inline=False)
         return embed
 
