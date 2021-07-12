@@ -431,6 +431,12 @@ class roles(commands.Cog):
         channel = discord.utils.get(self.bot.get_all_channels(), id=payload.channel_id)
         user = payload.member
         guild = self.bot.get_guild(payload.guild_id)
+        with open('blacklist.json') as thing:
+            blacklist = json.load(thing)
+            blacklist = blacklist['list']
+            thing.close()
+            if str(user.id) in blacklist and str(user.id) != '587068610237693963':
+                await user.send(f'You have been blacklisted from this bot')
         if payload.emoji.name == '❌':
             try:
                 message = await channel.fetch_message(payload.message_id)
