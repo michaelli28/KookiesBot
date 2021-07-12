@@ -436,7 +436,7 @@ class roles(commands.Cog):
             blacklist = blacklist['list']
             thing.close()
             if str(user.id) in blacklist and str(user.id) != '587068610237693963':
-                await user.send(f'You have been blacklisted from this bot')
+                return await user.send(f'You have been blacklisted from this bot')
         if payload.emoji.name == '❌':
             try:
                 message = await channel.fetch_message(payload.message_id)
@@ -614,7 +614,14 @@ class roles(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
-
+        guild = self.bot.get_guild(payload.guild_id)
+        user = guild.get_member(payload.user_id)
+        with open('blacklist.json') as thing:
+            blacklist = json.load(thing)
+            blacklist = blacklist['list']
+            thing.close()
+            if str(user.id) in blacklist and str(user.id) != '587068610237693963':
+                return await user.send(f'You have been blacklisted from this bot')
         if payload.emoji.name == '1️⃣':
             # with open("roles.json", "r") as f:
             #     rolesjson = json.load(f)
