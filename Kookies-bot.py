@@ -116,7 +116,8 @@ async def on_message(message):
                 blacklist = json.load(thing)
                 blacklist = blacklist['list']
                 thing.close()
-            if str(message.author.id) in blacklist and str(message.author.id) != '587068610237693963':
+                
+            if (str(message.author.id) + " " + str(message.guild.id)) in blacklist and str(message.author.id) != '587068610237693963':
                 return await message.channel.send(f'{message.author.mention}, you have been blacklisted from this bot')
             else:
                 return await message.channel.send('no u', delete_after=5)

@@ -435,8 +435,9 @@ class roles(commands.Cog):
             blacklist = json.load(thing)
             blacklist = blacklist['list']
             thing.close()
-            if str(user.id) in blacklist and str(user.id) != '587068610237693963':
+            if (str(user.id) + " " + str(guild.id)) in blacklist and str(user.id) != '587068610237693963':
                 return await user.send(f'You have been blacklisted from this bot')
+
         if payload.emoji.name == '❌':
             try:
                 message = await channel.fetch_message(payload.message_id)
@@ -469,6 +470,7 @@ class roles(commands.Cog):
                 rolesR = result['roles']
                 if (not payload.member.bot):
                     user = payload.member
+                    print(user)
                     #role = get(user.guild.roles, name=rolesR[0])
                     role = guild.get_role(rolesR[0])
                     if role in user.roles:
@@ -620,7 +622,7 @@ class roles(commands.Cog):
             blacklist = json.load(thing)
             blacklist = blacklist['list']
             thing.close()
-            if str(user.id) in blacklist and str(user.id) != '587068610237693963':
+            if (str(user.id) + " " + str(guild.id)) in blacklist and str(user.id) != '587068610237693963':
                 return await user.send(f'You have been blacklisted from this bot')
         if payload.emoji.name == '1️⃣':
             # with open("roles.json", "r") as f:
