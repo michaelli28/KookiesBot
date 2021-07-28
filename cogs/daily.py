@@ -216,9 +216,9 @@ class daily(Cog):
                     f.close()
                 return
 
-    @commands.command(name='dailyleaderboard', aliases=['dlb, dailylb'], brief='Shows the daily xp leaderboard')
+    @commands.command(aliases=['dlb', 'dailylb'], brief='Shows the daily xp leaderboard')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def show_leaderboardD(self, ctx):
+    async def dailyleaderboard(self, ctx):
 
         async with ctx.typing():
             cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
@@ -243,7 +243,7 @@ class daily(Cog):
         menu1 = menu(source=HelpMenuD(ctx, sort))
         return await menu1.start(ctx)
 
-    @commands.command(aliases=['dailyxp, dxp, drank'], brief='Get your daily xp and level')
+    @commands.command(aliases=['dailyxp', 'dxp'], brief='Get your daily xp and level')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def dailyrank(self, ctx, author: discord.Member = None):
         async with ctx.typing():
