@@ -53,18 +53,27 @@ async def startup():
     await bot.change_presence(activity=activity)
     # bot.load_extension('cogs.Music2')
     bot.client = ClientSession()
-    bot.load_extension('cogs.CommandErrorHandler')
-    bot.load_extension('cogs.fun')
+    # bot.load_extension('cogs.CommandErrorHandler')
+    
     bot.load_extension('cogs.helpmenu')
-    bot.load_extension('cogs.levels')
-    bot.load_extension('cogs.moderation')
+    bot.load_extension('cogs.daily')
+    
+    # bot.load_extension('cogs.levels')
+    
     # bot.load_extension('cogs.musiclava')
+
+    bot.load_extension('cogs.fun')
+    bot.load_extension('cogs.moderation')
     bot.load_extension('cogs.roles')
     bot.load_extension('cogs.server')
     bot.load_extension('cogs.misc')
     bot.load_extension('cogs.utility')
-    bot.load_extension('cogs.games')
+
+    
+    # bot.load_extension('cogs.games')
+
     bot.load_extension('jishaku')
+
     # bot.load_extension('cogs.slash')
     #bot.load_extension('cogs.school')
 

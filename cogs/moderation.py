@@ -144,11 +144,11 @@ class moderation(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     async def klear(self, ctx, amount=1):
         if amount == 0:
-            ctx.send("You need to delete a message")
-        try:
-            await ctx.channel.purge(limit=amount+1)
-        except:
-            await ctx.send("Input a number please")
+            ctx.send("Must delete at least 1 message")
+        # try:
+        await ctx.channel.purge(limit=amount+1)
+        # except:
+        #     await ctx.send("Input a number please")
 
 
     

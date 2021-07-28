@@ -171,7 +171,7 @@ class roles(commands.Cog):
             return await ctx.send('I\'m not allowed to do that')
 
 
-    @commands.command(aliases=['cr'], brief='Creates a role; Using `random` for color sets a random color')
+    @commands.command(aliases=['cr'], brief='Creates a role; Using `random` for color sets a random color, use underscores for spaces in the role')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def createrole(self, ctx, name, color=None, permission=None):

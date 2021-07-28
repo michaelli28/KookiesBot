@@ -406,38 +406,38 @@ class fun(commands.Cog):
     #         map(lambda s: s.strip().capitalize(), data['insult'].split('.')))
     #     return await ctx.send(f"{user.mention} {insult_text}")
 
-    @commands.command(name='chat', aliases=['aichat'], brief = 'Starts ai chat mode, type bye to stop')
-    @commands.max_concurrency(3, commands.BucketType.guild)
-    @commands.cooldown(1, 30, commands.BucketType.user)
-    async def _aichat(self, ctx):
-        """Start AI chat mode"""
-        def check(m):
-            return m.author == ctx.author and not m.content.startswith(';')
+    # @commands.command(name='chat', aliases=['aichat'], brief = 'Starts ai chat mode, type bye to stop')
+    # @commands.max_concurrency(3, commands.BucketType.guild)
+    # @commands.cooldown(1, 30, commands.BucketType.user)
+    # async def _aichat(self, ctx):
+    #     """Start AI chat mode"""
+    #     def check(m):
+    #         return m.author == ctx.author and not m.content.startswith(';')
 
-        await ctx.send("Hello there!")
-        url = 'https://some-random-api.ml/chatbot'
-        while True:
-            try:
-                params = {'message': 'message'}
-                msg = await self.bot.wait_for('message', check=check, timeout=45)
-            except asyncio.TimeoutError:
-                return await ctx.send("See you later :wave:")
-            else:
-                if 'bye' in msg.content.lower():
-                    return await ctx.send("See you later :wave:")
-                else:
-                    params['message'] = msg.content
-                    try:
-                        async with ctx.typing():
-                            async with self.client.get(url, params=params) as r:
-                                response = await r.json()
-                                print(response)
-                                response = response['response']
-                    except KeyError:
-                        await ctx.send(response['error'])
-                        continue
-                    except discord.errors.HTTPException:
-                        await ctx.send(response['error'])
-                    await ctx.send(response)
+    #     await ctx.send("Hello there!")
+    #     url = 'https://some-random-api.ml/chatbot'
+    #     while True:
+    #         try:
+    #             params = {'message': 'message'}
+    #             msg = await self.bot.wait_for('message', check=check, timeout=45)
+    #         except asyncio.TimeoutError:
+    #             return await ctx.send("See you later :wave:")
+    #         else:
+    #             if 'bye' in msg.content.lower():
+    #                 return await ctx.send("See you later :wave:")
+    #             else:
+    #                 params['message'] = msg.content
+    #                 try:
+    #                     async with ctx.typing():
+    #                         async with self.client.get(url, params=params) as r:
+    #                             response = await r.json()
+    #                             print(response)
+    #                             response = response['response']
+    #                 except KeyError:
+    #                     await ctx.send(response['error'])
+    #                     continue
+    #                 except discord.errors.HTTPException:
+    #                     await ctx.send(response['error'])
+    #                 await ctx.send(response)
 def setup(bot):
 	bot.add_cog(fun(bot))
