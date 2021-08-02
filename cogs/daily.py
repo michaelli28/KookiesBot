@@ -137,9 +137,16 @@ class daily(Cog):
                 timestring = str(datetime.datetime.today().month)
                 timestring += str(datetime.datetime.today().day)
                 timestring += str(datetime.datetime.today().year)
-
-                collectionDaily = dbDaily[str(ctx.guild.id) + timestring]
-
+                if (str(ctx.guild.id) + timestring) not in dbDaily.list_collection_names():
+                    daysAgo = datetime.timedelta(days = 5)
+                    t2 = datetime.datetime.today() - daysAgo
+                    newTS = str(t2.month)
+                    newTS += str(t2.day)
+                    newTS += str(t2.year)
+                    oldCol = dbDaily
+                    collectionDaily = dbDaily[str(ctx.guild.id) + newTS]
+                    collectionDaily.drop()
+                
                 author = ctx.author.id
                 res = collection.find({})
                 resD = collectionDaily.find({})
@@ -274,11 +281,14 @@ class daily(Cog):
             embed = discord.Embed(color=random.randint(0, 0xffffff))
             embed.set_author(name='Rank')
             sort = sorted(res, key=itemgetter('Xp'), reverse=True)
+
             rank = 1
+
             for item in sort:
                 collection.update_one({'_id': item['_id']}, {
                                       "$set": {"rank": rank}})
                 rank += 1
+
             try:
                 embed.add_field(
                     name=f'Total Xp in {ctx.guild.name} for today!', value='**'+str(result['Xp'])+'**')
