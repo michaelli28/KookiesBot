@@ -138,14 +138,14 @@ class daily(Cog):
                 timestring += str(datetime.datetime.today().day)
                 timestring += str(datetime.datetime.today().year)
                 if (str(ctx.guild.id) + timestring) not in dbDaily.list_collection_names():
-                    daysAgo = datetime.timedelta(days = 5)
+                    daysAgo = datetime.timedelta(days = 3)
                     t2 = datetime.datetime.today() - daysAgo
-                    newTS = str(t2.month)
-                    newTS += str(t2.day)
-                    newTS += str(t2.year)
-                    oldCol = dbDaily
-                    collectionDaily = dbDaily[str(ctx.guild.id) + newTS]
-                    collectionDaily.drop()
+                    oldTS = str(t2.month)
+                    oldTS += str(t2.day)
+                    oldTS += str(t2.year)
+                    oldCol = dbDaily[str(ctx.guild.id) + oldTS]
+                    oldCol.drop()
+                collectionDaily = dbDaily[str(ctx.guild.id)+timestring]
                 
                 author = ctx.author.id
                 res = collection.find({})

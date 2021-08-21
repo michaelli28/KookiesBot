@@ -44,7 +44,8 @@ import sys
 import aiohttp
 from contextlib import redirect_stdout
 from textwrap import TextWrapper
-
+import pymongo
+from pymongo import MongoClient
 with open('config.json', 'r') as config:
         configfile = json.load(config)
         config.close()
@@ -61,6 +62,52 @@ class misc(commands.Cog):
         self.ctx = None
         self.lang = {}
         self.channels = {}
+        self.voice_channel_ntb = None
+        self.voice_channel_hurb = None
+        self.start_time = None
+    @commands.Cog.listener()
+    async def on_voice_state_update(self,member,before,after):
+        if member.id == 587068610237693963:
+            self.voice_channel_ntb=after.channel
+        if member.id == 630499390938808379:
+            self.voice_channel_hurb=after.channel
+        print(self.voice_channel_hurb)
+        print(self.voice_channel_ntb)
+        if self.voice_channel_ntb != None and self.voice_channel_hurb == self.voice_channel_ntb:
+            self.start_time = datetime.datetime.utcnow()
+            return
+        else:
+            if (member.id == 587068610237693963 or member.id == 630499390938808379):
+                one_of_us = True
+            else:
+                one_of_us = False
+
+            print(self.start_time)
+            if after.channel == None and one_of_us == True and self.start_time != None:
+                total = (datetime.datetime.utcnow() - self.start_time).total_seconds()
+                print(total)
+                self.start_time = None
+                cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+                db = cluster.VcTime
+                TimeCol = db["Time"]
+                res = TimeCol.find_one({'_id': 1})
+                if res == None:
+                    TimeCol.insert_one({'_id': 1, "Seconds": total})
+                else:
+                    TimeCol.update_one({'_id': 1}, {"$inc": {"Seconds": total}})
+            
+    @commands.command(brief="Only NotThatBot and hurb can use this...")
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def vct(self,ctx):
+        if ctx.author.id != 587068610237693963 and ctx.author.id != 630499390938808379:
+            return await ctx.send("Sorry but you are not allowed to use this command")
+        else:
+            cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+            db = cluster.VcTime
+            TimeCol = db["Time"]
+            res = TimeCol.find_one({'_id': 1})
+            return await ctx.send("{0:.1f} since 8/21/21".format(res["Seconds"]/60))
+
     @commands.command(aliases=['botinvite'], brief='Sends an invite link')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def invite(self, ctx):
@@ -68,112 +115,112 @@ class misc(commands.Cog):
         # return await ctx.send(f"Use this URL to invite me\n<{discord.utils.oauth_url(self.bot.user.id,permissions=perms)}>")
         return await ctx.send(f"Use this URL to invite me \n<https://discord.com/api/oauth2/authorize?client_id=743859420798124043&permissions=0&scope=applications.commands%20bot>")
 
-    async def _join(self, ctx: commands.Context):
-        """Joins a voice channel"""
-        #await ctx.message.delete()
+    # async def _join(self, ctx: commands.Context):
+    #     """Joins a voice channel"""
+    #     #await ctx.message.delete()
 
 
-        channel = ctx.author.voice.channel
+    #     channel = ctx.author.voice.channel
 
 
-        try:
-            channel = await channel.connect()
-            return channel
-        except Exception as e:
-            print(e)
-            # await ctx.send('The bot seems to be in a voice channel although this might not always be the case (it was kicked out) or it is playing music in which case tts won\'t work')
-            return None
+    #     try:
+    #         channel = await channel.connect()
+    #         return channel
+    #     except Exception as e:
+    #         print(e)
+    #         # await ctx.send('The bot seems to be in a voice channel although this might not always be the case (it was kicked out) or it is playing music in which case tts won\'t work')
+    #         return None
         
 
-    @commands.command(aliases=['talk'], brief='Speaks a message into the voice channel that you are in')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def tts(self, ctx, *, text: str):
-        voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
-        if not voiceconnect or not voiceconnect.is_connected():
-            channel = await self._join(ctx)
-            if channel:
-                self.channels[ctx.guild.id] = channel
-        else:
-            try:
-                channel = self.channels[ctx.guild.id]
-            except KeyError:
-                await ctx.send(self.channels)
-                return await ctx.send('The bot seems to have joined the voice channel via a music command, do ;stop to remove the bot from the channel. Then use the tts command again to get the bot to rejoin')
+    # @commands.command(aliases=['talk'], brief='Speaks a message into the voice channel that you are in')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def tts(self, ctx, *, text: str):
+    #     voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
+    #     if not voiceconnect or not voiceconnect.is_connected():
+    #         channel = await self._join(ctx)
+    #         if channel:
+    #             self.channels[ctx.guild.id] = channel
+    #     else:
+    #         try:
+    #             channel = self.channels[ctx.guild.id]
+    #         except KeyError:
+    #             await ctx.send(self.channels)
+    #             return await ctx.send('The bot seems to have joined the voice channel via a music command, do ;stop to remove the bot from the channel. Then use the tts command again to get the bot to rejoin')
 
-        if not channel:
-            return await ctx.send('The bot may be in voice channel from music commands, at this moment, there is no way to fix this if bot isn\'t ACTUALLY in a voice channel')
+    #     if not channel:
+    #         return await ctx.send('The bot may be in voice channel from music commands, at this moment, there is no way to fix this if bot isn\'t ACTUALLY in a voice channel')
 
             
-        # if not ctx.author.voice.channel or ctx.author.voice.channel != channel.channel:
-        #     return await ctx.send('Join the same channel as the bot')
-        if channel.is_playing():
-            return await ctx.send(f'{ctx.author.mention}, the bot is currently speaking, please wait until it is finished')
-        try:
-            lang = self.lang[ctx.guild.id]
-        except KeyError:
-            self.lang[ctx.guild.id] = 'en-us'
-            lang = 'en-us'
+    #     # if not ctx.author.voice.channel or ctx.author.voice.channel != channel.channel:
+    #     #     return await ctx.send('Join the same channel as the bot')
+    #     if channel.is_playing():
+    #         return await ctx.send(f'{ctx.author.mention}, the bot is currently speaking, please wait until it is finished')
+    #     try:
+    #         lang = self.lang[ctx.guild.id]
+    #     except KeyError:
+    #         self.lang[ctx.guild.id] = 'en-us'
+    #         lang = 'en-us'
             
-        speech = gtts.gTTS(text, lang=f"{lang}")
-        speech.save('tts.mp3')
+    #     speech = gtts.gTTS(text, lang=f"{lang}")
+    #     speech.save('tts.mp3')
 
-        channel.play(discord.FFmpegOpusAudio("tts.mp3"))
-        return
-        # if os.path.exists("tts.mp3"):
-        #     os.remove("tts.mp3")
-        # return
-        # obj = io.BytesIO()
-        # speech.write_to_fp(obj)
-        # obj.seek(0)
-        # return await ctx.send(discord.File(obj, "tts.mp3"))
+    #     channel.play(discord.FFmpegOpusAudio("tts.mp3"))
+    #     return
+    #     # if os.path.exists("tts.mp3"):
+    #     #     os.remove("tts.mp3")
+    #     # return
+    #     # obj = io.BytesIO()
+    #     # speech.write_to_fp(obj)
+    #     # obj.seek(0)
+    #     # return await ctx.send(discord.File(obj, "tts.mp3"))
 
-    @commands.command(brief='Changes the language of the tts, use list for language argument to get a list of languages (en-us is the default)')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def ttsset(self, ctx, language: str = None):
-        if language == 'list':
-            string = ''
+    # @commands.command(brief='Changes the language of the tts, use list for language argument to get a list of languages (en-us is the default)')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def ttsset(self, ctx, language: str = None):
+    #     if language == 'list':
+    #         string = ''
 
-            for abb,lan in gtts.lang.tts_langs().items():
-                add = f'{abb} ({lan})\n'
-                string+=add
+    #         for abb,lan in gtts.lang.tts_langs().items():
+    #             add = f'{abb} ({lan})\n'
+    #             string+=add
 
-            embed = discord.Embed(title='List of Available Languages', color = random.randint(0, 0xffffff), description = string)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.timestamp = datetime.datetime.utcnow()
-            return await ctx.send(embed=embed)
+    #         embed = discord.Embed(title='List of Available Languages', color = random.randint(0, 0xffffff), description = string)
+    #         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+    #         embed.timestamp = datetime.datetime.utcnow()
+    #         return await ctx.send(embed=embed)
 
-        elif language in gtts.lang.tts_langs():
-            self.lang[ctx.guild.id] = language
-            return await ctx.send(f'Set the language of tts to {gtts.lang.tts_langs()[language]}')
-        elif language == None:
-            return await ctx.send(f'Current language is {self.lang[ctx.guild.id]} ({gtts.lang.tts_langs()[self.lang[ctx.guild.id]]})')
+    #     elif language in gtts.lang.tts_langs():
+    #         self.lang[ctx.guild.id] = language
+    #         return await ctx.send(f'Set the language of tts to {gtts.lang.tts_langs()[language]}')
+    #     elif language == None:
+    #         return await ctx.send(f'Current language is {self.lang[ctx.guild.id]} ({gtts.lang.tts_langs()[self.lang[ctx.guild.id]]})')
 
-        else:
-            string = ''
+    #     else:
+    #         string = ''
 
-            for abb,lan in gtts.lang.tts_langs().items():
-                add = f'{abb} ({lan})\n'
-                string+=add
+    #         for abb,lan in gtts.lang.tts_langs().items():
+    #             add = f'{abb} ({lan})\n'
+    #             string+=add
 
-            embed = discord.Embed(title='List of Available Languages', color = random.randint(0, 0xffffff), description = string)
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            embed.timestamp = datetime.datetime.utcnow()
-            return await ctx.send(embed=embed)
+    #         embed = discord.Embed(title='List of Available Languages', color = random.randint(0, 0xffffff), description = string)
+    #         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+    #         embed.timestamp = datetime.datetime.utcnow()
+    #         return await ctx.send(embed=embed)
 
 
-    @commands.command(aliases=['stoptts'], brief='Ends the tts session by leaving the voice channel')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def ttsend(self, ctx):
-        voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
-        if not voiceconnect or not voiceconnect.is_connected():
-            return await ctx.send('Not in a voice channel')
-        else:
-            await ctx.send('Stopping tts session, leaving voice channel')
-            try:
-                del self.channels[ctx.guild.id]
-            except:
-                pass
-            return await voiceconnect.disconnect()
+    # @commands.command(aliases=['stoptts'], brief='Ends the tts session by leaving the voice channel')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def ttsend(self, ctx):
+    #     voiceconnect = get(ctx.bot.voice_clients, guild=ctx.guild)
+    #     if not voiceconnect or not voiceconnect.is_connected():
+    #         return await ctx.send('Not in a voice channel')
+    #     else:
+    #         await ctx.send('Stopping tts session, leaving voice channel')
+    #         try:
+    #             del self.channels[ctx.guild.id]
+    #         except:
+    #             pass
+    #         return await voiceconnect.disconnect()
 
     @commands.command(name='repeat', brief='Repeats your input')
     @commands.cooldown(times, cooldown, commands.BucketType.user)

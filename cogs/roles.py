@@ -431,6 +431,8 @@ class roles(commands.Cog):
         channel = discord.utils.get(self.bot.get_all_channels(), id=payload.channel_id)
         user = payload.member
         guild = self.bot.get_guild(payload.guild_id)
+        if user == None:
+            return
         with open('blacklist.json') as thing:
             blacklist = json.load(thing)
             blacklist = blacklist['list']
