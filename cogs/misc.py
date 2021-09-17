@@ -106,7 +106,7 @@ class misc(commands.Cog):
             db = cluster.VcTime
             TimeCol = db["Time"]
             res = TimeCol.find_one({'_id': 1})
-            return await ctx.send("{0:.1f} since 8/21/21".format(res["Seconds"]/60))
+            return await ctx.send("{0:.3f} since 8/21/21".format(res["Seconds"]/60))
 
     @commands.command(aliases=['botinvite'], brief='Sends an invite link')
     @commands.cooldown(times, cooldown, commands.BucketType.user)

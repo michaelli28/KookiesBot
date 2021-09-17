@@ -56,7 +56,7 @@ async def startup():
     bot.load_extension('cogs.CommandErrorHandler')
     
     bot.load_extension('cogs.helpmenu')
-    bot.load_extension('cogs.daily')
+    bot.load_extension('cogs.level')
     
     # bot.load_extension('cogs.levels')
     

@@ -203,10 +203,10 @@ class moderation(commands.Cog):
                 for embed in message.embeds:
                     print(embed.to_dict())
 
-    @commands.command(aliases=['m'], brief='Mutes someone, need manage roles, if you want to mute one person, ;mute @me [optional time] or if you want to mute everyone, ;mute everyone')
+    @commands.command(aliases=['m'], brief='Mutes someone, need manage roles, if you want to mute one person, ;mute @me [optional minutes] or if you want to mute everyone, ;mute everyone')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def mute(self, ctx, user: Union[discord.Member, str]=None, minutes: Optional[int]=0):
+    async def mute(self, ctx, user: Union[discord.Member, str]=None, minutes: Optional[float]=0):
         
         if user == 'everyone':
             async with ctx.typing():
@@ -247,36 +247,40 @@ class moderation(commands.Cog):
                 return await ctx.send('Input a user to mute or everyone')
             try:
                 role = get(user.guild.roles, name='Muted')
-                create = False
+
+                if role == None:
+                    Muted = await ctx.guild.create_role(name="Muted", hoist = True)
+                    for channel in ctx.guild.channels:  # removes permission to view and send in the channels
+                        await channel.set_permissions(Muted, send_messages=False,
+                                                    read_message_history=False,
+                                                    read_messages=False)
+                    role = get(user.guild.roles, name='Muted')
+                    create=True
+                else:
+                    create = False
+                
 
             except discord.Forbidden:
                 return await ctx.send('I\'m not allowed to do that')
-            except AttributeError:
-                Muted = await ctx.guild.create_role(name="Muted", hoist = True)
-                for channel in ctx.guild.channels:  # removes permission to view and send in the channels
-                    await channel.set_permissions(Muted, send_messages=False,
-                                                read_message_history=False,
-                                                read_messages=False)
-                role = get(user.guild.roles, name='Muted')
-                create = True
+
             if role in user.roles:
                 return await ctx.send(f'{user.name} is already muted')
-                
+
+            await user.add_roles(role)
             list=[]
             for r in user.roles:
                 try:
-                    if r.name == '@everyone':
+                    if r.name == '@everyone' or r.name == "Muted":
                         pass
                     else:
                         await user.remove_roles(r)
                         list.append(r.name)
                 except:
-                    if r.name == '@everyone':
+                    if r.name == '@everyone' or r.name == "Muted":
                         pass
                     else:
                         await ctx.send(f'Unable to remove role `{r.name}`')
 
-            await user.add_roles(role)
             cluster = MongoClient(
                     'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
             db = cluster.Other
@@ -306,7 +310,7 @@ class moderation(commands.Cog):
                 else:
                     await ctx.send(f'`{user.display_name}` has been muted from chat and will be unmuted in {minutes} minute(s))')
                 await asyncio.sleep(int(minutes*60))
-                await user.remove_roles(role)
+                await ctx.invoke(self.bot.get_command('unmute'), user=user)
                 return await ctx.send(f'Unmuted {user.mention} after {minutes} minute(s)')
             else:
                 if create:
@@ -335,7 +339,8 @@ class moderation(commands.Cog):
             return await ctx.send('Invalid user')
         try:
             role = get(user.guild.roles, name='Muted')
-
+            if role == None: 
+                await ctx.send("There is no Muted role in this server, use ;mute @member to create one!")
             await user.remove_roles(role)
             # with open('muted.json', 'r') as file:
             #     stuff = json.load(file)
