@@ -55,94 +55,94 @@ class fun(commands.Cog):
         self.client = bot.client
         self.kclient = kclient
         self.ball = None
-    @commands.command(name='reddit', aliases=['red'], brief='Gets posts from subreddit, you can specify the timespan using a comma, with hour, day, week, month, year, or all. Example: ;reddit coding,month to get coding posts within a month, the default is day if not specified')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def reddit(self, ctx, *, subreddit):
-        async with ctx.typing():
-            # reddit = praw.Reddit(
-            #     client_id=client_id,
-            #     client_secret=client_secret,
-            #     user_agent=user_agent
-            # )
-            # try:
-            #     submission = reddit.subreddit(subreddit).random()
-            # except:
-            #     return await ctx.send(f'Subreddit {subreddit} not found')
-            # if submission == None:
-            #     return await ctx.send(f'Subreddit {subreddit} not found')
-            # embed = discord.Embed(color=random.randint(
-            #     0, 0xffffff), description=f'[Click here if image isn\'t loading]({submission.url})')
-            # embed.set_image(url=submission.url)
-            # embed.set_author(name=ctx.author.display_name,
-            #                 icon_url=ctx.author.avatar_url)
+    # @commands.command(name='reddit', aliases=['red'], brief='Gets posts from subreddit, you can specify the timespan using a comma, with hour, day, week, month, year, or all. Example: ;reddit coding,month to get coding posts within a month, the default is day if not specified')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def reddit(self, ctx, *, subreddit):
+    #     async with ctx.typing():
+    #         # reddit = praw.Reddit(
+    #         #     client_id=client_id,
+    #         #     client_secret=client_secret,
+    #         #     user_agent=user_agent
+    #         # )
+    #         # try:
+    #         #     submission = reddit.subreddit(subreddit).random()
+    #         # except:
+    #         #     return await ctx.send(f'Subreddit {subreddit} not found')
+    #         # if submission == None:
+    #         #     return await ctx.send(f'Subreddit {subreddit} not found')
+    #         # embed = discord.Embed(color=random.randint(
+    #         #     0, 0xffffff), description=f'[Click here if image isn\'t loading]({submission.url})')
+    #         # embed.set_image(url=submission.url)
+    #         # embed.set_author(name=ctx.author.display_name,
+    #         #                 icon_url=ctx.author.avatar_url)
 
-            # embed.timestamp = datetime.datetime.utcnow()
-            # return await ctx.send(embed=embed)
-            if subreddit.find(',') != -1:
+    #         # embed.timestamp = datetime.datetime.utcnow()
+    #         # return await ctx.send(embed=embed)
+    #         if subreddit.find(',') != -1:
 
-                list = subreddit.split(',', 1)
-                subreddit = list[0]
-                timespan = list[1]
-                if timespan not in ["hour", "day", "week", "month", "year", "all"]:
-                    return await ctx.send('Timespan must be hour, day, week, month, year or all. Example: ;reddit r/coding,day or ;reddit python,all you could also do ;reddit python without specifying a timestamp')
-            else:
-                timespan = 'day'
-            try:
-                reddit = await self.kclient.images.random_reddit(subreddit, span = timespan)
-                embed = discord.Embed(color=random.randint(
-                    0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
-                embed.set_image(url=reddit.image_url)
-                embed.set_author(name=ctx.author.display_name,
-                                icon_url=ctx.author.avatar_url)
+    #             list = subreddit.split(',', 1)
+    #             subreddit = list[0]
+    #             timespan = list[1]
+    #             if timespan not in ["hour", "day", "week", "month", "year", "all"]:
+    #                 return await ctx.send('Timespan must be hour, day, week, month, year or all. Example: ;reddit r/coding,day or ;reddit python,all you could also do ;reddit python without specifying a timestamp')
+    #         else:
+    #             timespan = 'day'
+    #         try:
+    #             reddit = await self.kclient.images.random_reddit(subreddit, span = timespan)
+    #             embed = discord.Embed(color=random.randint(
+    #                 0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
+    #             embed.set_image(url=reddit.image_url)
+    #             embed.set_author(name=ctx.author.display_name,
+    #                             icon_url=ctx.author.avatar_url)
 
-                embed.timestamp = datetime.datetime.utcnow()
-                return await ctx.send(embed=embed)
+    #             embed.timestamp = datetime.datetime.utcnow()
+    #             return await ctx.send(embed=embed)
 
-            except ksoftapi.errors.APIError as e:
-                return await ctx.send(e)
+    #         except ksoftapi.errors.APIError as e:
+    #             return await ctx.send(e)
 
-    @commands.command(brief='Gets a meme')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def meme(self, ctx):
-        # with urllib.request.urlopen("https://meme-api.herokuapp.com/gimme") as url:
-        #     data = json.load(url)
-        #     if data['nsfw']==True:
-        #         embed = discord.Embed(title='NOPE', color=random.randint(
-        #             0, 0xffffff), description='DEFINITELY NOT, this meme is marked as nsfw')
-        #         print(data['url'])
+    # @commands.command(brief='Gets a meme')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def meme(self, ctx):
+    #     # with urllib.request.urlopen("https://meme-api.herokuapp.com/gimme") as url:
+    #     #     data = json.load(url)
+    #     #     if data['nsfw']==True:
+    #     #         embed = discord.Embed(title='NOPE', color=random.randint(
+    #     #             0, 0xffffff), description='DEFINITELY NOT, this meme is marked as nsfw')
+    #     #         print(data['url'])
 
-        #         embed.set_author(name=ctx.author.display_name,
-        #                         icon_url=ctx.author.avatar_url)
+    #     #         embed.set_author(name=ctx.author.display_name,
+    #     #                         icon_url=ctx.author.avatar_url)
 
-        #         embed.timestamp = datetime.datetime.utcnow()
-        #         return await ctx.send(embed=embed)
+    #     #         embed.timestamp = datetime.datetime.utcnow()
+    #     #         return await ctx.send(embed=embed)
 
-        #     else:
-        #         embed = discord.Embed(title = '`'+str(data['title']) + '` from the `' + str(data['subreddit']) + '` subreddit by `' + str(data['author']) + '`',color=random.randint(
-        #             0, 0xffffff), description='[Click here if image isn\'t loading](' + str(data['url']) + ')')
+    #     #     else:
+    #     #         embed = discord.Embed(title = '`'+str(data['title']) + '` from the `' + str(data['subreddit']) + '` subreddit by `' + str(data['author']) + '`',color=random.randint(
+    #     #             0, 0xffffff), description='[Click here if image isn\'t loading](' + str(data['url']) + ')')
                     
-        #         embed.set_image(url=data['url'])
+    #     #         embed.set_image(url=data['url'])
 
-        #         embed.set_author(name=ctx.author.display_name,
-        #                         icon_url=ctx.author.avatar_url)
+    #     #         embed.set_author(name=ctx.author.display_name,
+    #     #                         icon_url=ctx.author.avatar_url)
 
-        #         embed.timestamp = datetime.datetime.utcnow()
-        #         return await ctx.send(embed=embed)
+    #     #         embed.timestamp = datetime.datetime.utcnow()
+    #     #         return await ctx.send(embed=embed)
 
-        try:
-            async with ctx.typing():
-                reddit = await self.kclient.images.random_meme()
-        except ksoftapi.NoResults:
-            return await ctx.send('Error getting meme :cry:')
-        else:
-            embed = discord.Embed(color=random.randint(
-                0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
-            embed.set_image(url=reddit.image_url)
-            embed.set_author(name=ctx.author.display_name,
-                            icon_url=ctx.author.avatar_url)
+    #     try:
+    #         async with ctx.typing():
+    #             reddit = await self.kclient.images.random_meme()
+    #     except ksoftapi.NoResults:
+    #         return await ctx.send('Error getting meme :cry:')
+    #     else:
+    #         embed = discord.Embed(color=random.randint(
+    #             0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
+    #         embed.set_image(url=reddit.image_url)
+    #         embed.set_author(name=ctx.author.display_name,
+    #                         icon_url=ctx.author.avatar_url)
 
-            embed.timestamp = datetime.datetime.utcnow()
-            return await ctx.send(embed=embed)
+    #         embed.timestamp = datetime.datetime.utcnow()
+    #         return await ctx.send(embed=embed)
 
     @commands.command(brief='Gets a awww image from reddit')
     @commands.cooldown(times, cooldown, commands.BucketType.user)

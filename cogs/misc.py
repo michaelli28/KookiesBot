@@ -442,31 +442,31 @@ class misc(commands.Cog):
     #             await msg.edit(content=f":white_check_mark: Reloaded `{arg.lower()}`")
     
 
-    @commands.command(name='ascii', aliases=['ac'], brief='Ascii art of avatar or image')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def ascii(self, ctx, *, image_link: str=""):
-        """Ascii art of avatar"""
-        if not image_link:
-            user = ctx.message.author
-            image_link = user.avatar_url_as(size=1024)
-        try:
-            user = ctx.message.mentions[0]
-            image_link = user.avatar_url_as(size=1024)
-        except IndexError:
-            pass
-        try:
-            result = requests.get(f'https://useless-api--vierofernando.repl.co/imagetoascii?image={image_link}').text.replace('<br>','\n')
-        except:
-            return await ctx.send("Failed :x:\nMaybe the url is wrong")
+    # @commands.command(name='ascii', aliases=['ac'], brief='Ascii art of avatar or image')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def ascii(self, ctx, *, image_link: str=""):
+    #     """Ascii art of avatar"""
+    #     if not image_link:
+    #         user = ctx.message.author
+    #         image_link = user.avatar_url_as(size=1024)
+    #     try:
+    #         user = ctx.message.mentions[0]
+    #         image_link = user.avatar_url_as(size=1024)
+    #     except IndexError:
+    #         pass
+    #     try:
+    #         result = requests.get(f'https://useless-api--vierofernando.repl.co/imagetoascii?image={image_link}').text.replace('<br>','\n')
+    #     except:
+    #         return await ctx.send("Failed :x:\nMaybe the url is wrong")
 
-        ascii_file = open("ascii.txt", "w")
-        # n = ascii_file.write(result)
-        ascii_file.close()
+    #     ascii_file = open("ascii.txt", "w")
+    #     # n = ascii_file.write(result)
+    #     ascii_file.close()
 
-        file = discord.File('ascii.txt')
-        em = discord.Embed(color=discord.Colour(0xFFFF66))
-        em.set_thumbnail(url=image_link)
-        return await ctx.send(file=file, embed=em)
+    #     file = discord.File('ascii.txt')
+    #     em = discord.Embed(color=discord.Colour(0xFFFF66))
+    #     em.set_thumbnail(url=image_link)
+    #     return await ctx.send(file=file, embed=em)
 
 
     @commands.command(name='advice', brief='Generates advice')

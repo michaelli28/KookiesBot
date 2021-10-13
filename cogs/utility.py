@@ -123,20 +123,31 @@ class util(commands.Cog):
 
                 embed.timestamp = datetime.datetime.utcnow()
                 await channel.send(embed=embed)
-            except:
-                if message.attachments:
-                    embed = discord.Embed(color=random.randint(
-                        0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
-                    for attachment in message.attachments:
-                        new = await attachment.to_file()
-                        await channel.send(file=new)
-                        embed.set_image(url=f'{attachment.url}')
+            except discord.errors.HTTPException:
+                # if message.attachments:
+                #     embed = discord.Embed(color=random.randint(
+                #         0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
+                #     for attachment in message.attachments:
+                #         new = await attachment.to_file()
+                #         await channel.send(file=new)
+                #         embed.set_image(url=f'{attachment.url}')
 
-                    embed.set_author(name=message.author.display_name,
-                                        icon_url=message.author.avatar_url)
-                    embed.timestamp = datetime.datetime.utcnow()
-                    await channel.send(embed=embed)
-
+                #     embed.set_author(name=message.author.display_name,
+                #                         icon_url=message.author.avatar_url)
+                #     embed.timestamp = datetime.datetime.utcnow()
+                #     await channel.send(embed=embed)
+                now = datetime.datetime.utcnow()
+                current_time = now.strftime("%H:%M|%m/%d/%Y")
+                await channel.send(f"Message sent in {message.guild} in {message.channel} by {message.author} at {current_time}  >  {message.jump_url}")
+                await channel.send(message.content)
+                if message.embeds:
+                    print(message.embeds[0].to_dict())
+                    await channel.send(message.embeds[0].to_dict())
+            if message.attachments:
+                for attachment in message.attachments:
+                    new = await attachment.to_file()
+                    await channel.send(file=new)
+                    embed.set_image(url=f'{attachment.url}')
             if message.embeds:
                 for embed in message.embeds:
                     await channel.send(embed=embed)

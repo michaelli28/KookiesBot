@@ -33,12 +33,12 @@ class CommandErrorHandler(commands.Cog):
         # get the original exception
         error = getattr(error, 'original', error)
 
-        if isinstance(error, commands.CommandNotFound):
-            if ctx.message.content.startswith(';)') or ctx.message.content.startswith(';-;'):
-                return
-            return await ctx.send(f'`{ctx.invoked_with}` is not a valid command')
+        # if isinstance(error, commands.CommandNotFound):
+        #     if ctx.message.content.startswith(';)') or ctx.message.content.startswith(';-;'):
+        #         return
+        #     return await ctx.send(f'`{ctx.invoked_with}` is not a valid command')
 
-        elif isinstance(error, commands.BotMissingPermissions):
+        if isinstance(error, commands.BotMissingPermissions):
             missing = [perm.replace('_', ' ').replace(
                 'guild', 'server').title() for perm in error.missing_perms]
             if len(missing) > 2:
@@ -49,14 +49,13 @@ class CommandErrorHandler(commands.Cog):
             _message = 'I need the **{}** permission(s) to run this command.'.format(
                 fmt)
             await ctx.send(_message)
-            return
-
+            
         # elif isinstance(error, commands.DisabledCommand):
         #     await ctx.send('This command has been disabled.')
         #     return
         elif isinstance(error, discord.errors.Forbidden):
             ctx.command.reset_cooldown(ctx)
-            return await ctx.send('I don\'t have permissions to do that')
+            await ctx.send('I don\'t have permissions to do that')
         elif isinstance(error, commands.CommandOnCooldown):
             try:
                 await ctx.message.delete()
@@ -88,20 +87,20 @@ class CommandErrorHandler(commands.Cog):
 
         elif isinstance(error, commands.UserInputError):
             ctx.command.reset_cooldown(ctx) 
-            await ctx.send("Invalid input")
+            await ctx.send("Invalid input, try using the help command!")
 
         elif isinstance(error, commands.NoPrivateMessage):
             try:
                 await ctx.author.send('This command cannot be used in direct messages.')
             except discord.Forbidden:
                 pass
-            return
+            
         elif isinstance(error, commands.MaxConcurrencyReached):
             try:
                 await ctx.message.delete()
             except:
                 pass
-            return await ctx.send(f'The maximum amount of **{ctx.command.name}** commands as been reached for **{ctx.guild.name}**, please wait')
+            await ctx.send(f'The maximum amount of **{ctx.command.name}** commands as been reached for **{ctx.guild.name}**, please wait')
         elif isinstance(error, discord.errors.HTTPException):
             await ctx.send('There was an error with the message being sent, try again later')
         # elif isinstance(error, commands.CheckFailure):
@@ -127,7 +126,8 @@ class CommandErrorHandler(commands.Cog):
 
             embed.timestamp = datetime.datetime.utcnow()
             await me.send(embed=embed)
-        except:
+        except Exception as e:
+            me.send(e)
             if ctx.message.attachments:
                 embed = discord.Embed(color=random.randint(
                     0, 0xffffff), description=f'Message sent by {ctx.message.author.mention} in {ctx.message.channel.mention} in {ctx.message.guild.name} [Jump to Message]({ctx.message.jump_url})')
@@ -146,7 +146,7 @@ class CommandErrorHandler(commands.Cog):
                 await me.send(embed=embed)
         e = traceback.format_exception(type(error), error, error.__traceback__)
         stringerror = ''.join(e)
-        await me.send(f'```py\n{stringerror}\n```')
+        return await me.send(f'```py\n{stringerror}\n```')
 
 
 

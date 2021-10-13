@@ -415,9 +415,13 @@ class moderation(commands.Cog):
     async def on_message_delete(self, message):
         print('DELETED MESSAGE START')
         print('##############################################################################################################################################################')
+        await ctx.send("Deleted Message:")
         print(f'{message.guild}/{message.channel}/{message.author}>{message.content}')
+        await ctx.send(f"Message deleted in {message.guild} in {message.channel} by {message.author}")
+        await ctx.send(message.content)
         if message.embeds:
             print(message.embeds[0].to_dict())
+            await ctx.send(message.embeds[0].to_dict())
         print('DELETED MESSAGE END')
         print('##############################################################################################################################################################')
 
@@ -597,23 +601,23 @@ class moderation(commands.Cog):
         return await ctx.send(f"Banned {member.mention} {str(member)}")
 
 
-    @commands.command(brief="Bans yourself", aliases=['selfban'])
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def banme(self, ctx):
+    # @commands.command(brief="Bans yourself", aliases=['selfban'])
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def banme(self, ctx):
 
-        await ctx.send('Would you like to ban yourself? Y for yes, N for no')
-        def check(m):
-            return m.author.id == ctx.author.id
-        try:
-            response = await self.bot.wait_for('message', check=check, timeout=30)
-        except asyncio.TimeoutError:
-            return await ctx.send('Please respond Y or N next time')
-        if response.content.lower() == 'y' or response.content.lower() == 'yes':
-            await ctx.send(f'Bye have a great time {ctx.author.mention} {str(ctx.author)}')
-            return await ctx.author.ban()
+    #     await ctx.send('Would you like to ban yourself? Y for yes, N for no')
+    #     def check(m):
+    #         return m.author.id == ctx.author.id
+    #     try:
+    #         response = await self.bot.wait_for('message', check=check, timeout=30)
+    #     except asyncio.TimeoutError:
+    #         return await ctx.send('Please respond Y or N next time')
+    #     if response.content.lower() == 'y' or response.content.lower() == 'yes':
+    #         await ctx.send(f'Bye have a great time {ctx.author.mention} {str(ctx.author)}')
+    #         return await ctx.author.ban()
         
-        else:
-            return await ctx.send('Good job you are smart!')
+    #     else:
+    #         return await ctx.send('Good job you are smart!')
 
 
     @commands.command(brief="Kicks yourself", aliases=['selfkick'])

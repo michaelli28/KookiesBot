@@ -53,7 +53,7 @@ async def startup():
     await bot.change_presence(activity=activity)
     # bot.load_extension('cogs.Music2')
     bot.client = ClientSession()
-    bot.load_extension('cogs.CommandErrorHandler')
+    # bot.load_extension('cogs.CommandErrorHandler')
     
     bot.load_extension('cogs.helpmenu')
     bot.load_extension('cogs.level')
@@ -80,10 +80,8 @@ async def startup():
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True, intents=intents, owner_id=587068610237693963)
 
-slash = SlashCommand(bot, sync_commands=True, override_type=True)
-bot.load_extension('cogs.slash')
+# slash = SlashCommand(bot, sync_commands=True, override_type=True)
 # bot.load_extension('cogs.slash')
-
 
 bot.loop.create_task(startup())
 # 630499390938808379 hurb id
@@ -177,7 +175,7 @@ async def on_message(message):
 
 
 #TOKEN = os.getenv('TOKEN')
-bot.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.ojRd7Vb9vyuMeInYSRqVKTLZ6cU')
+bot.run("NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.Z0KTtmFUJ3V8EG8Xt8Gwzv7k1-M")
 
 
 

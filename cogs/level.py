@@ -252,7 +252,7 @@ class daily(Cog):
 
     @commands.command(aliases=['dailyxp', 'dxp'], brief='Get your daily xp and level')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def dailyrank(self, ctx, author: discord.Member = None):
+    async def dailyrank(self, ctx, *, author: discord.Member = None):
         async with ctx.typing():
 
             cluster = MongoClient(
