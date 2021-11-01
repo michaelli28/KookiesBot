@@ -140,6 +140,11 @@ class util(commands.Cog):
                 current_time = now.strftime("%H:%M|%m/%d/%Y")
                 await channel.send(f"Message sent in {message.guild} in {message.channel} by {message.author} at {current_time}  >  {message.jump_url}")
                 await channel.send(message.content)
+                if message.attachments:
+                    for attachment in message.attachments:
+                        new = await attachment.to_file()
+                        await channel.send(file=new)
+                        await channel.send(f'{attachment.url}')
                 if message.embeds:
                     print(message.embeds[0].to_dict())
                     await channel.send(message.embeds[0].to_dict())
