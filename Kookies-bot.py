@@ -53,7 +53,7 @@ async def startup():
     await bot.change_presence(activity=activity)
     # bot.load_extension('cogs.Music2')
     bot.client = ClientSession()
-    # bot.load_extension('cogs.CommandErrorHandler')
+    bot.load_extension('cogs.CommandErrorHandler')
     
     bot.load_extension('cogs.helpmenu')
     bot.load_extension('cogs.level')

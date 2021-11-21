@@ -597,6 +597,10 @@ class moderation(commands.Cog):
     @commands.has_permissions(ban_members=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def ban(self, ctx, *, member: discord.Member):
+        if member.id == 743859420798124043:
+            return await ctx.send("HA YOU TRIED IT. I\'m not going to ban myself, but I\'ll give you 5 seconds before I ban you!")
+        if member.id == 750441189525815296:
+            return await ctx.send("HA YOU TRIED IT. I\'m not going to ban my 2.0 self, but I\'ll give you 5 seconds before I ban you!")
         if ctx.author.top_role.position <= member.top_role.position:
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send(f'Your role position isn\'t high enough to ban {member.name}')
@@ -800,6 +804,10 @@ class moderation(commands.Cog):
     @commands.command(brief="Kicks a user", aliases=['cic'])
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, *, member: discord.Member):
+        if member.id == 743859420798124043:
+            return await ctx.send("HA YOU TRIED IT. I\'m not going to kick myself, but I\'ll give you 5 seconds before I kick you!")
+        if member.id == 750441189525815296:
+            return await ctx.send("HA YOU TRIED IT. I\'m not going to kick my 2.0 self, but I\'ll give you 5 seconds before I kick you!")
         if ctx.author.top_role.position <= member.top_role.position:
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send(f'Your role position isn\'t high enough to kick {member.name}')
