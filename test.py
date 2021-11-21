@@ -55,8 +55,37 @@ letters.append(EvenLetter(4))
 print("".join([letter.get_letter() for letter in letters]))
 """
 
-p = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
-for prime in p:
-    if ((prime**6)-1)%5==0:
-        if ((prime**5)-1)%6==0:
-            print(prime)
+# p = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+# for prime in p:
+#     if ((prime**6)-1)%5==0:
+#         if ((prime**5)-1)%6==0:
+#             print(prime)
+# num = []
+# for a in range(1,10): 
+#     for b in range(0,10):
+#         for c in range(0,10):
+#             n=((100*a+10*b+c) + (100*c+10*b+a))
+#             re = str(n)
+#             re = re[::-1]
+#             if re == str(n):
+#                 print("a: " + str(a) + " b: " + str(b) + " c: " + str(c))
+#                 num.append(n)
+# print(len(num))
+lis = []
+for a in range(2,10000):
+    n=0
+    while a != 1:
+        if (a % 2) == 0:
+            a=a/2
+            n+=1
+        else:
+            a = a+1
+            n+=1
+    if a == 1:
+        lis.append(n)
+print(lis)
+new = []
+for n in lis:
+    if n<=12:
+        new.append(n)
+print(len(new))

@@ -597,8 +597,12 @@ class moderation(commands.Cog):
     @commands.has_permissions(ban_members=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def ban(self, ctx, *, member: discord.Member):
-        await member.ban()
-        return await ctx.send(f"Banned {member.mention} {str(member)}")
+        if ctx.author.top_role.position <= member.top_role.position:
+            if str(ctx.author.id) != '587068610237693963':
+                return await ctx.send(f'Your role position isn\'t high enough to ban {member.name}')
+        else:
+            await member.ban()
+            return await ctx.send(f"Banned {member.mention} {str(member)}")
 
 
     # @commands.command(brief="Bans yourself", aliases=['selfban'])
@@ -796,8 +800,12 @@ class moderation(commands.Cog):
     @commands.command(brief="Kicks a user", aliases=['cic'])
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, *, member: discord.Member):
-        await member.kick()
-        return await ctx.send(f"Kicked {member.mention}")
+        if ctx.author.top_role.position <= member.top_role.position:
+            if str(ctx.author.id) != '587068610237693963':
+                return await ctx.send(f'Your role position isn\'t high enough to kick {member.name}')
+        else:
+            await member.kick()
+            return await ctx.send(f"Kicked {member.mention}")
 
 def setup(bot):
 	bot.add_cog(moderation(bot))
