@@ -160,7 +160,7 @@ class util(commands.Cog):
                     await channel.send(embed=embed)
         return
 
-    @commands.command(brief="Invites a user", alias=["invitemember","memberinvite","userinvite"])
+    @commands.command(brief="Invites a user, only works if the user shares another guild with the bot", alias=["invitemember","memberinvite","userinvite"])
     @commands.has_permissions(create_instant_invite=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def inviteuser(self, ctx, *, user: discord.User):
@@ -168,8 +168,8 @@ class util(commands.Cog):
             return await ctx.send(f"{user} is already in this guild")
         link = await ctx.channel.create_invite(max_uses = 1)
         try:
-            await ctx.author.send(f"You were invited to the server {ctx.guild.name} by {ctx.author.name}")
-            return await ctx.author.send(link)
+            await user.send(f"You were invited to the server {ctx.guild.name} by {ctx.author.name}")
+            return await user.send(link)
         except:
             return await ctx.send(f"I was unable to send an invite link to {user.name}, check if they have allowed messages from everyone")
 
