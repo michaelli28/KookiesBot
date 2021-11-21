@@ -115,14 +115,15 @@ class util(commands.Cog):
 
         if message.author.id != self.bot.user.id:
             try:
-                embed = discord.Embed(color=random.randint(
-                    0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
-                embed.add_field(name=f'{message.content}', value=f'\u200B')
-                embed.set_author(name=message.author.display_name,
-                                icon_url=message.author.avatar_url)
+                if message.content != "":
+                    embed = discord.Embed(color=random.randint(
+                        0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
+                    embed.add_field(name=f'{message.content}', value=f'\u200B')
+                    embed.set_author(name=message.author.display_name,
+                                    icon_url=message.author.avatar_url)
 
-                embed.timestamp = datetime.datetime.utcnow()
-                await channel.send(embed=embed)
+                    embed.timestamp = datetime.datetime.utcnow()
+                    await channel.send(embed=embed)
             except discord.errors.HTTPException:
                 # if message.attachments:
                 #     embed = discord.Embed(color=random.randint(
@@ -139,25 +140,39 @@ class util(commands.Cog):
                 now = datetime.datetime.utcnow()
                 current_time = now.strftime("%H:%M|%m/%d/%Y")
                 await channel.send(f"Message sent in {message.guild} in {message.channel} by {message.author} at {current_time}  >  {message.jump_url}")
-                await channel.send(message.content)
+                if message.content != "":
+                    await channel.send(message.content)
+                
                 if message.attachments:
                     for attachment in message.attachments:
                         new = await attachment.to_file()
                         await channel.send(file=new)
                         await channel.send(f'{attachment.url}')
                 if message.embeds:
-                    print(message.embeds[0].to_dict())
                     await channel.send(message.embeds[0].to_dict())
             if message.attachments:
                 for attachment in message.attachments:
                     new = await attachment.to_file()
                     await channel.send(file=new)
-                    embed.set_image(url=f'{attachment.url}')
+                    await channel.send(attachment.url)
             if message.embeds:
                 for embed in message.embeds:
                     await channel.send(embed=embed)
         return
-    
+
+    @commands.command(brief="Invites a user", alias=["invitemember","memberinvite","userinvite"])
+    @commands.has_permissions(create_instant_invite=True)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def inviteuser(self, ctx, *, user: discord.User):
+        if user in ctx.guild.members:
+            return await ctx.send(f"{user} is already in this guild")
+        link = await ctx.channel.create_invite(max_uses = 1)
+        try:
+            await ctx.author.send(f"You were invited to the server {ctx.guild.name} by {ctx.author.name}")
+            return await ctx.author.send(link)
+        except:
+            return await ctx.send(f"I was unable to send an invite link to {user.name}, check if they have allowed messages from everyone")
+
     @commands.command(name='textart', aliases=['coolfont'], brief='Makes text look cool (the font is a number from 1-12 and the color is a hexadecimal color')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def font_generator(self, ctx, font: str ='3', color: str = '00fffff', *, text: str = ""):

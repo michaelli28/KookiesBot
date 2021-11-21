@@ -71,8 +71,8 @@ class misc(commands.Cog):
             self.voice_channel_ntb=after.channel
         if member.id == 630499390938808379:
             self.voice_channel_hurb=after.channel
-        print(self.voice_channel_hurb)
-        print(self.voice_channel_ntb)
+        # print(self.voice_channel_hurb)
+        # print(self.voice_channel_ntb)
         if self.voice_channel_ntb != None and self.voice_channel_hurb == self.voice_channel_ntb:
             self.start_time = datetime.datetime.utcnow()
             return
@@ -82,10 +82,10 @@ class misc(commands.Cog):
             else:
                 one_of_us = False
 
-            print(self.start_time)
+            # print(self.start_time)
             if after.channel == None and one_of_us == True and self.start_time != None:
                 total = (datetime.datetime.utcnow() - self.start_time).total_seconds()
-                print(total)
+                # print(total)
                 self.start_time = None
                 cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
                 db = cluster.VcTime
@@ -99,6 +99,7 @@ class misc(commands.Cog):
     @commands.command(brief="Only NotThatBot and hurb can use this...")
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def vct(self,ctx):
+        #time spent in vc with hurb and notthatbot 
         if ctx.author.id != 587068610237693963 and ctx.author.id != 630499390938808379:
             return await ctx.send("Sorry but you are not allowed to use this command")
         else:
@@ -108,7 +109,7 @@ class misc(commands.Cog):
             res = TimeCol.find_one({'_id': 1})
             return await ctx.send("{0:.3f} since 8/21/21".format(res["Seconds"]/60))
 
-    @commands.command(aliases=['botinvite'], brief='Sends an invite link')
+    @commands.command(aliases=['botinvite', "invitebot"], brief='Sends an invite link')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def invite(self, ctx):
         # perms = discord.Permissions(administrator=True)
@@ -400,15 +401,15 @@ class misc(commands.Cog):
         await self.bot.logout()
         return
 
-    @commands.command(brief='Adds an alias to an existing command')
-    @commands.is_owner()
-    async def alias(self, ctx, cmdname, alias):
-        cmd = ctx.bot.get_command(cmdname)
-        cmd.aliases.append(alias)
-        # register the modified command
-        ctx.bot.remove_command(cmdname)
-        ctx.bot.add_command(cmd)
-        return
+    # @commands.command(brief='Adds an alias to an existing command')
+    # @commands.is_owner()
+    # async def alias(self, ctx, cmdname, alias):
+    #     cmd = ctx.bot.get_command(cmdname)
+    #     cmd.aliases.append(alias)
+    #     # register the modified command
+    #     ctx.bot.remove_command(cmdname)
+    #     ctx.bot.add_command(cmd)
+    #     return
 
     # @commands.command(name='reload')
     # @commands.is_owner()

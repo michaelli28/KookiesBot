@@ -411,19 +411,19 @@ class moderation(commands.Cog):
         print('##############################################################################################################################################################')
 
 
-    @commands.Cog.listener()
-    async def on_message_delete(self, message):
-        print('DELETED MESSAGE START')
-        print('##############################################################################################################################################################')
-        await ctx.send("Deleted Message:")
-        print(f'{message.guild}/{message.channel}/{message.author}>{message.content}')
-        await ctx.send(f"Message deleted in {message.guild} in {message.channel} by {message.author}")
-        await ctx.send(message.content)
-        if message.embeds:
-            print(message.embeds[0].to_dict())
-            await ctx.send(message.embeds[0].to_dict())
-        print('DELETED MESSAGE END')
-        print('##############################################################################################################################################################')
+    # @commands.Cog.listener()
+    # async def on_message_delete(self, message):
+    #     print('DELETED MESSAGE START')
+    #     print('##############################################################################################################################################################')
+    #     await m.send("Deleted Message:")
+    #     print(f'{message.guild}/{message.channel}/{message.author}>{message.content}')
+    #     await ctx.send(f"Message deleted in {message.guild} in {message.channel} by {message.author}")
+    #     await ctx.send(message.content)
+    #     if message.embeds:
+    #         print(message.embeds[0].to_dict())
+    #         await ctx.send(message.embeds[0].to_dict())
+    #     print('DELETED MESSAGE END')
+    #     print('##############################################################################################################################################################')
 
     @commands.command(aliases=['ba'], brief='Adds someone to a blacklist so they can\'t use commands')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
@@ -592,21 +592,6 @@ class moderation(commands.Cog):
                 f"Deleted **{len(deleted)}** messages by **{member}**", delete_after=10
             )
 
-
-    @commands.command(brief="Bans a user")
-    @commands.has_permissions(ban_members=True)
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def ban(self, ctx, *, member: discord.Member):
-        if member.id == 743859420798124043:
-            return await ctx.send("HA YOU TRIED IT. I\'m not going to ban myself, but I\'ll give you 5 seconds before I ban you!")
-        if member.id == 750441189525815296:
-            return await ctx.send("HA YOU TRIED IT. I\'m not going to ban my 2.0 self, but I\'ll give you 5 seconds before I ban you!")
-        if ctx.author.top_role.position <= member.top_role.position:
-            if str(ctx.author.id) != '587068610237693963':
-                return await ctx.send(f'Your role position isn\'t high enough to ban {member.name}')
-        else:
-            await member.ban()
-            return await ctx.send(f"Banned {member.mention} {str(member)}")
 
 
     # @commands.command(brief="Bans yourself", aliases=['selfban'])
@@ -800,14 +785,105 @@ class moderation(commands.Cog):
         else:
             await ctx.guild.unban(discord.Object(id=member))
             return await ctx.send(f"Unbanned member with id {member}")
-    
+
+
+
+    @commands.command(brief="Bans a user")
+    @commands.has_permissions(ban_members=True)
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def ban(self, ctx, *, member: discord.Member):
+        if member.id == ctx.author.id:
+            return await ctx.send(f"{ctx.author.mention} Why would you want to ban yourself? If you really want to kick youself, use the ;kickme command. Think twice before doing so.")
+
+        if member.id == 743859420798124043:
+            await ctx.send(f"HAHA {ctx.author.mention} TRIED IT. I\'m not going to ban myself, but I\'ll give you 5 seconds before I kick {ctx.author.mention}!")
+            await asyncio.sleep(5)
+            await ctx.send("5 seconds is up, goodbye!")
+            if ctx.author.top_role.position >= member.top_role.position:
+                await asyncio.sleep(1)
+                return await ctx.send(f"Just kidding, unfortunately, I do not have permission to kick {ctx.author.mention}")
+            else:
+                link = await ctx.channel.create_invite(max_uses = 1)
+                try:
+                    await ctx.author.send("L")
+                    await ctx.author.send(link)
+                except:
+                    return await ctx.send(f"Sorry, I was unable to send {ctx.author.mention} an invite link about to the server, so I will not be kicking {ctx.author.mention}")
+                name = member.nick
+                await ctx.author.kick()
+                return await ctx.send(f"For the rest of you, hopefully you learned to not attempt to ban me, but do not worry, they received an invite back to the server")
+
+        if member.id == 750441189525815296: #2.0 kookies
+            await ctx.send(f"HAHA {ctx.author.mention} TRIED IT. I\'m not going to ban my 2.0 self, but I\'ll give you 5 seconds before I kick {ctx.author.mention}!")
+            await asyncio.sleep(5)
+            await ctx.send("5 seconds is up, goodbye!")
+            kookies = ctx.guild.get_member(self.bot.user.id)
+            if ctx.author.top_role.position >= kookies.top_role.position:
+                await asyncio.sleep(1)
+                return await ctx.send(f"Just kidding, unfortunately, I do not have permission to kick {ctx.author.mention}")
+            else:
+                link = await ctx.channel.create_invite(max_uses = 1)
+                try:
+                    await ctx.author.send("L")
+                    await ctx.author.send(link)
+                except:
+                    return await ctx.send(f"Sorry, I was unable to send {ctx.author.mention} an invite link about to the server, so I will not be kicking {ctx.author.mention}")
+                name = member.nick
+                await ctx.author.kick()
+                return await ctx.send(f"For the rest of you, hopefully you learned to not attempt to ban me, but do not worry, they received an invite back to the server")
+
+
+        if ctx.author.top_role.position <= member.top_role.position:
+            if str(ctx.author.id) != '587068610237693963':
+                return await ctx.send(f'Your role position isn\'t high enough to ban {member.name}')
+        else:
+            await member.ban()
+            return await ctx.send(f"Banned {member.mention} {str(member)}")
+
     @commands.command(brief="Kicks a user", aliases=['cic'])
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, *, member: discord.Member):
+        if member.id == ctx.author.id:
+            return await ctx.send(f"{ctx.author.mention} Why would you want to kick yourself? If you really want to kick youself, use the ;kickme command. Think twice before doing so.")
+
         if member.id == 743859420798124043:
-            return await ctx.send("HA YOU TRIED IT. I\'m not going to kick myself, but I\'ll give you 5 seconds before I kick you!")
-        if member.id == 750441189525815296:
-            return await ctx.send("HA YOU TRIED IT. I\'m not going to kick my 2.0 self, but I\'ll give you 5 seconds before I kick you!")
+            await ctx.send(f"HAHA {ctx.author.mention} TRIED IT. I\'m not going to kick myself, but I\'ll give you 5 seconds before I kick {ctx.author.mention}!")
+            await asyncio.sleep(5)
+            await ctx.send("5 seconds is up, goodbye!")
+            if ctx.author.top_role.position >= member.top_role.position:
+                await asyncio.sleep(1)
+                return await ctx.send(f"Just kidding, unfortunately, I do not have permission to kick {ctx.author.mention}")
+            else:
+                link = await ctx.channel.create_invite(max_uses = 1)
+                try:
+                    await ctx.author.send("L")
+                    await ctx.author.send(link)
+                except:
+                    return await ctx.send(f"Sorry, I was unable to send {ctx.author.mention} an invite link about to the server, so I will not be kicking {ctx.author.mention}")
+                print("OYOYOYOYOYOYOO")
+                await ctx.author.kick()
+                return await ctx.send(f"For the rest of you, hopefully you learned to not attempt to kick me, but do not worry, they received an invite back to the server")
+                            
+        if member.id == 750441189525815296: #2.0 kookies
+            await ctx.send(f"HAHA {ctx.author.mention} TRIED IT. I\'m not going to kick 2.0 self, but I\'ll give you 5 seconds before I kick {ctx.author.mention}!")
+            await asyncio.sleep(5)
+
+            await ctx.send("5 seconds is up, goodbye!")
+            kookies = ctx.guild.get_member(self.bot.user.id)
+            if ctx.author.top_role.position >= kookies.top_role.position:
+                await asyncio.sleep(1)
+                return await ctx.send(f"Just kidding, unfortunately, I do not have permission to kick {ctx.author.mention}")
+            else:
+                link = await ctx.channel.create_invite(max_uses = 1)
+                try:
+                    await ctx.author.send("L")
+                    await ctx.author.send(link)
+                except:
+                    return await ctx.send(f"Sorry, I was unable to send {ctx.author.mention} an invite link about to the server, so I will not be kicking {ctx.author.mention}")
+                name = member.nick
+                await ctx.author.kick()
+                return await ctx.send(f"For the rest of you, hopefully you learned to not attempt to kick me, but do not worry, they received an invite back to the server")
+    
         if ctx.author.top_role.position <= member.top_role.position:
             if str(ctx.author.id) != '587068610237693963':
                 return await ctx.send(f'Your role position isn\'t high enough to kick {member.name}')
