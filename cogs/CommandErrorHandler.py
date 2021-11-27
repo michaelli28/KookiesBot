@@ -33,10 +33,10 @@ class CommandErrorHandler(commands.Cog):
         # get the original exception
         error = getattr(error, 'original', error)
 
-        # if isinstance(error, commands.CommandNotFound):
-        #     if ctx.message.content.startswith(';)') or ctx.message.content.startswith(';-;'):
-        #         return
-        #     return await ctx.send(f'`{ctx.invoked_with}` is not a valid command')
+        if isinstance(error, commands.CommandNotFound):
+            if ctx.message.content.startswith(';)') or ctx.message.content.startswith(';-;'):
+                return
+            # return await ctx.send(f'`{ctx.invoked_with}` is not a valid command')
 
         if isinstance(error, commands.BotMissingPermissions):
             missing = [perm.replace('_', ' ').replace(

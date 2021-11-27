@@ -169,6 +169,7 @@ class util(commands.Cog):
         link = await ctx.channel.create_invite(max_uses = 1)
         try:
             await user.send(f"You were invited to the server {ctx.guild.name} by {ctx.author.name}")
+            await ctx.send(f"{user.mention} was invited to the server")
             return await user.send(link)
         except:
             return await ctx.send(f"I was unable to send an invite link to {user.name}, check if they have allowed messages from everyone")
