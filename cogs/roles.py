@@ -472,6 +472,7 @@ class roles(commands.Cog):
                 rolesR = result['roles']
                 if (not payload.member.bot):
                     user = payload.member
+                    
                     #role = get(user.guild.roles, name=rolesR[0])
                     role = guild.get_role(rolesR[0])
                     if role in user.roles:
