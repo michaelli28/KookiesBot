@@ -69,7 +69,7 @@ class HelpMenu(ListPageSource):
         len_data = len(self.entries)
 
         embed = Embed(title="Help", description="<cmd|alias|alias> [arg][arg]",  color=random.randint(0, 0xffffff))
-        embed.set_thumbnail(url=self.ctx.author.avatar_url)
+        embed.set_thumbnail(url=self.ctx.author.avatar.url)
         embed.set_footer(text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} commands.")
         embed.timestamp = datetime.datetime.utcnow()
         for name, value, cog in fields:
@@ -110,7 +110,7 @@ class help(commands.Cog):
             embed.add_field(name='Usage:', value=PREFIX+str(command) + str(param(command)))
 
             embed.add_field(name='Category:', value=f'`{command.cog_name}`')
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
@@ -144,7 +144,7 @@ class help(commands.Cog):
 
                 embed = Embed(title="Help! Use ;help <Category> to get help for that category or use ;help all to get a list of all commands", color=random.randint(0, 0xffffff), description = full)
 
-                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=embed)
 

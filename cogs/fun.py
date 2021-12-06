@@ -74,7 +74,7 @@ class fun(commands.Cog):
     #         #     0, 0xffffff), description=f'[Click here if image isn\'t loading]({submission.url})')
     #         # embed.set_image(url=submission.url)
     #         # embed.set_author(name=ctx.author.display_name,
-    #         #                 icon_url=ctx.author.avatar_url)
+    #         #                 icon_url=ctx.author.avatar.url)
 
     #         # embed.timestamp = datetime.datetime.utcnow()
     #         # return await ctx.send(embed=embed)
@@ -93,7 +93,7 @@ class fun(commands.Cog):
     #                 0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
     #             embed.set_image(url=reddit.image_url)
     #             embed.set_author(name=ctx.author.display_name,
-    #                             icon_url=ctx.author.avatar_url)
+    #                             icon_url=ctx.author.avatar.url)
 
     #             embed.timestamp = datetime.datetime.utcnow()
     #             return await ctx.send(embed=embed)
@@ -112,7 +112,7 @@ class fun(commands.Cog):
     #     #         print(data['url'])
 
     #     #         embed.set_author(name=ctx.author.display_name,
-    #     #                         icon_url=ctx.author.avatar_url)
+    #     #                         icon_url=ctx.author.avatar.url)
 
     #     #         embed.timestamp = datetime.datetime.utcnow()
     #     #         return await ctx.send(embed=embed)
@@ -124,7 +124,7 @@ class fun(commands.Cog):
     #     #         embed.set_image(url=data['url'])
 
     #     #         embed.set_author(name=ctx.author.display_name,
-    #     #                         icon_url=ctx.author.avatar_url)
+    #     #                         icon_url=ctx.author.avatar.url)
 
     #     #         embed.timestamp = datetime.datetime.utcnow()
     #     #         return await ctx.send(embed=embed)
@@ -139,7 +139,7 @@ class fun(commands.Cog):
     #             0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
     #         embed.set_image(url=reddit.image_url)
     #         embed.set_author(name=ctx.author.display_name,
-    #                         icon_url=ctx.author.avatar_url)
+    #                         icon_url=ctx.author.avatar.url)
 
     #         embed.timestamp = datetime.datetime.utcnow()
     #         return await ctx.send(embed=embed)
@@ -157,7 +157,7 @@ class fun(commands.Cog):
                 0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
             embed.set_image(url=reddit.image_url)
             embed.set_author(name=ctx.author.display_name,
-                             icon_url=ctx.author.avatar_url)
+                             icon_url=ctx.author.avatar.url)
 
             embed.timestamp = datetime.datetime.utcnow()
             return await ctx.send(embed=embed)
@@ -181,7 +181,7 @@ class fun(commands.Cog):
                 embed.add_field(name='Question', value=question, inline=False)
                 embed.add_field(name='Answer', value='I\'m very accurate for your information. Don\'t question me!', inline=False)
                 embed.set_author(name=ctx.author.display_name,
-                                icon_url=ctx.author.avatar_url)
+                                icon_url=ctx.author.avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=embed)
 
@@ -195,7 +195,7 @@ class fun(commands.Cog):
         embed.add_field(name='Answer', value=random.choice(
             responses), inline=False)
         embed.set_author(name=ctx.author.display_name,
-                        icon_url=ctx.author.avatar_url)
+                        icon_url=ctx.author.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
 
@@ -225,7 +225,7 @@ class fun(commands.Cog):
             embed.add_field(name='Question', value=question, inline=False)
             embed.add_field(name='Answer', value='The answer is not available at the moment, please try again later', inline=False)
             embed.set_author(name=ctx.author.display_name,
-                            icon_url=ctx.author.avatar_url)
+                            icon_url=ctx.author.avatar.url)
             embed.timestamp = datetime.datetime.utcnow()
             self.ball = None
             return await ctx.send(embed=embed)
@@ -236,7 +236,7 @@ class fun(commands.Cog):
         embed.add_field(name='Question', value=question, inline=False)
         embed.add_field(name='Answer', value=response.content, inline=False)
         embed.set_author(name=ctx.author.display_name,
-                        icon_url=ctx.author.avatar_url)
+                        icon_url=ctx.author.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         self.ball = False
         return await ctx.send(embed=embed)
@@ -267,7 +267,7 @@ class fun(commands.Cog):
         embed = discord.Embed(
             title=f'Sentences that {ctx.author.display_name} might say based off of a small paragraph')
         embed.set_author(name=ctx.author.display_name,
-                         icon_url=ctx.author.avatar_url)
+                         icon_url=ctx.author.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         for i in range(5):
             sentence = model.make_sentence()
@@ -326,7 +326,7 @@ class fun(commands.Cog):
             embed = discord.Embed(
                 title=f'The mood for the sentence: `{sentence}` was `{text_predict(sentence)}`', description='Was your sentence positive or negative, reply p for positive, n for negative', color=random.randint(0, 0xffffff))
             embed.set_author(name=ctx.author.display_name,
-                             icon_url=ctx.author.avatar_url)
+                             icon_url=ctx.author.avatar.url)
             embed.timestamp = datetime.datetime.utcnow()
 
             def check(m):
@@ -371,8 +371,8 @@ class fun(commands.Cog):
             await botuser.add_roles(member.top_role)
         except:
             pass
-        # await user.avatar_url.save(name)
-        avatar = await member.avatar_url.read()
+        # await user.avatar.url.save(name)
+        avatar = await member.avatar.url.read()
         try:
             await self.bot.user.edit(avatar = avatar)
         except:

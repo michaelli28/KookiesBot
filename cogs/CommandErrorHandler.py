@@ -122,7 +122,7 @@ class CommandErrorHandler(commands.Cog):
                 0, 0xffffff), description=f'Message sent by {ctx.message.author.mention} in {ctx.message.channel.mention} in {ctx.message.guild.name} [Jump to Message]({ctx.message.jump_url})')
             embed.add_field(name=f'{ctx.message.content}', value=f'\u200B')
             embed.set_author(name=ctx.message.author.display_name,
-                             icon_url=ctx.message.author.avatar_url)
+                             icon_url=ctx.message.author.avatar.url)
 
             embed.timestamp = datetime.datetime.utcnow()
             await me.send(embed=embed)
@@ -137,7 +137,7 @@ class CommandErrorHandler(commands.Cog):
                     embed.set_image(url=f'{attachment.url}')
 
                 embed.set_author(name=ctx.message.author.display_name,
-                                 icon_url=ctx.message.author.avatar_url)
+                                 icon_url=ctx.message.author.avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 await me.send(embed=embed)
 

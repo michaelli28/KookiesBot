@@ -402,7 +402,7 @@ class roles(commands.Cog):
         # if note == None:
         embed = Embed(
             title=f"Role Reactions", color=random.randint(0, 0xffffff), description = message)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
         timestamp = datetime.datetime.utcnow()
         embed.timestamp = timestamp
         messagesent = await ctx.send(embed=embed)
@@ -410,7 +410,7 @@ class roles(commands.Cog):
         # else:
         #     embed = Embed(
         #         title=f"Role Reactions", color=random.randint(0, 0xffffff), description = f'{note}\n{message}')
-        #     embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        #     embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
         #     timestamp = datetime.datetime.utcnow()
         #     embed.timestamp = timestamp
         #     messagesent = await ctx.send(embed=embed)
@@ -802,7 +802,7 @@ class HelpMenu(ListPageSource):
 
         embed = Embed(
                 title=f"List of roles for {self.ctx.guild.name}", color=random.randint(0, 0xffffff))
-        embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
+        embed.set_thumbnail(url=self.ctx.guild.me.avatar.url)
         embed.set_footer(
                 text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} roles")
         timestamp = datetime.datetime.utcnow()

@@ -63,12 +63,12 @@ class HelpMenu(ListPageSource):
         player = self.bot.lavalink.player_manager.get(self.ctx.guild.id)
         embed = Embed(
             title=f"Music Queue For {self.ctx.guild.name}", color=random.randint(0, 0xffffff), description=f'**Now playing - [{player.current.title}]({player.current.uri})**')
-        # embed.set_thumbnail(url=self.ctx.me.avatar_url)
+        # embed.set_thumbnail(url=self.ctx.me.avatar.url)
         embed.set_footer(
             text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} songs")
         embed.timestamp = datetime.datetime.utcnow()
         embed.set_author(name=self.ctx.author.display_name,
-                icon_url=self.ctx.author.avatar_url)
+                icon_url=self.ctx.author.avatar.url)
         
 
         for name, value in fields:
@@ -135,14 +135,14 @@ class Playlist(ListPageSource):
 
         embed = Embed(
             title=f"Playlist `{self.playlistname}` for {self.saver}", color=random.randint(0, 0xffffff))
-        # embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
+        # embed.set_thumbnail(url=self.ctx.guild.me.avatar.url)
 
         embed.set_footer(
             text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} songs")
 
         embed.timestamp = datetime.datetime.utcnow()
         embed.set_author(name=self.ctx.author.display_name,
-                icon_url=self.ctx.author.avatar_url)
+                icon_url=self.ctx.author.avatar.url)
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
 
@@ -322,7 +322,7 @@ class music(commands.Cog):
                 url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
             requester = guild.get_member(player.current.requester)
             em.set_footer(
-                text=f"Requested by: {requester}", icon_url=requester.avatar_url)
+                text=f"Requested by: {requester}", icon_url=requester.avatar.url)
             em.timestamp = datetime.datetime.utcnow()
             await channel.send(embed=em)
 
@@ -441,7 +441,7 @@ class music(commands.Cog):
                             player.add(requester=ctx.author.id, track=results['tracks'][0])
                     
                     em = discord.Embed(color = random.randint(0,0xffffff))
-                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                     em.timestamp = datetime.datetime.utcnow()
                     em.title = 'Playlist Enqueued!'
                     em.description = f'Spotify Playlist - {len(tracks)} tracks'
@@ -469,7 +469,7 @@ class music(commands.Cog):
                     return await ctx.send('Song not found :x: please try again :mag_right:')
 
                 em = discord.Embed(color = random.randint(0,0xffffff))
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                 em.timestamp = datetime.datetime.utcnow()
 
                 if results['loadType'] == 'PLAYLIST_LOADED':
@@ -575,7 +575,7 @@ class music(commands.Cog):
                     return await ctx.send('Song not found :x: please try again :mag_right:')
 
                 em = discord.Embed(color = random.randint(0,0xffffff))
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                 em.timestamp = datetime.datetime.utcnow()
 
                 if results['loadType'] == 'PLAYLIST_LOADED':
@@ -659,7 +659,7 @@ class music(commands.Cog):
                 query_result = ''
                 embed = discord.Embed(title=f'Search results for: {query}')
                 
-                embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 for track in tracks:
                     i = i + 1
@@ -696,7 +696,7 @@ class music(commands.Cog):
                         track['info']['length']).lstrip('00:')
 
                 em.add_field(name='Duration', value=duration)
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                 em.timestamp = datetime.datetime.utcnow()
                 msg = await ctx.send(embed=em)
                 await player.set_volume(self.volume)
@@ -734,7 +734,7 @@ class music(commands.Cog):
                 query_result = ''
                 embed = discord.Embed()
                 
-                embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 for track in tracks:
                     i = i + 1
@@ -771,7 +771,7 @@ class music(commands.Cog):
                         track['info']['length']).lstrip('00:')
 
                 em.add_field(name='Duration', value=duration)
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                 em.timestamp = datetime.datetime.utcnow()
                 msg = await ctx.send(embed=em)
                 await player.set_volume(self.volume)
@@ -826,7 +826,7 @@ class music(commands.Cog):
                         string += '\n'
                     string += '**'
                     embed = discord.Embed(title=f'Playlists for {ctx.author.display_name}', color=random.randint(0,0xffffff), description=string)
-                    embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                    embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                     embed.timestamp = datetime.datetime.utcnow()
                     return await ctx.send(embed=embed)
                 else:
@@ -846,7 +846,7 @@ class music(commands.Cog):
                     return await menu1.start(ctx)
 
                     # embed = discord.Embed(title=f'Playlist `{name}` for {ctx.author.display_name}', description = songs, color=random.randint(0,0xffffff))
-                    # embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                    # embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                     # embed.timestamp = datetime.datetime.utcnow()
                     # return await ctx.send(embed=embed)
 
@@ -860,7 +860,7 @@ class music(commands.Cog):
                 for song in playlist['songs']:
                     player.add(requester=song['requester'], track=song)
                 em = discord.Embed(color = random.randint(0,0xffffff))
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                 em.timestamp = datetime.datetime.utcnow()
                 em.title = 'Playlist Enqueued!'
                 em.description = f"{playlist['name']} - {len(playlist['songs'])} tracks"
@@ -1031,7 +1031,7 @@ class music(commands.Cog):
                 url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
             requester = ctx.guild.get_member(player.current.requester)
             em.set_footer(
-                text=f"Requested by: {requester}", icon_url=requester.avatar_url)
+                text=f"Requested by: {requester}", icon_url=requester.avatar.url)
             em.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=em)
             # return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
@@ -1090,7 +1090,7 @@ class music(commands.Cog):
             # embed = discord.Embed(color=random.randint(0,0xffffff),
             #                     description=f'**{len(player.queue)} tracks**\n\n{queue_list}')
             # embed.set_footer(text=f'Viewing page {page}/{pages}')
-            # embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+            # embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
             # embed.timestamp = datetime.datetime.utcnow()
             # return await ctx.send(embed=embed)
 
@@ -1269,7 +1269,7 @@ class music(commands.Cog):
             await ctx.send(f'No lyrics found for `{query}`')
         else:
             embed = discord.Embed(title=f'Lyrics for the Song `{query}`', description='React with the number to get the lyrics for that song', color=random.randint(0,0xffffff))
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
             timestamp = datetime.datetime.utcnow()
             embed.timestamp = timestamp
             for i in range(len(Results)):
@@ -1333,7 +1333,7 @@ class music(commands.Cog):
 
             elif preset == 'list':
                 em = discord.Embed(title=':control_knobs: EQ presets:', color=random.randint(0,0xffffff), description='\n'.join(presets.keys()))
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                 em.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=em)
             else:

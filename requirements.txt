@@ -1,4 +1,4 @@
-discord
+git+https://github.com/Rapptz/discord.py
 youtube_dl
 asyncio
 git+https://github.com/Rapptz/discord-ext-menus

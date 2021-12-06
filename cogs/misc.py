@@ -186,7 +186,7 @@ class misc(commands.Cog):
     #             string+=add
 
     #         embed = discord.Embed(title='List of Available Languages', color = random.randint(0, 0xffffff), description = string)
-    #         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+    #         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
     #         embed.timestamp = datetime.datetime.utcnow()
     #         return await ctx.send(embed=embed)
 
@@ -204,7 +204,7 @@ class misc(commands.Cog):
     #             string+=add
 
     #         embed = discord.Embed(title='List of Available Languages', color = random.randint(0, 0xffffff), description = string)
-    #         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+    #         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
     #         embed.timestamp = datetime.datetime.utcnow()
     #         return await ctx.send(embed=embed)
 
@@ -266,7 +266,7 @@ class misc(commands.Cog):
             embed = discord.Embed(title=f'{self.ctx.author.display_name} has been sniped by {ctx.author.display_name}', color=random.randint(0,0xffffff), description=f'{self.message}')
             embed.timestamp = datetime.datetime.utcnow()
             embed.set_author(name=self.ctx.author.display_name,
-                    icon_url=self.ctx.author.avatar_url)
+                    icon_url=self.ctx.author.avatar.url)
             return await ctx.send(embed=embed)
 
 
@@ -419,7 +419,7 @@ class misc(commands.Cog):
     #     if not arg:
     #         embed = discord.Embed(
     #             title='Modules', description='\n'.join(modules))
-    #         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+    #         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
     #         embed.timestamp = datetime.datetime.utcnow()
     #         return await ctx.send(embed=embed)
     #     if arg.lower() == 'all':
@@ -449,10 +449,10 @@ class misc(commands.Cog):
     #     """Ascii art of avatar"""
     #     if not image_link:
     #         user = ctx.message.author
-    #         image_link = user.avatar_url_as(size=1024)
+    #         image_link = user.avatar.url_as(size=1024)
     #     try:
     #         user = ctx.message.mentions[0]
-    #         image_link = user.avatar_url_as(size=1024)
+    #         image_link = user.avatar.url_as(size=1024)
     #     except IndexError:
     #         pass
     #     try:

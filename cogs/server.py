@@ -52,7 +52,7 @@ class server(commands.Cog):
                     0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
                 embed.add_field(name=f'{message.content}', value=f'\u200B')
                 embed.set_author(name=message.author.display_name,
-                                icon_url=message.author.avatar_url)
+                                icon_url=message.author.avatar.url)
 
                 embed.timestamp = datetime.datetime.utcnow()
                 await channel.send(embed=embed)
@@ -66,7 +66,7 @@ class server(commands.Cog):
                         embed.set_image(url=f'{attachment.url}')
 
                     embed.set_author(name=message.author.display_name,
-                                    icon_url=message.author.avatar_url)
+                                    icon_url=message.author.avatar.url)
                     embed.timestamp = datetime.datetime.utcnow()
                     await channel.send(embed=embed)
 
@@ -159,7 +159,7 @@ class server(commands.Cog):
         embed = discord.Embed(
             title='Welcome to ' + str(member.guild.name) + " " + str(member.display_name), color=random.randint(0, 0xffffff))
 
-        embed.set_author(name=member.display_name, icon_url=member.avatar_url)
+        embed.set_author(name=member.display_name, icon_url=member.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
 
         with open("guild.json", "r") as f:
@@ -178,7 +178,7 @@ class server(commands.Cog):
     async def on_member_remove(self, member):
         embed = discord.Embed(title=member.display_name + ' ('+str(member)+') has left ' +
                               str(member.guild.name), color=random.randint(0, 0xffffff))
-        embed.set_author(name=member.display_name, icon_url=member.avatar_url)
+        embed.set_author(name=member.display_name, icon_url=member.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
 
         with open("guild.json", "r") as f:

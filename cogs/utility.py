@@ -120,7 +120,7 @@ class util(commands.Cog):
                         0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
                     embed.add_field(name=f'{message.content}', value=f'\u200B')
                     embed.set_author(name=message.author.display_name,
-                                    icon_url=message.author.avatar_url)
+                                    icon_url=message.author.avatar.url)
 
                     embed.timestamp = datetime.datetime.utcnow()
                     await channel.send(embed=embed)
@@ -134,7 +134,7 @@ class util(commands.Cog):
                 #         embed.set_image(url=f'{attachment.url}')
 
                 #     embed.set_author(name=message.author.display_name,
-                #                         icon_url=message.author.avatar_url)
+                #                         icon_url=message.author.avatar.url)
                 #     embed.timestamp = datetime.datetime.utcnow()
                 #     await channel.send(embed=embed)
                 now = datetime.datetime.utcnow()
@@ -199,7 +199,7 @@ class util(commands.Cog):
             except ValueError:
                 return await ctx.send('Invalid input for hexadecimal color')
             embed.timestamp = datetime.datetime.utcnow()
-            embed.set_author(name=ctx.author.display_name, url=ctx.author.avatar_url)
+            embed.set_author(name=ctx.author.display_name, url=ctx.author.avatar.url)
             return await ctx.send(embed=embed)
 
     @commands.command(aliases=['urbandictionary', 'urbandefine'], brief='Gives the definitions of a word using Urban Dictionary')
@@ -230,13 +230,13 @@ class util(commands.Cog):
 
                     embed = discord.Embed(title=f'Definition of `{word}`, Part {embeds}', description=des+words)
                     embed.set_author(name=ctx.author.display_name,
-                                    icon_url=ctx.author.avatar_url)
+                                    icon_url=ctx.author.avatar.url)
                     embed.timestamp = datetime.datetime.utcnow()
                     listEmbeds.append(embed)
                 if toolong:
                     embed = discord.Embed(title=f'Definition of `{word}`, Part {embeds}', description=des)
                     embed.set_author(name=ctx.author.display_name,
-                                    icon_url=ctx.author.avatar_url)
+                                    icon_url=ctx.author.avatar.url)
                     embed.timestamp = datetime.datetime.utcnow()
                     listEmbeds.append(embed)
                     des = ''
@@ -246,7 +246,7 @@ class util(commands.Cog):
                         embeds+=1
                         embed = discord.Embed(title=f'Definition of `{word}`, Part {embeds}', description=des)
                         embed.set_author(name=ctx.author.display_name,
-                                        icon_url=ctx.author.avatar_url)
+                                        icon_url=ctx.author.avatar.url)
                         embed.timestamp = datetime.datetime.utcnow()
                         listEmbeds.append(embed)
                 else:
@@ -254,7 +254,7 @@ class util(commands.Cog):
             if not triggered:
                 embed = discord.Embed(title=f'Definition of `{word}`', description=des)
                 embed.set_author(name=ctx.author.display_name,
-                                icon_url=ctx.author.avatar_url)
+                                icon_url=ctx.author.avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=embed)
             else:
@@ -267,7 +267,7 @@ class util(commands.Cog):
         synsets = wordnet.synsets(word)
         embed = discord.Embed(title=f'Definition of the word: `{word}`')
         embed.set_author(name=ctx.author.display_name,
-                         icon_url=ctx.author.avatar_url)
+                         icon_url=ctx.author.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         n = 1
         if len(synsets) == 0:
@@ -315,14 +315,14 @@ class util(commands.Cog):
     async def stealavatar(self, ctx, *, member: discord.Member=None):
         member = member or ctx.author
         embed = discord.Embed(title=f'{member.name}\'s avatar', color=random.randint(
-            0, 0xffffff), url=f'{member.avatar_url}')
-        embed.set_image(url=member.avatar_url)
+            0, 0xffffff), url=f'{member.avatar.url}')
+        embed.set_image(url=member.avatar.url)
         embed.set_author(name=ctx.author.display_name,
-                         icon_url=ctx.author.avatar_url)
+                         icon_url=ctx.author.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
         # ext = 'gif' if user.is_avatar_animated() else 'png'
-        # await ctx.send(file=discord.File(BytesIO(await user.avatar_url.read()), f"{user.id}.{ext}"))
+        # await ctx.send(file=discord.File(BytesIO(await user.avatar.url.read()), f"{user.id}.{ext}"))
 
     @commands.command(name='serverinfo', aliases=['server', 'sinfo'], brief='Gets info about the server')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
@@ -358,7 +358,7 @@ class util(commands.Cog):
 
         # Create embed
         em = discord.Embed(color=0x00CC99)
-        em.set_author(name='Server Info:', icon_url=server.owner.avatar_url)
+        em.set_author(name='Server Info:', icon_url=server.owner.avatar.url)
         em.add_field(name='Name', value=f'{server.name}')
         em.add_field(name='Owner', value=f'{server.owner}', inline=False)
         em.add_field(name='Members', value=f'{server.member_count}')
@@ -375,7 +375,7 @@ class util(commands.Cog):
         em.set_thumbnail(url=server.icon_url)
         em.set_footer(text='Server ID: %s' % server.id)
         em.set_author(name=ctx.author.display_name,
-                      icon_url=ctx.author.avatar_url)
+                      icon_url=ctx.author.avatar.url)
         em.timestamp = datetime.datetime.utcnow()
 
         return await ctx.send(embed=em)
@@ -425,7 +425,7 @@ class util(commands.Cog):
                 # f"Creators: **{str(NotThatBot)}** and **{str(hurb)}**"
             ),
             color=random.randint(0,0xffffff))
-        embed.set_author(name=ctx.guild.me.name, icon_url=ctx.guild.me.avatar_url)
+        embed.set_author(name=ctx.guild.me.name, icon_url=ctx.guild.me.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
 
         return await ctx.send(embed=embed)
@@ -489,8 +489,8 @@ class util(commands.Cog):
         if isinstance(user, discord.Member):
             em.add_field(
                 name='Join Date', value=f"{user.joined_at.__format__('%A, %d %B %Y @ %H:%M:%S')}", inline=False)
-        em.set_thumbnail(url=user.avatar_url)
-        em.set_author(name=user, icon_url=user.avatar_url)
+        em.set_thumbnail(url=user.avatar.url)
+        em.set_author(name=user, icon_url=user.avatar.url)
         em.timestamp = datetime.datetime.utcnow()
 
         return await ctx.send(embed=em)
@@ -541,9 +541,9 @@ class util(commands.Cog):
     #         description.append(f':map:Map: [GoogleMaps]({info.gmap})')
 
     #         embed = discord.Embed(title=":satellite_orbital: IP information:", color=random.randint(0,0xffffff), description="\n".join(description))
-    #         embed.set_footer(text=ip, icon_url=ctx.author.avatar_url)
+    #         embed.set_footer(text=ip, icon_url=ctx.author.avatar.url)
     #         embed.set_author(name=ctx.author.display_name,
-    #                          icon_url=ctx.author.avatar_url)
+    #                          icon_url=ctx.author.avatar.url)
     #         embed.timestamp = datetime.datetime.utcnow()
     #         return await ctx.send(embed=embed)
 
@@ -571,7 +571,7 @@ class util(commands.Cog):
                     embed = discord.Embed(description=translation.text,
                                             color=random.randint(0,0xffffff))
                     embed.set_author(name=ctx.author.display_name,
-                        icon_url=ctx.author.avatar_url)
+                        icon_url=ctx.author.avatar.url)
                     embed.timestamp = datetime.datetime.utcnow()
                     embed.set_footer(
                         text=f'Translated {LANGUAGES[translation.src]} to {LANGUAGES[translation.dest]}.', icon_url='https://i.ibb.co/1np1s8P/translate.png')

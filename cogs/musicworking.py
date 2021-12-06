@@ -52,7 +52,7 @@ class HelpMenu(ListPageSource):
 
         embed = Embed(
             title=f"Music Queue For {self.ctx.guild.name}", color=random.randint(0, 0xffffff))
-        embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
+        embed.set_thumbnail(url=self.ctx.guild.me.avatar.url)
         embed.set_footer(
             text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} songs")
         timestamp = datetime.datetime.utcnow()
@@ -517,7 +517,7 @@ class Song:
                     .add_field(name='URL', value='[Click]({0.url})'.format(self))
                     .add_field(name='Date', value=f'{date}')
                     .set_thumbnail(url=self.thumbnail)
-                    .set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url))
+                    .set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url))
         embed.timestamp = datetime.datetime.utcnow()
         return embed
 
@@ -724,7 +724,7 @@ class music(commands.Cog):
             color = random.randint(0, 0xffffff),
             title=f'Search results for {query}'
         )
-        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar_url)
+        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         if len(results)==0:
             return await ctx.send(f'No results for: {query}')

@@ -67,7 +67,7 @@ class HelpMenu(ListPageSource):
 
         embed = Embed(
                 title=f"Leaderboard for {self.ctx.guild.name}", color=random.randint(0, 0xffffff))
-        embed.set_thumbnail(url=self.ctx.guild.me.avatar_url)
+        embed.set_thumbnail(url=self.ctx.guild.me.avatar.url)
         embed.set_footer(
                 text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} users")
         embed.timestamp = datetime.datetime.utcnow()
@@ -165,7 +165,7 @@ class levels(Cog):
 
             embed.add_field(name='Rank', value='**'+str(result['rank'])+'**')
 
-            embed.set_author(name=result['name'], icon_url=author.avatar_url)
+            embed.set_author(name=result['name'], icon_url=author.avatar.url)
             embed.add_field(name='Level', value='**' +
                             str(int(((12*result['Xp'])//800) ** 0.55))+'**')
 

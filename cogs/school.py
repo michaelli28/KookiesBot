@@ -122,7 +122,7 @@ class school(commands.Cog):
     #   sort = sorted(result, key=itemgetter('Xp'), reverse=True)
     #   embed = discord.Embed(color=random.randint(0, 0xffffff))
     #   embed.set_author(name='Leaderboard')
-    #   embed.set_author(name=ctx.author.name, icon_url=user.avatar_url)
+    #   embed.set_author(name=ctx.author.name, icon_url=user.avatar.url)
     #   place = 1
     #   for item in sort:
     #     embed.add_field(name=str(place)+') ' + '**' +

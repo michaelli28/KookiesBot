@@ -140,7 +140,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         cls.search["title"] = f'Search results for:\n**{search}**'
         cls.search["type"] = 'rich'
         cls.search["color"] = 7506394
-        cls.search["author"] = {'name': f'{ctx.author.display_name}', 'url': f'{ctx.author.avatar_url}', 'icon_url': f'{ctx.author.avatar_url}'}
+        cls.search["author"] = {'name': f'{ctx.author.display_name}', 'url': f'{ctx.author.avatar.url}', 'icon_url': f'{ctx.author.avatar.url}'}
         
         lst = []
 
@@ -247,7 +247,7 @@ class Song:
                 .add_field(name='Uploader', value='[{0.source.uploader}]({0.source.uploader_url})'.format(self), inline=False)
                 .add_field(name='URL', value='[Click]({0.source.url})'.format(self))
                 .set_thumbnail(url=self.source.thumbnail)
-                .set_author(name=self.requester.display_name, icon_url=self.requester.avatar_url))
+                .set_author(name=self.requester.display_name, icon_url=self.requester.avatar.url))
         embed.timestamp = datetime.datetime.utcnow()
         return embed
 

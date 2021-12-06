@@ -479,7 +479,7 @@ class moderation(commands.Cog):
 
         embed = discord.Embed(title=f'Blacklisted People in {ctx.guild.name}', color = random.randint(0, 0xffffff))
         embed.set_author(name=ctx.author.display_name,
-                        icon_url=ctx.author.avatar_url)
+                        icon_url=ctx.author.avatar.url)
 
         embed.timestamp = datetime.datetime.utcnow()
 
@@ -523,7 +523,7 @@ class moderation(commands.Cog):
             title=f"{member.display_name}'s Permissions", description=permstr, color=random.randint(0,0xffffff)
         )
         embed.set_author(name=member.display_name,
-                            icon_url=member.avatar_url)
+                            icon_url=member.avatar.url)
 
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
