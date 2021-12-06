@@ -112,7 +112,9 @@ async def blacklisted(ctx):
 class blacklisterror(commands.CheckFailure):
     pass
 
-
+@bot.event
+async def on_thread_join(thread):
+    return await thread.join()
 @bot.event
 async def on_message(message):
     await bot.process_commands(message)
