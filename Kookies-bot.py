@@ -28,9 +28,9 @@ from time import time
 from aiohttp import ClientSession
 import io
 import logging
-import discord_slash
-from discord_slash import SlashCommand
-from discord_slash.utils.manage_commands import create_option, create_choice
+
+# from discord_slash import SlashCommand
+# from discord_slash.utils.manage_commands import create_option, create_choice
 
 
 #import jishaku

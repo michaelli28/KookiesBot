@@ -10,6 +10,7 @@ from discord.ext import commands
 from discord.ext.commands import command
 from discord.ext.commands import Cog
 from discord.utils import get
+import discord.utils
 from discord import Embed
 from typing import Optional
 import random
@@ -119,11 +120,13 @@ class util(commands.Cog):
                     embed = discord.Embed(color=random.randint(
                         0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
                     embed.add_field(name=f'{message.content}', value=f'\u200B')
-                    embed.set_author(name=message.author.display_name,
-                                    icon_url=message.author.avatar.url)
-
+                    if message.author.avatar != None:
+                        embed.set_author(name=message.author.display_name, icon_url=message.author.avatar.url)
+                    else: 
+                        embed.set_author(name=message.author.display_name)
                     embed.timestamp = datetime.datetime.utcnow()
                     await channel.send(embed=embed)
+
             except discord.errors.HTTPException:
                 # if message.attachments:
                 #     embed = discord.Embed(color=random.randint(
@@ -142,19 +145,14 @@ class util(commands.Cog):
                 await channel.send(f"Message sent in {message.guild} in {message.channel} by {message.author} at {current_time}  >  {message.jump_url}")
                 if message.content != "":
                     await channel.send(message.content)
-                
-                if message.attachments:
-                    for attachment in message.attachments:
-                        new = await attachment.to_file()
-                        await channel.send(file=new)
-                        await channel.send(f'{attachment.url}')
                 if message.embeds:
                     await channel.send(message.embeds[0].to_dict())
+                
             if message.attachments:
                 for attachment in message.attachments:
                     new = await attachment.to_file()
-                    await channel.send(file=new)
                     await channel.send(attachment.url)
+                    await channel.send(file=new)
             if message.embeds:
                 for embed in message.embeds:
                     await channel.send(embed=embed)
