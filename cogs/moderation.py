@@ -225,6 +225,9 @@ class moderation(commands.Cog):
                         return await ctx.send('I\'m not allowed to do that')
                 for person in ctx.message.guild.members:
                     u = ctx.guild.get_member(person.id)
+                    if ctx.author.top_role.position <= user.top_role.position:
+                        if str(ctx.author.id) != '587068610237693963':
+                            await ctx.send(f'Your role position isn\'t high enough mute {u}!')
                     await u.add_roles(Muted)
                 if minutes>0:
                     if create:
@@ -246,8 +249,11 @@ class moderation(commands.Cog):
             if user == None:
                 return await ctx.send('Input a user to mute or everyone')
             try:
+                if ctx.author.top_role.position <= user.top_role.position:
+                    if str(ctx.author.id) != '587068610237693963':
+                        return await ctx.send(f'Your role position isn\'t high enough mute {user}!')
                 role = get(user.guild.roles, name='Muted')
-
+                
                 if role == None:
                     Muted = await ctx.guild.create_role(name="Muted", hoist = True)
                     for channel in ctx.guild.channels:  # removes permission to view and send in the channels

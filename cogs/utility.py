@@ -370,7 +370,7 @@ class util(commands.Cog):
         em.add_field(name='Highest role', value=f'{server.roles[-1]}')
         em.add_field(
             name='Created At', value=f"{server.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S')}", inline=False)
-        em.set_thumbnail(url=server.icon_url)
+        em.set_thumbnail(url=server.icon)
         em.set_footer(text='Server ID: %s' % server.id)
         em.set_author(name=ctx.author.display_name,
                       icon_url=ctx.author.avatar.url)
