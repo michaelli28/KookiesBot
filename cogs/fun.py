@@ -147,7 +147,7 @@ class fun(commands.Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def cookie(self, ctx, member: discord.Member=None):
             if member == None:
-                return await ctx.send("Enjoy! :cookie")
+                return await ctx.send("Enjoy! :cookie:")
             elif member.id==ctx.author.id:
                 return await ctx.send("You gave yourself a cookie! What a smart decision :cookie:")
             else:
