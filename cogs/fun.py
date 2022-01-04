@@ -143,7 +143,25 @@ class fun(commands.Cog):
 
     #         embed.timestamp = datetime.datetime.utcnow()
     #         return await ctx.send(embed=embed)
+    @commands.command(brief='Dispenses a cookie for you or someone else!', aliases=["kookie", "dispense", "cookies", "givemeacookie","cookiedispenser","iwantcookie"])
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def cookie(self, ctx, member: discord.Member=None):
+            if member == None:
+                return await ctx.send("Enjoy! :cookie")
+            elif member.id==ctx.author.id:
+                return await ctx.send("You gave yourself a cookie! What a smart decision :cookie:")
+            else:
+                return await ctx.send(f"{member.mention}, you can thank {ctx.author.mention} for the cookie! :cookie:")
 
+    @commands.command(brief='Dispenses more cookies for the greedy ones :D', aliases=["givememorecookies"])
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def morecookies(self, ctx, member: discord.Member=None):
+            if member == None:
+                return await ctx.send("Be as greedy as you want with cookies! :cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie:")
+            elif member.id==ctx.author.id:
+                return await ctx.send("You gave yourself many cookies! What a smart decision :cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie:")
+            else:
+                return await ctx.send(f"{member.mention}, you can thank {ctx.author.mention} for the cookie donation! :cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie:")
     @commands.command(brief='Gets a awww image from reddit')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def aww(self, ctx):
