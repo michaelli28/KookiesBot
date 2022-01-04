@@ -988,8 +988,10 @@ class moderation(commands.Cog):
                     phrase = result["phrase"]
                     times = result["times"]
                     return await ctx.send(f"{user.mention} is already in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s to leave!")
+                if times > 30 and ctx.author.id != 587068610237693963: #notthatbot id
+                    return await ctx.send(f"{times} times of repeating the phrase is just evil so the max times is 30!")
                 try:
-
+                    
                     if ctx.author.top_role.position <= user.top_role.position:
                         if str(ctx.author.id) != '587068610237693963':
                             return await ctx.send(f'Your role position isn\'t high enough put {user} in detention!')

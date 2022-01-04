@@ -26,7 +26,7 @@ cooldown = int(configfile['cooldown'])
 times = int(configfile['numberoftimes'])
 
 
-class detention(Cog):
+class deten(Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -54,6 +54,17 @@ class detention(Cog):
                         if role == None: 
                             return
                         await message.author.remove_roles(role)
+                        roles = result['roles']
+                        for role in roles:
+                            try:
+                                if role == '@everyone':
+                                    pass
+                                else:
+                                    role = get(message.guild.roles, name=role)
+                                    await message.author.add_roles(role)
+                            except:
+                                await message.channel.send(f'Unable to add role `{role.name}`')
+
                         collection.delete_many({'_id':id})
                         return await message.channel.send(f"{message.author.mention} has finished serving their detention by typing **{phrase}** in the detention channel **{times}** time(s)")
                     else:
@@ -65,4 +76,4 @@ class detention(Cog):
 
 
 def setup(bot):
-	bot.add_cog(detention(bot))
+	bot.add_cog(deten(bot))

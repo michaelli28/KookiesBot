@@ -68,7 +68,7 @@ async def startup():
     bot.load_extension('cogs.server')
     bot.load_extension('cogs.misc')
     bot.load_extension('cogs.utility')
-    bot.load_extension('cogs.detention')
+    bot.load_extension('cogs.deten')
 
     
     # bot.load_extension('cogs.games')
