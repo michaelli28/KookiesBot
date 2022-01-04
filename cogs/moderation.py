@@ -207,7 +207,8 @@ class moderation(commands.Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def mute(self, ctx, user: Union[discord.Member, str]=None, minutes: Optional[float]=0):
-        
+        if user.id == 488442297197920256:
+            return await ctx.send("I\'m not THAT stupid")
         if user == 'everyone':
             async with ctx.typing():
                 try:
@@ -437,6 +438,8 @@ class moderation(commands.Cog):
     async def blacklistadd(self, ctx, *, member: discord.Member=None):
         if member==None:
             return await ctx.send('Input a member to add to blacklist')
+        if member.id == 488442297197920256:
+            return await ctx.send("I\'m not THAT stupid")
         else:
             with open('blacklist.json', 'r') as blacklist:
                 people = json.load(blacklist)
@@ -971,10 +974,12 @@ class moderation(commands.Cog):
 
 
     @commands.command(brief='Removes the member\'s permission to talk in all channels except a designated detention channel, where they have to type a phrase a certain amount of times to be unmuted!')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    @commands.cooldown(times, 15, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def detention(self, ctx, user: discord.Member, times: int, *, phrase: str):
         async with ctx.typing():
+            if user.id == 488442297197920256:
+                return await ctx.send("I\'m not THAT stupid")
             if user != None:
                 cluster = MongoClient(
                     'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')

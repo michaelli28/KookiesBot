@@ -40,7 +40,7 @@ class CommandErrorHandler(commands.Cog):
 
         if isinstance(error, commands.BotMissingPermissions):
             missing = [perm.replace('_', ' ').replace(
-                'guild', 'server').title() for perm in error.missing_perms]
+                'guild', 'server').title() for perm in error.missing_permissions]
             if len(missing) > 2:
                 fmt = '{}, and {}'.format(
                     "**, **".join(missing[:-1]), missing[-1])
@@ -74,7 +74,7 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, commands.MissingPermissions):
             ctx.command.reset_cooldown(ctx)
             missing = [perm.replace('_', ' ').replace(
-                'guild', 'server').title() for perm in error.missing_perms]
+                'guild', 'server').title() for perm in error.missing_permissions]
             if len(missing) > 2:
                 fmt = '{}, and {}'.format(
                     "**, **".join(missing[:-1]), missing[-1])
@@ -169,7 +169,7 @@ class CommandErrorHandler(commands.Cog):
 
         # if isinstance(error, commands.MissingPermissions):
         #     missing = [perm.replace('_', ' ').replace(
-        #         'guild', 'server').title() for perm in error.missing_perms]
+        #         'guild', 'server').title() for perm in error.missing_permissions]
         #     if len(missing) > 2:
         #         fmt = '{}, and {}'.format(
         #             "**, **".join(missing[:-1]), missing[-1])
