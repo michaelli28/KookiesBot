@@ -143,7 +143,7 @@ class fun(commands.Cog):
 
     #         embed.timestamp = datetime.datetime.utcnow()
     #         return await ctx.send(embed=embed)
-    @commands.command(brief='Dispenses a cookie for you or someone else!', aliases=["kookie", "dispense", "cookies", "givemeacookie","cookiedispenser","iwantcookie"])
+    @commands.command(brief='Dispenses a cookie for you or someone else!', aliases=["kookie", "dispense", "cookies", "givemeacookie","cookiedispenser","iwantcookie","kookies"])
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def cookie(self, ctx, member: discord.Member=None):
             if member == None:

@@ -95,10 +95,10 @@ class daily(Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, ctx):
-        if ctx.author.bot:
+    async def on_message(self, message):
+        if message.author.bot:
             return
-        # elif ctx.author.id == 726233978536853545:
+        # elif message.author.id == 726233978536853545:
         #     return
         else:
             with open("cooldown.json", "r") as f:
@@ -106,7 +106,7 @@ class daily(Cog):
                 f.close()
             try:
                 previous = datetime.datetime.strptime(
-                    cooldowns[str(ctx.author.id)], '%Y-%m-%d %H:%M:%S.%f')
+                    cooldowns[str(message.author.id)], '%Y-%m-%d %H:%M:%S.%f')
             except:
                 previous = datetime.datetime.strptime(
                     cooldowns['start'], '%Y-%m-%d %H:%M:%S.%f')
@@ -126,34 +126,34 @@ class daily(Cog):
                 global collection
 
                 try:
-                    collection = db[str(ctx.guild.id)]
+                    collection = db[str(message.guild.id)]
                 except AttributeError:
                     return
                 except:
-                    db.createCollection(str(ctx.guild.id))
-                    collection = db[str(ctx.guild.id)]
+                    db.createCollection(str(message.guild.id))
+                    collection = db[str(message.guild.id)]
                 
                 global collectionDaily #creating string for id reference to db
                 timestring = str(datetime.datetime.today().month)
                 timestring += str(datetime.datetime.today().day)
                 timestring += str(datetime.datetime.today().year)
-                if (str(ctx.guild.id) + timestring) not in dbDaily.list_collection_names():
+                if (str(message.guild.id) + timestring) not in dbDaily.list_collection_names():
                     daysAgo = datetime.timedelta(days = 3)
                     t2 = datetime.datetime.today() - daysAgo
                     oldTS = str(t2.month)
                     oldTS += str(t2.day)
                     oldTS += str(t2.year)
-                    oldCol = dbDaily[str(ctx.guild.id) + oldTS]
+                    oldCol = dbDaily[str(message.guild.id) + oldTS]
                     oldCol.drop()
-                collectionDaily = dbDaily[str(ctx.guild.id)+timestring]
+                collectionDaily = dbDaily[str(message.guild.id)+timestring]
                 
-                author = ctx.author.id
+                author = message.author.id
                 res = collection.find({})
                 resD = collectionDaily.find({})
                 xp = random.randint(15, 25)
 
-                collection.update_one({'_id': ctx.author.id}, {"$inc": {"Xp": xp}})
-                collectionDaily.update_one({'_id': ctx.author.id}, {"$inc": {"Xp": xp}})
+                collection.update_one({'_id': message.author.id}, {"$inc": {"Xp": xp}})
+                collectionDaily.update_one({'_id': message.author.id}, {"$inc": {"Xp": xp}})
 
                 #checking if collection has an entry already, if not, adds one
                 try:
@@ -161,19 +161,19 @@ class daily(Cog):
                     resultD = collectionDaily.find_one({'_id':author})
                     if result == None:
                         collection.insert_one(
-                        {'_id': ctx.author.id, 'name': ctx.author.display_name, "Xp": xp})
+                        {'_id': message.author.id, 'name': message.author.display_name, "Xp": xp})
                     if resultD == None:
                         collectionDaily.insert_one(
-                        {'_id': ctx.author.id, 'name': ctx.author.display_name, "Xp": xp})
+                        {'_id': message.author.id, 'name': message.author.display_name, "Xp": xp})
                     # new_lvl = int(((12*result['Xp'])//800) ** 0.55)
                     # old_lvl = int(((12*result['Xp']-xp)//800) ** 0.55)
                     # if new_lvl > old_lvl:
-                    #     await ctx.channel.send(f"Congrats {ctx.author.mention}! You reached level {new_lvl:,}!")
+                    #     await message.channel.send(f"Congrats {message.author.mention}! You reached level {new_lvl:,}!")
                 except:
                     collection.insert_one(
-                        {'_id': ctx.author.id, 'name': ctx.author.display_name, "Xp": xp})
+                        {'_id': message.author.id, 'name': message.author.display_name, "Xp": xp})
                     collectionDaily.insert_one(
-                        {'_id': ctx.author.id, 'name': ctx.author.display_name, "Xp": xp})
+                        {'_id': message.author.id, 'name': message.author.display_name, "Xp": xp})
 
 
                 sort = sorted(res, key=itemgetter('Xp'), reverse=True)
@@ -181,7 +181,7 @@ class daily(Cog):
                 rank = 1
 
                 for item in sort:
-                    member = ctx.guild.get_member(int(item['_id']))
+                    member = message.guild.get_member(int(item['_id']))
                     try:
                         if item['rank'] != rank:
                             collection.update_one({'_id': item['_id']}, {
@@ -196,7 +196,7 @@ class daily(Cog):
                             collection.update_one({'_id': item['_id']}, {"$set": {"name": member.display_name}})
 
                 for item in sortD:
-                    member = ctx.guild.get_member(int(item['_id']))
+                    member = message.guild.get_member(int(item['_id']))
                     try:
                         if item['rank'] != rank:
                             collectionDaily.update_one({'_id': item['_id']}, {
@@ -213,8 +213,8 @@ class daily(Cog):
 
                 with open("cooldown.json", "r") as f:
                     cooldowns = json.load(f)
-                    # del cooldowns[str(ctx.author.id)]
-                    cooldowns[str(ctx.author.id)] = str(
+                    # del cooldowns[str(message.author.id)]
+                    cooldowns[str(message.author.id)] = str(
                         datetime.datetime.utcnow())
                     f.close()
 

@@ -35,7 +35,7 @@ class detention(Cog):
         if message.author.bot:
             return
         else:
-            if message.channel.name == "Detention":
+            if message.channel.name.lower() == "detention":
                 cluster = MongoClient(
                         'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
                 db = cluster.Other
@@ -43,8 +43,11 @@ class detention(Cog):
                 id = str(message.guild.id)
                 id += str(message.author.id)
                 result = collection.find_one({'_id':id})
+                if result == None:
+                    return
                 phrase = result["phrase"]
                 times = result["times"]
+                progress = result["progress"]
                 if result != None and (phrase.lower() in message.content.lower()):
                     if (int(result["progress"]) + 1) == int(result["times"]):
                         role = get(message.author.guild.roles, name='Detention')
@@ -52,9 +55,11 @@ class detention(Cog):
                             return
                         await message.author.remove_roles(role)
                         collection.delete_many({'_id':id})
-                        return await message.send(f"{message.author.mention} has finished serving their detention by typing `{phrase}` in the detention channel {times} times")
+                        return await message.channel.send(f"{message.author.mention} has finished serving their detention by typing **{phrase}** in the detention channel **{times}** time(s)")
                     else:
                         collection.update_one({'_id': id}, {"$inc": {"progress": 1}})
+                elif result != None and (phrase.lower() not in message.content.lower()):
+                    return await message.channel.send(f'{message.author.nick} is in detention with the phrase **{phrase}** and needs to repeat it **{times-progress}** more time(s) to leave')
 
 
 

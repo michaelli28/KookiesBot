@@ -897,15 +897,99 @@ class moderation(commands.Cog):
             await member.kick()
             return await ctx.send(f"Kicked {member.mention}")
 
+    @commands.command(aliases=['detentionprogress'], brief='Gives info about the phrase and times needed to get out of detention for a user')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def dprogress(self, ctx, *, user: discord.Member=None):
+        async with ctx.typing():
+            cluster = MongoClient(
+                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+            db = cluster.Other
+            collection = db['Detention']
+            if user == None:
+                user = ctx.author
+            id = str(ctx.guild.id)
+            id += str(user.id)
+            result = collection.find_one({'_id':id})
+            if result == None:
+                return await ctx.send(f"{user.nick} is not in detention")
+            else:
+                phrase = result["phrase"]
+                times = result["times"]
+                progress = result["progress"]
+                return await ctx.send(f'{ctx.author.nick} is in detention with the phrase **{phrase}** and needs to repeat it **{times-progress}** more time(s) to leave')
+
+    @commands.command(aliases=['removedetention',"undetention"], brief='Brings a member out of detention')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    @commands.has_permissions(manage_roles=True)
+    async def pardon(self, ctx, *, user: discord.Member):
+        async with ctx.typing():
+
+            try:
+                role = get(user.guild.roles, name='Detention')
+                if role == None: 
+                    await ctx.send("There is no Detention role in this server, use the detention command to create one!")
+                await user.remove_roles(role)
+
+                cluster = MongoClient(
+                        'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                db = cluster.Other
+                collection = db['Detention']
+                id = str(ctx.guild.id)
+                id += str(user.id)
+
+                result = collection.find_one({'_id':id})
+                if result == None:
+                    return await ctx.send(f"{user.nick} is not in detention")
+                try:
+                    roles = result['roles']
+                except:
+                    await ctx.send(f'Pardoned {user.mention}, but was not able to add back their roles unfortunately')
+
+                for role in roles:
+                    try:
+                        if role == '@everyone':
+                            pass
+                        else:
+                            role = get(ctx.message.guild.roles, name=role)
+                            await user.add_roles(role)
+                    except:
+                        await ctx.send(f'Unable to add role `{role.name}`')
+
+                try:
+                    collection.delete_many({'_id':id})
+                except Exception as e:
+                    print(e)
+                    
+                return await ctx.send(f'{user.display_name} has been pardoned from detention')
+
+            except BadArgument:
+                return await ctx.send(f'{user.display_name} is not found')
+            except discord.Forbidden:
+                return await ctx.send('I\'m not allowed to do that')
+            except AttributeError:
+                return await ctx.send('Either `Detention` is not a role, in which case you can use the detention command to make one, or the member you put was invalid')
 
 
     @commands.command(brief='Removes the member\'s permission to talk in all channels except a designated detention channel, where they have to type a phrase a certain amount of times to be unmuted!')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
-    async def detention(self, ctx, user: discord.Member, times: int, phrase: str):
+    async def detention(self, ctx, user: discord.Member, times: int, *, phrase: str):
         async with ctx.typing():
             if user != None:
+                cluster = MongoClient(
+                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                db = cluster.Other
+                collection = db['Detention']
+                id = str(ctx.guild.id)
+                id += str(user.id)
+                result = collection.find_one({'_id':id})
+        
+                if result != None:
+                    phrase = result["phrase"]
+                    times = result["times"]
+                    return await ctx.send(f"{user.nick} is already in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s to leave!")
                 try:
+
                     if ctx.author.top_role.position <= user.top_role.position:
                         if str(ctx.author.id) != '587068610237693963':
                             return await ctx.send(f'Your role position isn\'t high enough put {user} in detention!')
@@ -922,16 +1006,21 @@ class moderation(commands.Cog):
                     else:
                         createRole = False
                     channels = [] 
+                    detention=None
                     for channel in ctx.guild.channels:
-                        channels.append(channel.name)
-                    if "Detention" not in channels:
+                        channels.append(channel.name.lower())
+                        if channel.name.lower() == "detention":
+                            detention = channel
+
+                    if "detention" not in channels:
                         createChannel = True
                         
                         overwrites = {
                             ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
                             role: discord.PermissionOverwrite(read_messages=True)
                         }
-                        await ctx.guild.create_text_channel("Detention",overwrites=overwrites)
+                        detention = await ctx.guild.create_text_channel("detention",overwrites=overwrites)
+                    
                     else:
                         createChannel = False
                 
@@ -957,12 +1046,6 @@ class moderation(commands.Cog):
                         else:
                             await ctx.send(f'Unable to remove role `{r.name}`')
 
-                cluster = MongoClient(
-                        'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
-                db = cluster.Other
-                collection = db['Detention']
-                id = str(ctx.guild.id)
-                id += str(user.id)
 
                 info = {'_id':id, 'roles':list,'self':False, 'phrase':phrase, 'times':times, "progress":0}
 
@@ -974,9 +1057,11 @@ class moderation(commands.Cog):
                 if createChannel:
                     await ctx.send("Created Detention channel")
                 if createRole:
-                    return await ctx.send(f'Created Detention role, `{user.display_name}` is in detention with phrase {phrase} and needs to repeat it {times} time(s) to leave')
+                    await detention.send(f'Created Detention role, {user.mention} is in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s) to leave')
+                    return await ctx.send(f'Created Detention role, {user.display_name} is in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s) to leave')
                 else:
-                    return await ctx.send(f'`{user.display_name}` is in detention with phrase {phrase} and needs to repeat it {times} time(s) to leave')
+                    await detention.send(f'{user.mention} is in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s) to leave')
+                    return await ctx.send(f'{user.display_name} is in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s) to leave')
 
                 
             else:
@@ -984,58 +1069,7 @@ class moderation(commands.Cog):
                     return await ctx.send('Input a user to put in detention')
 
 
-        @commands.command(aliases=['removedetention',"undetention"], brief='Brings a member out of detention')
-        @commands.cooldown(times, cooldown, commands.BucketType.user)
-        @commands.has_permissions(manage_roles=True)
-        async def pardon(self, ctx, *, user: discord.Member):
-            async with ctx.typing():
 
-                try:
-                    role = get(user.guild.roles, name='Detention')
-                    if role == None: 
-                        await ctx.send("There is no Detention role in this server, use the detention command to create one!")
-                    await user.remove_roles(role)
-
-                    cluster = MongoClient(
-                            'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
-                    db = cluster.Other
-                    collection = db['Detention']
-                    id = str(ctx.guild.id)
-                    id += str(user.id)
-
-                    result = collection.find_one({'_id':id})
-                    try:
-                        roles = result['roles']
-                    except:
-                        return await ctx.send(f'Pardoned {user.mention}, but was not able to add back their roles unfortunately')
-
-                    for role in roles:
-                        try:
-                            if role == '@everyone':
-                                pass
-                            else:
-                                role = get(ctx.message.guild.roles, name=role)
-                                await user.add_roles(role)
-                        except:
-                            await ctx.send(f'Unable to add role `{role.name}`')
-
-                        cluster = MongoClient(
-                                'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
-                        db = cluster.Other
-
-                        try:
-                            collection.delete_many({'_id':id})
-                        except Exception as e:
-                            print(e)
-                        
-                    return await ctx.send(f'{user.display_name} has been pardoned from detention')
-
-                except BadArgument:
-                    return await ctx.send(f'`{user.display_name}` user not found')
-                except discord.Forbidden:
-                    return await ctx.send('I\'m not allowed to do that')
-                except AttributeError:
-                    return await ctx.send('Either `Detention` is not a role, in which case you can use the detention command to make one, or the member you put was invalid')
 
 def setup(bot):
 	bot.add_cog(moderation(bot))
