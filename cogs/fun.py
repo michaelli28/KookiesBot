@@ -153,6 +153,16 @@ class fun(commands.Cog):
             else:
                 return await ctx.send(f"{member.mention}, you can thank {ctx.author.mention} for the cookie! :cookie:")
 
+    @commands.command(brief='Tells someone to POLITELY shut up', aliases=["shutup","shutthefrickup","shutthefrontdoor","shush","bequiet",])
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def stfu(self, ctx, member: discord.Member=None):
+            if member == None:
+                return await ctx.send(f"{ctx.author.mention} would like you guys to shut up! (Politely of course)")
+            elif member.id==ctx.author.id:
+                return await ctx.send(f"{ctx.author.mention} has told themselves to shut up! (Politely of course)")
+            else:
+                return await ctx.send(f"{member.mention}, you have been told to politely shut up by {ctx.author.mention}")
+
     @commands.command(brief='Dispenses more cookies for the greedy ones :D', aliases=["givememorecookies"])
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def morecookies(self, ctx, member: discord.Member=None):

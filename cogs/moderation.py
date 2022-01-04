@@ -815,7 +815,7 @@ class moderation(commands.Cog):
                     await ctx.author.send(link)
                 except:
                     return await ctx.send(f"Sorry, I was unable to send {ctx.author.mention} an invite link about to the server, so I will not be kicking {ctx.author.mention}")
-                name = member.nick
+                name = member.display_name
                 await ctx.author.kick()
                 return await ctx.send(f"For the rest of you, hopefully you learned to not attempt to ban me, but do not worry, they received an invite back to the server")
 
@@ -834,7 +834,7 @@ class moderation(commands.Cog):
                     await ctx.author.send(link)
                 except:
                     return await ctx.send(f"Sorry, I was unable to send {ctx.author.mention} an invite link about to the server, so I will not be kicking {ctx.author.mention}")
-                name = member.nick
+                name = member.display_name
                 await ctx.author.kick()
                 return await ctx.send(f"For the rest of you, hopefully you learned to not attempt to ban me, but do not worry, they received an invite back to the server")
 
@@ -886,7 +886,7 @@ class moderation(commands.Cog):
                     await ctx.author.send(link)
                 except:
                     return await ctx.send(f"Sorry, I was unable to send {ctx.author.mention} an invite link about to the server, so I will not be kicking {ctx.author.mention}")
-                name = member.nick
+                name = member.display_name
                 await ctx.author.kick()
                 return await ctx.send(f"For the rest of you, hopefully you learned to not attempt to kick me, but do not worry, they received an invite back to the server")
     
@@ -911,12 +911,12 @@ class moderation(commands.Cog):
             id += str(user.id)
             result = collection.find_one({'_id':id})
             if result == None:
-                return await ctx.send(f"{user.nick} is not in detention")
+                return await ctx.send(f"{user.mention} is not in detention")
             else:
                 phrase = result["phrase"]
                 times = result["times"]
                 progress = result["progress"]
-                return await ctx.send(f'{ctx.author.nick} is in detention with the phrase **{phrase}** and needs to repeat it **{times-progress}** more time(s) to leave')
+                return await ctx.send(f'{ctx.author.mention} is in detention with the phrase **{phrase}** and needs to repeat it **{times-progress}** more time(s) to leave')
 
     @commands.command(aliases=['removedetention',"undetention"], brief='Brings a member out of detention')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
@@ -939,7 +939,7 @@ class moderation(commands.Cog):
 
                 result = collection.find_one({'_id':id})
                 if result == None:
-                    return await ctx.send(f"{user.nick} is not in detention")
+                    return await ctx.send(f"{user.mention} is not in detention")
                 try:
                     roles = result['roles']
                 except:
@@ -960,7 +960,7 @@ class moderation(commands.Cog):
                 except Exception as e:
                     print(e)
                     
-                return await ctx.send(f'{user.display_name} has been pardoned from detention')
+                return await ctx.send(f'{user.mention} has been pardoned from detention')
 
             except BadArgument:
                 return await ctx.send(f'{user.display_name} is not found')
@@ -987,7 +987,7 @@ class moderation(commands.Cog):
                 if result != None:
                     phrase = result["phrase"]
                     times = result["times"]
-                    return await ctx.send(f"{user.nick} is already in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s to leave!")
+                    return await ctx.send(f"{user.mention} is already in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s to leave!")
                 try:
 
                     if ctx.author.top_role.position <= user.top_role.position:
@@ -1058,10 +1058,10 @@ class moderation(commands.Cog):
                     await ctx.send("Created Detention channel")
                 if createRole:
                     await detention.send(f'Created Detention role, {user.mention} is in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s) to leave')
-                    return await ctx.send(f'Created Detention role, {user.display_name} is in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s) to leave')
+                    return await ctx.send(f'Created Detention role, {user.mention} is in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s) to leave')
                 else:
                     await detention.send(f'{user.mention} is in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s) to leave')
-                    return await ctx.send(f'{user.display_name} is in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s) to leave')
+                    return await ctx.send(f'{user.mention} is in detention with the phrase **{phrase}** and needs to repeat it **{times}** time(s) to leave')
 
                 
             else:

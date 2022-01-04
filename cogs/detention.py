@@ -59,7 +59,7 @@ class detention(Cog):
                     else:
                         collection.update_one({'_id': id}, {"$inc": {"progress": 1}})
                 elif result != None and (phrase.lower() not in message.content.lower()):
-                    return await message.channel.send(f'{message.author.nick} is in detention with the phrase **{phrase}** and needs to repeat it **{times-progress}** more time(s) to leave')
+                    return await message.channel.send(f'{message.author.mention} is in detention with the phrase **{phrase}** and needs to repeat it **{times-progress}** more time(s) to leave')
 
 
 
