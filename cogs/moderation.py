@@ -626,7 +626,7 @@ class moderation(commands.Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def kickme(self, ctx):
 
-        await ctx.send('Would you like to kick yourself? Y for yes, N for no')
+        await ctx.send('Would you like to kick yourself? Y/yes for yes, N/no for no')
         def check(m):
             return m.author.id == ctx.author.id
         try:

@@ -73,7 +73,7 @@ async def startup():
     
     # bot.load_extension('cogs.games')
 
-    bot.load_extension('jishaku')
+    bot.load_extension('cogs.jisha')
 
     # bot.load_extension('cogs.slash')
     #bot.load_extension('cogs.school')
