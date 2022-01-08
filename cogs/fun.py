@@ -163,7 +163,7 @@ class fun(commands.Cog):
             else:
                 return await ctx.send(f"{member.mention}, you have been told to politely shut up by {ctx.author.mention}")
 
-    @commands.command(brief='Dispenses more cookies for the greedy ones :D', aliases=["givememorecookies"])
+    @commands.command(brief='Dispenses more cookies for the greedy ones :D', aliases=["givememorecookies","cookies","kookies"])
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def morecookies(self, ctx, member: discord.Member=None):
             if member == None:
