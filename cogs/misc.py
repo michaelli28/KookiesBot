@@ -111,7 +111,7 @@ class misc(commands.Cog):
 
     @commands.command(aliases=['botinvite', "invitebot"], brief='Sends an invite link')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def invite(self, ctx):
+    async def inviteme(self, ctx):
         # perms = discord.Permissions(administrator=True)
         # return await ctx.send(f"Use this URL to invite me\n<{discord.utils.oauth_url(self.bot.user.id,permissions=perms)}>")
         return await ctx.send(f"Use this URL to invite me \n<https://discord.com/api/oauth2/authorize?client_id=743859420798124043&permissions=0&scope=applications.commands%20bot>")
@@ -284,6 +284,10 @@ class misc(commands.Cog):
             msg = await self.bot.wait_for('message', check=check, timeout=10)
         except asyncio.TimeoutError:
             return await ctx.send('Please respond the number of times you would like to spam the message next time')
+        if message.content.find('@everyone') != -1:
+            return await ctx.send('You can\'t ping spam here')
+        if message.content.find('@here') != -1:
+            return await ctx.send('You can\'t ping spam here')
         try:
             times = int(msg.content)
             if times > 50 and str(ctx.author.id) != '587068610237693963':

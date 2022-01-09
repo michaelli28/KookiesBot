@@ -139,7 +139,7 @@ class help(commands.Cog):
 
                 for cog in cogs:
                     cogR = self.bot.get_cog(cog)
-                    if len(cogR.get_commands()) != 0:
+                    if len(cogR.get_commands()) != 0 and cog != "CustomDebugCog":
                         full += f'**{cog}**\n'
 
                 embed = Embed(title="Help! Use ;help <Category> to get help for that category or use ;help all to get a list of all commands", color=random.randint(0, 0xffffff), description = full)
@@ -149,7 +149,9 @@ class help(commands.Cog):
                 return await ctx.send(embed=embed)
 
             else:
-                if command := get(self.bot.commands, name=cmd):
+                if cmd.lower() == "jsk" or cmd.lower() == "jishaku":
+                    return await ctx.send("That command is not for you")
+                elif command := get(self.bot.commands, name=cmd):
                     await self.cmd_help(ctx, command)
                     return 
                 commands = []

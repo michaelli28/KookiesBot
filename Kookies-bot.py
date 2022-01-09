@@ -121,6 +121,8 @@ async def on_message(message):
     await bot.process_commands(message)
 
     if message.author != bot.user:
+        # if message.author.id == 561932891618017312: #alisx255
+        #     await message.channel.send(f"{message.author.mention} watch your language.")
         if message.content.startswith('no u'):
             with open('blacklist.json') as thing:
                 blacklist = json.load(thing)
@@ -155,11 +157,11 @@ async def on_message(message):
             if message.embeds[0].title == 'Role Reactions':
                 return
                 
-        await asyncio.sleep(4)
-        try:
-            await message.add_reaction('❌')
-        except discord.errors.NotFound:
-            pass
+        # await asyncio.sleep(4)
+        # # try:
+        # #     await message.add_reaction('❌')
+        # # except discord.errors.NotFound:
+        # #     pass
         with open('config.json', 'r') as config:
             info = json.load(config)
             config.close()
