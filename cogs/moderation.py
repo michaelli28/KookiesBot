@@ -923,7 +923,7 @@ class moderation(commands.Cog):
                 phrase = result["phrase"]
                 times = result["times"]
                 progress = result["progress"]
-                return await ctx.send(f'{ctx.author.mention} is in detention with the phrase **{phrase}** and needs to repeat it **{times-progress}** more time(s) to leave')
+                return await ctx.send(f'{user.mention} is in detention with the phrase **{phrase}** and needs to repeat it **{times-progress}** more time(s) to leave')
 
     @commands.command(aliases=['removedetention',"undetention"], brief='Brings a member out of detention')
     @commands.cooldown(times, cooldown, commands.BucketType.user)

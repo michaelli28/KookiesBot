@@ -71,21 +71,58 @@ print("".join([letter.get_letter() for letter in letters]))
 #                 print("a: " + str(a) + " b: " + str(b) + " c: " + str(c))
 #                 num.append(n)
 # print(len(num))
-lis = []
-for a in range(2,10000):
-    n=0
-    while a != 1:
-        if (a % 2) == 0:
-            a=a/2
-            n+=1
-        else:
-            a = a+1
-            n+=1
-    if a == 1:
-        lis.append(n)
-print(lis)
-new = []
-for n in lis:
-    if n<=12:
-        new.append(n)
-print(len(new))
+# lis = []
+# for a in range(2,10000):
+#     n=0
+#     while a != 1:
+#         if (a % 2) == 0:
+#             a=a/2
+#             n+=1
+#         else:
+#             a = a+1
+#             n+=1
+#     if a == 1:
+#         lis.append(n)
+# print(lis)
+# new = []
+# for n in lis:
+#     if n<=12:
+#         new.append(n)
+# print(len(new))
+import string
+digs = string.digits + string.ascii_letters
+
+
+def int2base(x, base):
+    if x < 0:
+        sign = -1
+    elif x == 0:
+        return digs[0]
+    else:
+        sign = 1
+
+    x *= sign
+    digits = []
+
+    while x:
+        digits.append(digs[x % base])
+        x = x // base
+
+    if sign < 0:
+        digits.append('-')
+
+    digits.reverse()
+
+    return ''.join(digits)
+
+def mon(number,base):
+    sum=0
+    value = (int2base(number**2,base))
+    for x in value:
+        sum += (int(x,base))
+    if number==sum:
+        print(number)
+    else:
+        print('fail')
+for i in range(1,50):
+    mon(i,31)

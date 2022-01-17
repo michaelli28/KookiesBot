@@ -284,19 +284,19 @@ class misc(commands.Cog):
             msg = await self.bot.wait_for('message', check=check, timeout=10)
         except asyncio.TimeoutError:
             return await ctx.send('Please respond the number of times you would like to spam the message next time')
-        if message.content.find('@everyone') != -1:
+        if message.find('@everyone') != -1:
             return await ctx.send('You can\'t ping spam here')
-        if message.content.find('@here') != -1:
+        if message.find('@here') != -1:
             return await ctx.send('You can\'t ping spam here')
         try:
             times = int(msg.content)
-            if times > 50 and str(ctx.author.id) != '587068610237693963':
-                return await ctx.send('Number of messages must be below 50, ask owner')
+            if times > 30 and str(ctx.author.id) != '587068610237693963':
+                return await ctx.send('Number of messages must be below 30, ask owner')
         except:
             return await ctx.send('The number of times must be an integer')
         else:
             if times < 1:
-                return await ctx.send('I can\'t send a message less than once!')
+                return await ctx.send('I can\'t send a message zero times!')
             for _ in range(times):
                 await ctx.send(message)
             return await ctx.send('Done!', delete_after=2)

@@ -143,8 +143,10 @@ class help(commands.Cog):
                         full += f'**{cog}**\n'
 
                 embed = Embed(title="Help! Use ;help <Category> to get help for that category or use ;help all to get a list of all commands", color=random.randint(0, 0xffffff), description = full)
-
-                embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                try:
+                    embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+                except:
+                    pass
                 embed.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=embed)
 
