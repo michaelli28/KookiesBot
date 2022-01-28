@@ -158,7 +158,7 @@ class util(commands.Cog):
                     await channel.send(embed=embed)
         return
 
-    @commands.command(brief="Invites a user, only works if the user shares another guild with the bot", alias=["invitemember","memberinvite","userinvite","sendinvite","invite"])
+    @commands.command(brief="Invites a user, only works if the user shares another guild with the bot", aliases=["invite","invitemember","memberinvite","userinvite","sendinvite",])
     @commands.has_permissions(create_instant_invite=True)
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def inviteuser(self, ctx, *, user: discord.User):
