@@ -302,11 +302,12 @@ class util(commands.Cog):
 
         return await ctx.send(current_time)
 
-    @commands.command(brief='Get your id')
+    @commands.command(brief='Get a user\'s id')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def id(self, ctx):
-        author = ctx.message.author.id
-        return await ctx.send(author)
+    async def id(self, ctx, user:discord.User=None):
+        if user == None:
+            user = ctx.message.author
+        return await ctx.send(user.id)
 
     @commands.command(aliases=['sa', 'av', 'avatar', 'pfp'], brief='Send a picture of someones avatar')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
