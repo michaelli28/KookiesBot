@@ -335,58 +335,58 @@ class daily(Cog):
         menu1 = menu(source=HelpMenu(ctx, sort))
         return await menu1.start(ctx)
 
-    @commands.command(aliases=['xp'], brief='Get your xp and level')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def rank(self, ctx, author: discord.Member = None):
-        async with ctx.typing():
+    # @commands.command(aliases=['xp'], brief='Get your xp and level')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def rank(self, ctx, author: discord.Member = None):
+    #     async with ctx.typing():
 
-            cluster = MongoClient(
-                'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+    #         cluster = MongoClient(
+    #             'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
 
-            db = cluster.KookiesBot
-            global collection
-            try:
-                collection = db[str(ctx.guild.id)]
-            except:
-                db.createCollection(str(ctx.guild.id))
-                collection = db[str(ctx.guild.id)]
-            if author == None:
-                author = ctx.author
+    #         db = cluster.KookiesBot
+    #         global collection
+    #         try:
+    #             collection = db[str(ctx.guild.id)]
+    #         except:
+    #             db.createCollection(str(ctx.guild.id))
+    #             collection = db[str(ctx.guild.id)]
+    #         if author == None:
+    #             author = ctx.author
 
             
-            res = collection.find({})
-            result = collection.find_one({'_id': int(author.id)})
-            try:
-                if result['Xp'] == 0:
-                    return await ctx.send(f'{author.mention} has no xp, send more messages to gain xp')
-            except:
-                return await ctx.send(f'{author.mention} has no xp, send more messages to gain xp')
+    #         res = collection.find({})
+    #         result = collection.find_one({'_id': int(author.id)})
+    #         try:
+    #             if result['Xp'] == 0:
+    #                 return await ctx.send(f'{author.mention} has no xp, send more messages to gain xp')
+    #         except:
+    #             return await ctx.send(f'{author.mention} has no xp, send more messages to gain xp')
 
-            embed = discord.Embed(color=random.randint(0, 0xffffff))
-            embed.set_author(name='Rank')
-            sort = sorted(res, key=itemgetter('Xp'), reverse=True)
-            rank = 1
-            for item in sort:
-                collection.update_one({'_id': item['_id']}, {
-                                      "$set": {"rank": rank}})
-                rank += 1
-            try:
-                embed.add_field(
-                    name=f'Total Xp in {ctx.guild.name}', value='**'+str(result['Xp'])+'**')
-            except:
-                embed.add_field(
-                    name=f'Total Xp in {ctx.guild.name}', value='**'+str(0)+'**')
+    #         embed = discord.Embed(color=random.randint(0, 0xffffff))
+    #         embed.set_author(name='Rank')
+    #         sort = sorted(res, key=itemgetter('Xp'), reverse=True)
+    #         rank = 1
+    #         for item in sort:
+    #             collection.update_one({'_id': item['_id']}, {
+    #                                   "$set": {"rank": rank}})
+    #             rank += 1
+    #         try:
+    #             embed.add_field(
+    #                 name=f'Total Xp in {ctx.guild.name}', value='**'+str(result['Xp'])+'**')
+    #         except:
+    #             embed.add_field(
+    #                 name=f'Total Xp in {ctx.guild.name}', value='**'+str(0)+'**')
 
-            embed.add_field(name='Rank', value='**'+str(result['rank'])+'**')
+    #         embed.add_field(name='Rank', value='**'+str(result['rank'])+'**')
 
-            embed.set_author(name=result['name'], icon_url=author.avatar.url)
-            embed.add_field(name='Level', value='**' +
-                            str(int(((12*result['Xp'])//800) ** 0.55))+'**')
+    #         embed.set_author(name=result['name'], icon_url=author.avatar.url)
+    #         embed.add_field(name='Level', value='**' +
+    #                         str(int(((12*result['Xp'])//800) ** 0.55))+'**')
 
-            embed.add_field(name='Xp', value=printProgressBar(
-                result['Xp'], 100000, prefix='**'+str(result['Xp'])+"**", suffix='**100,000**'))
-            embed.timestamp = datetime.datetime.utcnow()
-            return await ctx.send(embed=embed)
+    #         embed.add_field(name='Xp', value=printProgressBar(
+    #             result['Xp'], 100000, prefix='**'+str(result['Xp'])+"**", suffix='**100,000**'))
+    #         embed.timestamp = datetime.datetime.utcnow()
+    #         return await ctx.send(embed=embed)
 
 class HelpMenu(ListPageSource):
     def __init__(self, ctx, data):
