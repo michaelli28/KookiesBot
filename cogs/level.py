@@ -422,5 +422,5 @@ class HelpMenu(ListPageSource):
 
         return await self.write_page(menu, fields)
 
-def setup(bot):
-	bot.add_cog(daily(bot))
+async def setup(bot):
+	await bot.add_cog(daily(bot))

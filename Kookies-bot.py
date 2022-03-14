@@ -53,27 +53,27 @@ async def startup():
     await bot.change_presence(activity=activity)
     # bot.load_extension('cogs.Music2')
     bot.client = ClientSession()
-    bot.load_extension('cogs.CommandErrorHandler')
+    await bot.load_extension('cogs.CommandErrorHandler')
     
-    bot.load_extension('cogs.helpmenu')
-    bot.load_extension('cogs.level')
+    await bot.load_extension('cogs.helpmenu')
+    await bot.load_extension('cogs.level')
     
     # bot.load_extension('cogs.levels')
     
     # bot.load_extension('cogs.musiclava')
 
-    bot.load_extension('cogs.fun')
-    bot.load_extension('cogs.moderation')
-    bot.load_extension('cogs.roles')
-    bot.load_extension('cogs.server')
-    bot.load_extension('cogs.misc')
-    bot.load_extension('cogs.utility')
-    bot.load_extension('cogs.deten')
+    await bot.load_extension('cogs.fun')
+    await bot.load_extension('cogs.moderation')
+    await bot.load_extension('cogs.roles')
+    await bot.load_extension('cogs.server')
+    await bot.load_extension('cogs.misc')
+    await bot.load_extension('cogs.utility')
+    await bot.load_extension('cogs.deten')
 
     
     # bot.load_extension('cogs.games')
 
-    bot.load_extension('cogs.jisha')
+    await bot.load_extension('cogs.jisha')
 
     # bot.load_extension('cogs.slash')
     #bot.load_extension('cogs.school')
@@ -81,10 +81,16 @@ async def startup():
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insensitive=True, intents=intents, owner_id=587068610237693963)
 
+async def main():
+    async with bot:
+        bot.loop.create_task(startup())
+        await bot.start('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.Z0KTtmFUJ3V8EG8Xt8Gwzv7k1-M')
+
+asyncio.run(main())
 # slash = SlashCommand(bot, sync_commands=True, override_type=True)
 # bot.load_extension('cogs.slash')
 
-bot.loop.create_task(startup())
+
 # 630499390938808379 hurb id
 
 # youtube_dl.utils.bug_reports_message = lambda: ''
@@ -180,7 +186,7 @@ async def on_message(message):
 
 
 #TOKEN = os.getenv('TOKEN')
-bot.run("NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.Z0KTtmFUJ3V8EG8Xt8Gwzv7k1-M")
+# bot.run("NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.Z0KTtmFUJ3V8EG8Xt8Gwzv7k1-M")
 
 
 

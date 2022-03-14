@@ -75,5 +75,5 @@ class deten(Cog):
 
 
 
-def setup(bot):
-	bot.add_cog(deten(bot))
+async def setup(bot):
+	await bot.add_cog(deten(bot))

@@ -98,5 +98,5 @@ class games(commands.Cog):
         """Play Wumpus game"""
         await wumpus.play(self.bot, ctx)
 
-def setup(bot):
-	bot.add_cog(games(bot))
+async def setup(bot):
+	await bot.add_cog(games(bot))

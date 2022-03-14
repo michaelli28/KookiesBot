@@ -538,5 +538,5 @@ class misc(commands.Cog):
             results[n+1] = ('https://www.cnn.com/search?' + search_results1[n])
         return await ctx.send(results)
 
-def setup(bot):
-    bot.add_cog(misc(bot))
+async def setup(bot):
+    await bot.add_cog(misc(bot))

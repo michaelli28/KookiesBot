@@ -582,5 +582,5 @@ class util(commands.Cog):
         else:
             return await ctx.send(content='Please add translations\neg.`;translate en Hola`\nType `;translate --list` for supported languages')
 
-def setup(bot):
-	bot.add_cog(util(bot))
+async def setup(bot):
+	await bot.add_cog(util(bot))

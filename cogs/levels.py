@@ -263,5 +263,5 @@ class levels(Cog):
                     f.close()
                 return
 
-def setup(bot):
-	bot.add_cog(levels(bot))
+async def setup(bot):
+	await bot.add_cog(levels(bot))

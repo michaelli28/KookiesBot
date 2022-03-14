@@ -467,5 +467,5 @@ class fun(commands.Cog):
     #                 except discord.errors.HTTPException:
     #                     await ctx.send(response['error'])
     #                 await ctx.send(response)
-def setup(bot):
-	bot.add_cog(fun(bot))
+async def setup(bot):
+	await bot.add_cog(fun(bot))

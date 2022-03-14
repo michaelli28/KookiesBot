@@ -828,8 +828,8 @@ class HelpMenu(ListPageSource):
         return await self.write_page(menu, fields)
 
 
-def setup(bot):
-	bot.add_cog(roles(bot))
+async def setup(bot):
+	await bot.add_cog(roles(bot))
 
 
 

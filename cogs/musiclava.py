@@ -1352,5 +1352,5 @@ class music(commands.Cog):
         return await ctx.send("Current Values:\n" + ' '.join(eq_frequencies))
 
 
-def setup(bot):
-    bot.add_cog(music(bot))
+async def setup(bot):
+    await bot.add_cog(music(bot))

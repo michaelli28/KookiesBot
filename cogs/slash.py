@@ -59,5 +59,5 @@ class slash(commands.Cog):
         # await ctx.defer()
         return await ctx.send(content=f"Wow, you actually chose {optone}? :(")
 
-def setup(bot):
-    bot.add_cog(slash(bot))
+async def setup(bot):
+    await bot.add_cog(slash(bot))

@@ -218,5 +218,5 @@ class server(commands.Cog):
             message = 'Pruning is now off'
         return await ctx.send(message)
 
-def setup(bot):
-    bot.add_cog(server(bot))
+async def setup(bot):
+    await bot.add_cog(server(bot))
