@@ -295,8 +295,8 @@ class moderation(commands.Cog):
             id = str(ctx.guild.id)
             id += str(user.id)
 
-            roles = {'_id':id, 'roles':list,'self':False,'name':user.name,'server':ctx.guild}
-
+            roles = {'_id':id, 'roles':list,'self':False,'name':user.name,'server':ctx.guild.name}
+            print(roles)
             try:
                 collection.delete_many({'_id':id})
             except Exception as e:
@@ -685,7 +685,7 @@ class moderation(commands.Cog):
                 id = str(ctx.guild.id)
                 id += str(ctx.author.id)
 
-                roles = {'_id':id, 'roles':list,'self':True,'name':ctx.author.name,'server':ctx.guild}
+                roles = {'_id':id, 'roles':list,'self':True,'name':ctx.author.name,'server':ctx.guild.name}
 
                 try:
                     collection.delete_many({'_id':id})
@@ -1058,7 +1058,7 @@ class moderation(commands.Cog):
                             await ctx.send(f'Unable to remove role `{r.name}`')
 
 
-                info = {'_id':id, 'roles':list,'self':False, 'phrase':phrase, 'times':times, "progress":0,'name':user.name,'server':ctx.guild}
+                info = {'_id':id, 'roles':list,'self':False, 'phrase':phrase, 'times':times, "progress":0,'name':user.name,'server':ctx.guild.name}
 
                 try:
                     collection.delete_many({'_id':id})
