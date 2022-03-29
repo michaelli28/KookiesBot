@@ -491,9 +491,11 @@ class moderation(commands.Cog):
             return await ctx.send('No blacklisted people!')
 
         embed = discord.Embed(title=f'Blacklisted People in {ctx.guild.name}', color = random.randint(0, 0xffffff))
-        embed.set_author(name=ctx.author.display_name,
-                        icon_url=ctx.author.avatar.url)
-
+        try:
+            embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.avatar.url)
+        except:
+            pass
         embed.timestamp = datetime.datetime.utcnow()
 
         n=1
@@ -535,8 +537,11 @@ class moderation(commands.Cog):
         embed = discord.Embed(
             title=f"{member.display_name}'s Permissions", description=permstr, color=random.randint(0,0xffffff)
         )
-        embed.set_author(name=member.display_name,
-                            icon_url=member.avatar.url)
+        try:
+            embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.avatar.url)
+        except:
+            pass
 
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)

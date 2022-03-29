@@ -51,8 +51,11 @@ class server(commands.Cog):
                 embed = discord.Embed(color=random.randint(
                     0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
                 embed.add_field(name=f'{message.content}', value=f'\u200B')
-                embed.set_author(name=message.author.display_name,
+                try:
+                    embed.set_author(name=message.author.display_name,
                                 icon_url=message.author.avatar.url)
+                except: 
+                    pass
 
                 embed.timestamp = datetime.datetime.utcnow()
                 await channel.send(embed=embed)
@@ -64,9 +67,11 @@ class server(commands.Cog):
                         new = await attachment.to_file()
                         await channel.send(file=new)
                         embed.set_image(url=f'{attachment.url}')
-
-                    embed.set_author(name=message.author.display_name,
+                    try:
+                        embed.set_author(name=message.author.display_name,
                                     icon_url=message.author.avatar.url)
+                    except:
+                        pass
                     embed.timestamp = datetime.datetime.utcnow()
                     await channel.send(embed=embed)
 
@@ -158,8 +163,11 @@ class server(commands.Cog):
         #     await u.add_roles(Muted)
         embed = discord.Embed(
             title='Welcome to ' + str(member.guild.name) + " " + str(member.display_name), color=random.randint(0, 0xffffff))
+        try:
+            embed.set_author(name=member.display_name, icon_url=member.avatar.url)
+        except:
+            pass
 
-        embed.set_author(name=member.display_name, icon_url=member.avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
 
         with open("guild.json", "r") as f:
@@ -178,7 +186,10 @@ class server(commands.Cog):
     async def on_member_remove(self, member):
         embed = discord.Embed(title=member.display_name + ' ('+str(member)+') has left ' +
                               str(member.guild.name), color=random.randint(0, 0xffffff))
-        embed.set_author(name=member.display_name, icon_url=member.avatar.url)
+        try:
+            embed.set_author(name=member.display_name, icon_url=member.avatar.url)
+        except:
+            pass
         embed.timestamp = datetime.datetime.utcnow()
 
         with open("guild.json", "r") as f:

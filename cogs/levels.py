@@ -164,8 +164,10 @@ class levels(Cog):
                     name=f'Total Xp in {ctx.guild.name}', value='**'+str(0)+'**')
 
             embed.add_field(name='Rank', value='**'+str(result['rank'])+'**')
-
-            embed.set_author(name=result['name'], icon_url=author.avatar.url)
+            try:
+                embed.set_author(name=result['name'], icon_url=author.avatar.url)
+            except:
+                pass
             embed.add_field(name='Level', value='**' +
                             str(int(((12*result['Xp'])//800) ** 0.55))+'**')
 

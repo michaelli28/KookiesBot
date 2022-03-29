@@ -56,9 +56,9 @@ async def startup():
     await bot.load_extension('cogs.CommandErrorHandler')
     
     await bot.load_extension('cogs.helpmenu')
-    await bot.load_extension('cogs.level')
+    # await bot.load_extension('cogs.level')
     
-    # bot.load_extension('cogs.levels')
+    await bot.load_extension('cogs.levels')
     
     # bot.load_extension('cogs.musiclava')
 

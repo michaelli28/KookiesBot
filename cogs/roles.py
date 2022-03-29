@@ -402,7 +402,11 @@ class roles(commands.Cog):
         # if note == None:
         embed = Embed(
             title=f"Role Reactions", color=random.randint(0, 0xffffff), description = message)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+        try:
+            embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.avatar.url)
+        except:
+            pass
         timestamp = datetime.datetime.utcnow()
         embed.timestamp = timestamp
         messagesent = await ctx.send(embed=embed)

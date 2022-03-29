@@ -208,8 +208,11 @@ class fun(commands.Cog):
         )
                 embed.add_field(name='Question', value=question, inline=False)
                 embed.add_field(name='Answer', value='I\'m very accurate for your information. Don\'t question me!', inline=False)
-                embed.set_author(name=ctx.author.display_name,
-                                icon_url=ctx.author.avatar.url)
+                try:
+                    embed.set_author(name=ctx.author.display_name,
+                                    icon_url=ctx.author.avatar.url)
+                except:
+                    pass
                 embed.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=embed)
 
@@ -222,8 +225,11 @@ class fun(commands.Cog):
         embed.add_field(name='Question', value=question, inline=False)
         embed.add_field(name='Answer', value=random.choice(
             responses), inline=False)
-        embed.set_author(name=ctx.author.display_name,
-                        icon_url=ctx.author.avatar.url)
+        try:
+            embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.avatar.url)
+        except:
+            pass
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
 
@@ -252,8 +258,11 @@ class fun(commands.Cog):
             )
             embed.add_field(name='Question', value=question, inline=False)
             embed.add_field(name='Answer', value='The answer is not available at the moment, please try again later', inline=False)
-            embed.set_author(name=ctx.author.display_name,
-                            icon_url=ctx.author.avatar.url)
+            try:
+                embed.set_author(name=ctx.author.display_name,
+                                icon_url=ctx.author.avatar.url)
+            except:
+                pass
             embed.timestamp = datetime.datetime.utcnow()
             self.ball = None
             return await ctx.send(embed=embed)
@@ -263,8 +272,11 @@ class fun(commands.Cog):
         )
         embed.add_field(name='Question', value=question, inline=False)
         embed.add_field(name='Answer', value=response.content, inline=False)
-        embed.set_author(name=ctx.author.display_name,
-                        icon_url=ctx.author.avatar.url)
+        try:
+            embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.avatar.url)
+        except:
+            pass
         embed.timestamp = datetime.datetime.utcnow()
         self.ball = False
         return await ctx.send(embed=embed)
@@ -280,29 +292,29 @@ class fun(commands.Cog):
         return await ctx.send("Hello " + ctx.message.author.mention)
 
 
-    @commands.command(name='mimic', aliases=['mm'], brief='Mimics how you talk')
-    @commands.cooldown(1, 30, commands.BucketType.user)
-    async def mimicsentence(self, ctx):
-        await ctx.send('Please send a small paragraph of sentences')
+    # @commands.command(name='mimic', aliases=['mm'], brief='Mimics how you talk')
+    # @commands.cooldown(1, 30, commands.BucketType.user)
+    # async def mimicsentence(self, ctx):
+    #     await ctx.send('Please send a small paragraph of sentences')
 
-        def check(m):
-            return m.author == ctx.author and m.channel == ctx.channel
-        msg = await self.bot.wait_for('message', check=check)
+    #     def check(m):
+    #         return m.author == ctx.author and m.channel == ctx.channel
+    #     msg = await self.bot.wait_for('message', check=check)
 
-        model = markovify.Text(msg.content)
-        # generate 5 random sentences
-        n = 1
-        embed = discord.Embed(
-            title=f'Sentences that {ctx.author.display_name} might say based off of a small paragraph')
-        embed.set_author(name=ctx.author.display_name,
-                         icon_url=ctx.author.avatar.url)
-        embed.timestamp = datetime.datetime.utcnow()
-        for i in range(5):
-            sentence = model.make_sentence()
-            embed.add_field(name=f'Sentence {n})',
-                            value=sentence, inline=False)
-            n += 1
-        return await ctx.send(embed=embed)
+    #     model = markovify.Text(msg.content)
+    #     # generate 5 random sentences
+    #     n = 1
+    #     embed = discord.Embed(
+    #         title=f'Sentences that {ctx.author.display_name} might say based off of a small paragraph')
+    #     embed.set_author(name=ctx.author.display_name,
+    #                      icon_url=ctx.author.avatar.url)
+    #     embed.timestamp = datetime.datetime.utcnow()
+    #     for i in range(5):
+    #         sentence = model.make_sentence()
+    #         embed.add_field(name=f'Sentence {n})',
+    #                         value=sentence, inline=False)
+    #         n += 1
+    #     return await ctx.send(embed=embed)
 
 
     @commands.command(aliases=['mood'], brief='Returns the mood of the sentence')
@@ -353,34 +365,37 @@ class fun(commands.Cog):
 
             embed = discord.Embed(
                 title=f'The mood for the sentence: `{sentence}` was `{text_predict(sentence)}`', description='Was your sentence positive or negative, reply p for positive, n for negative', color=random.randint(0, 0xffffff))
-            embed.set_author(name=ctx.author.display_name,
-                             icon_url=ctx.author.avatar.url)
+            try:
+                embed.set_author(name=ctx.author.display_name,
+                                icon_url=ctx.author.avatar.url)
+            except:
+                pass
             embed.timestamp = datetime.datetime.utcnow()
 
             def check(m):
                 return m.author == ctx.author and m.channel == ctx.channel
 
-            await ctx.send(embed=embed)
-            try:
-                msg = await self.bot.wait_for('message', check=check, timeout=20)
-            except asyncio.TimeoutError:
-                return await ctx.send('Please respond with p or n for positive or negative within 20 seconds')
-            if msg.content.lower() == 'p':
-                await ctx.send(f'Thank you for responding {msg.content}, your data will be used to help make the AI smarter')
-                response = f'"{sentence}",positive\n'
-                file = open('IMDB Dataset.csv', 'a', newline='\n')
-                file.write(response)
-                file.close()
+            return await ctx.send(embed=embed)
+            # try:
+            #     msg = await self.bot.wait_for('message', check=check, timeout=20)
+            # except asyncio.TimeoutError:
+            #     return await ctx.send('Please respond with p or n for positive or negative within 20 seconds')
+            # if msg.content.lower() == 'p':
+            #     await ctx.send(f'Thank you for responding {msg.content}, your data will be used to help make the AI smarter')
+            #     response = f'"{sentence}",positive\n'
+            #     file = open('IMDB Dataset.csv', 'a', newline='\n')
+            #     file.write(response)
+            #     file.close()
 
-            elif msg.content.lower() == 'n':
-                await ctx.send(f'Thank you for responding {msg.content}, your data will be used to help make the AI smarter')
-                response = f'"{sentence}",negative\n'
-                file = open('IMDB Dataset.csv', 'a', newline='\n')
-                file.write(response)
-                file.close()
+            # elif msg.content.lower() == 'n':
+            #     await ctx.send(f'Thank you for responding {msg.content}, your data will be used to help make the AI smarter')
+            #     response = f'"{sentence}",negative\n'
+            #     file = open('IMDB Dataset.csv', 'a', newline='\n')
+            #     file.write(response)
+            #     file.close()
 
-            else:
-                return await ctx.send('Please reply with p or n after using ;mood to help make the AI smarter')
+            # else:
+            #     return await ctx.send('Please reply with p or n after using ;mood to help make the AI smarter')
 
     
     @commands.command(aliases=['mo'], brief='Becomes someone else')

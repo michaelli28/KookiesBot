@@ -265,8 +265,11 @@ class misc(commands.Cog):
         else:
             embed = discord.Embed(title=f'{self.ctx.author.display_name} has been sniped by {ctx.author.display_name}', color=random.randint(0,0xffffff), description=f'{self.message}')
             embed.timestamp = datetime.datetime.utcnow()
-            embed.set_author(name=self.ctx.author.display_name,
-                    icon_url=self.ctx.author.avatar.url)
+            try:
+                embed.set_author(name=ctx.author.display_name,
+                                icon_url=ctx.author.avatar.url)
+            except:
+                pass
             return await ctx.send(embed=embed)
 
 

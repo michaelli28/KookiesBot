@@ -197,7 +197,12 @@ class util(commands.Cog):
             except ValueError:
                 return await ctx.send('Invalid input for hexadecimal color')
             embed.timestamp = datetime.datetime.utcnow()
-            embed.set_author(name=ctx.author.display_name, url=ctx.author.avatar.url)
+
+            try:
+                embed.set_author(name=ctx.author.display_name,
+                                icon_url=ctx.author.avatar.url)
+            except:
+                pass
             return await ctx.send(embed=embed)
 
     @commands.command(aliases=['urbandictionary', 'urbandefine'], brief='Gives the definitions of a word using Urban Dictionary')
@@ -227,14 +232,20 @@ class util(commands.Cog):
                 elif int(n) == int(number+1):
 
                     embed = discord.Embed(title=f'Definition of `{word}`, Part {embeds}', description=des+words)
-                    embed.set_author(name=ctx.author.display_name,
-                                    icon_url=ctx.author.avatar.url)
+                    try:
+                        embed.set_author(name=ctx.author.display_name,
+                                        icon_url=ctx.author.avatar.url)
+                    except:
+                        pass
                     embed.timestamp = datetime.datetime.utcnow()
                     listEmbeds.append(embed)
                 if toolong:
                     embed = discord.Embed(title=f'Definition of `{word}`, Part {embeds}', description=des)
-                    embed.set_author(name=ctx.author.display_name,
-                                    icon_url=ctx.author.avatar.url)
+                    try:
+                        embed.set_author(name=ctx.author.display_name,
+                                        icon_url=ctx.author.avatar.url)
+                    except:
+                        pass
                     embed.timestamp = datetime.datetime.utcnow()
                     listEmbeds.append(embed)
                     des = ''
@@ -243,16 +254,22 @@ class util(commands.Cog):
                     if n==number+1:
                         embeds+=1
                         embed = discord.Embed(title=f'Definition of `{word}`, Part {embeds}', description=des)
-                        embed.set_author(name=ctx.author.display_name,
-                                        icon_url=ctx.author.avatar.url)
+                        try:
+                            embed.set_author(name=ctx.author.display_name,
+                                            icon_url=ctx.author.avatar.url)
+                        except:
+                            pass
                         embed.timestamp = datetime.datetime.utcnow()
                         listEmbeds.append(embed)
                 else:
                     des += words
             if not triggered:
                 embed = discord.Embed(title=f'Definition of `{word}`', description=des)
-                embed.set_author(name=ctx.author.display_name,
-                                icon_url=ctx.author.avatar.url)
+                try:
+                    embed.set_author(name=ctx.author.display_name,
+                                    icon_url=ctx.author.avatar.url)
+                except:
+                    pass
                 embed.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=embed)
             else:
@@ -264,8 +281,11 @@ class util(commands.Cog):
     async def define(self, ctx, *, word):
         synsets = wordnet.synsets(word)
         embed = discord.Embed(title=f'Definition of the word: `{word}`')
-        embed.set_author(name=ctx.author.display_name,
-                         icon_url=ctx.author.avatar.url)
+        try:
+            embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.avatar.url)
+        except:
+            pass
         embed.timestamp = datetime.datetime.utcnow()
         n = 1
         if len(synsets) == 0:
@@ -316,8 +336,11 @@ class util(commands.Cog):
         embed = discord.Embed(title=f'{member.name}\'s avatar', color=random.randint(
             0, 0xffffff), url=f'{member.avatar.url}')
         embed.set_image(url=member.avatar.url)
-        embed.set_author(name=ctx.author.display_name,
+        try:
+            embed.set_author(name=ctx.author.display_name,
                          icon_url=ctx.author.avatar.url)
+        except:
+            return await ctx.send("This user has no avatar according to Kookies D:")
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
         # ext = 'gif' if user.is_avatar_animated() else 'png'
@@ -357,7 +380,10 @@ class util(commands.Cog):
 
         # Create embed
         em = discord.Embed(color=0x00CC99)
-        em.set_author(name='Server Info:', icon_url=server.owner.avatar.url)
+        try:
+            em.set_author(name='Server Info:', icon_url=server.owner.avatar.url)
+        except:
+            em.set_author(name='Server Info:', icon_url=ctx.guild.me.avatar.url)
         em.add_field(name='Name', value=f'{server.name}')
         em.add_field(name='Owner', value=f'{server.owner}', inline=False)
         em.add_field(name='Members', value=f'{server.member_count}')
@@ -373,8 +399,11 @@ class util(commands.Cog):
             name='Created At', value=f"{server.created_at.__format__('%A, %d. %B %Y @ %H:%M:%S')}", inline=False)
         em.set_thumbnail(url=server.icon)
         em.set_footer(text='Server ID: %s' % server.id)
-        em.set_author(name=ctx.author.display_name,
+        try:
+            em.set_author(name=ctx.author.display_name,
                       icon_url=ctx.author.avatar.url)
+        except:
+            pass
         em.timestamp = datetime.datetime.utcnow()
 
         return await ctx.send(embed=em)
@@ -488,8 +517,11 @@ class util(commands.Cog):
         if isinstance(user, discord.Member):
             em.add_field(
                 name='Join Date', value=f"{user.joined_at.__format__('%A, %d %B %Y @ %H:%M:%S')}", inline=False)
-        em.set_thumbnail(url=user.avatar.url)
-        em.set_author(name=user, icon_url=user.avatar.url)
+        try:
+            em.set_thumbnail(url=user.avatar.url)
+            em.set_author(name=user, icon_url=user.avatar.url)
+        except:
+            pass
         em.timestamp = datetime.datetime.utcnow()
 
         return await ctx.send(embed=em)
@@ -569,8 +601,11 @@ class util(commands.Cog):
                         translation = self.trans.translate(toTrans, dest=destination)
                     embed = discord.Embed(description=translation.text,
                                             color=random.randint(0,0xffffff))
-                    embed.set_author(name=ctx.author.display_name,
+                    try:
+                        embed.set_author(name=ctx.author.display_name,
                         icon_url=ctx.author.avatar.url)
+                    except:
+                        pass
                     embed.timestamp = datetime.datetime.utcnow()
                     embed.set_footer(
                         text=f'Translated {LANGUAGES[translation.src]} to {LANGUAGES[translation.dest]}.', icon_url='https://i.ibb.co/1np1s8P/translate.png')
