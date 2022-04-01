@@ -58,8 +58,9 @@ async def startup():
     await bot.load_extension('cogs.helpmenu')
     # await bot.load_extension('cogs.level')
     
-    await bot.load_extension('cogs.levels')
-    
+    # await bot.load_extension('cogs.levels')
+    # await bot.load_extension('cogs.xp')
+    await bot.load_extension('cogs.exp')
     # bot.load_extension('cogs.musiclava')
 
     await bot.load_extension('cogs.fun')

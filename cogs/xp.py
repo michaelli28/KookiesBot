@@ -1,0 +1,224 @@
+from discord.ext.commands import command
+from discord.ext.commands import Cog
+from discord.ext.menus import MenuPages, ListPageSource
+from discord.utils import get
+from discord import Embed
+from typing import Optional
+from pytz import timezone
+import discord
+from discord.ext import commands
+import datetime
+import pymongo
+from pymongo import MongoClient
+import random
+import re
+import time
+import json
+import asyncio
+from discord.ext import tasks
+from operator import itemgetter
+
+
+with open('config.json', 'r') as config:
+        configfile = json.load(config)
+        config.close()
+cooldown = int(configfile['cooldown'])
+times = int(configfile['numberoftimes'])
+
+
+class menu(MenuPages):
+    def reaction_check(self, payload):
+
+        if payload.message_id != self.message.id:
+            return False
+        if payload.user_id in {self.bot.user.id}:
+            return False
+
+        return payload.emoji in self.buttons
+
+
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 30, fill = '█'):
+    # @params:
+    #     iteration   - Required  : current iteration (Int)
+    #     total       - Required  : total iterations (Int)
+    #     prefix      - Optional  : prefix string (Str)
+    #     suffix      - Optional  : suffix string (Str)
+    #     decimals    - Optional  : positive number of decimals in percent complete (Int)
+    #     length      - Optional  : character length of bar (Int)
+    #     fill        - Optional  : bar fill character (Str)
+    #     printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+
+    filledLength = int(length * iteration // total)
+
+    bar = fill * filledLength + '-' * (length - filledLength)
+
+    return (f'\r{prefix} |{bar}| {percent}% {suffix}')
+
+class HelpMenu(ListPageSource):
+    def __init__(self, ctx, data):
+        self.ctx = ctx
+        self.place = 1
+        super().__init__(data, per_page=10)
+
+    async def write_page(self, menu, fields=[]):
+        offset = (menu.current_page*self.per_page) + 1
+        len_data = len(self.entries)
+
+        embed = Embed(
+                title=f"Leaderboard for {self.ctx.guild.name}", color=random.randint(0, 0xffffff))
+        embed.set_thumbnail(url=self.ctx.guild.me.avatar.url)
+        embed.set_footer(
+                text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} users")
+        embed.timestamp = datetime.datetime.utcnow()
+        for name, value in fields:
+            embed.add_field(name=name, value=value, inline=False)
+
+        return embed
+
+    async def format_page(self, menu, entries):
+        
+        fields = []
+        for entry in entries:
+            try:
+                fields.append(('**' + str(entry['rank']) + ') ' + entry['name']+'**', str(entry['Xp']) + ' XP'))
+            except KeyError:
+                return await self.ctx.send('This server has no leaderboard yet... send messages to get on the leaderboard')
+
+        self.place+=1
+
+        return await self.write_page(menu, fields)
+
+
+class levels(Cog):
+    def __init__(self, bot):
+        self.bot = bot
+    @commands.command(name='leaderboard', aliases=['lb'], brief='Shows the leaderboard')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def show_leaderboard(self, ctx):
+        ids = []
+        for member in ctx.guild.members:
+            ids.append(member.id)
+        ids.sort()
+        new = []
+        rank=1
+        for id in ids:
+            rank += 1
+            new.append({"rank": })
+        menu1 = menu(source=HelpMenu(ctx, sort))
+        return await menu1.start(ctx)
+
+    @commands.command(aliases=['xp'], brief='Get your xp and level')
+    @commands.cooldown(times, cooldown, commands.BucketType.user)
+    async def rank(self, ctx, author: discord.Member = None):
+        async with ctx.typing():
+
+
+            embed = discord.Embed(color=random.randint(0, 0xffffff))
+            embed.set_author(name='Rank')
+            xp=str(random.randint(40000,70000))
+
+            embed.add_field(
+                name=f'Total Xp in {ctx.guild.name}', value='**' + xp + '**')
+
+
+            embed.add_field(name='Rank', value='**' + str(random.randint(30,100)) + '**')
+            embed.add_field(name='Level', value='**' +
+                            str(int(((12*int(xp))//800) ** 0.55))+'**')
+
+            embed.add_field(name='Xp', value=printProgressBar(
+                int(xp), 100000, prefix='**'+xp+"**", suffix='**100,000**'))
+            embed.timestamp = datetime.datetime.utcnow()
+            return await ctx.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_message(self, ctx):
+        if ctx.author.bot:
+            return
+        # elif ctx.author.id == 726233978536853545:
+        #     return
+        else:
+            with open("cooldown.json", "r") as f:
+                cooldowns = json.load(f)
+                f.close()
+            try:
+                previous = datetime.datetime.strptime(
+                    cooldowns[str(ctx.author.id)], '%Y-%m-%d %H:%M:%S.%f')
+            except:
+                previous = datetime.datetime.strptime(
+                    cooldowns['start'], '%Y-%m-%d %H:%M:%S.%f')
+
+            time_difference = (datetime.datetime.utcnow() -
+                               previous).total_seconds()
+            if time_difference < 60:
+                return
+
+            else:
+                cluster = MongoClient(
+                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+                db = cluster.KookiesBot
+
+                global collection
+
+                try:
+                    collection = db[str(ctx.guild.id)]
+                except AttributeError:
+                    return
+                except:
+                    db.createCollection(str(ctx.guild.id))
+                    collection = db[str(ctx.guild.id)]
+
+                author = ctx.author.id
+                res = collection.find({})
+
+                xp = random.randint(15, 25)
+
+                collection.update_one({'_id': ctx.author.id}, {
+                                          "$inc": {"Xp": xp}})
+
+
+                try:
+                    result = collection.find_one({'_id': author})
+                    new_lvl = int(((12*result['Xp'])//800) ** 0.55)
+                    old_lvl = int(((12*result['Xp']-xp)//800) ** 0.55)
+                    if new_lvl > old_lvl:
+                        await ctx.channel.send(f"Congrats {ctx.author.mention}! You reached level {new_lvl:,}!")
+
+                except:
+                    collection.insert_one(
+                        {'_id': ctx.author.id, 'name': ctx.author.display_name, "Xp": xp})
+
+
+                sort = sorted(res, key=itemgetter('Xp'), reverse=True)
+                rank = 1
+
+                for item in sort:
+                    member = ctx.guild.get_member(int(item['_id']))
+                    try:
+                        if item['rank'] != rank:
+                            collection.update_one({'_id': item['_id']}, {
+                                                    "$set": {"rank": rank}})
+                    except KeyError:
+                        collection.update_one({'_id': item['_id']}, {
+                            "$set": {"rank": rank}})
+                    rank += 1
+
+                    if member: #check if member in the server with the get_member thing
+                        if item['name'] != member.display_name:
+                            collection.update_one({'_id': item['_id']}, {"$set": {"name": member.display_name}})
+
+
+                with open("cooldown.json", "r") as f:
+                    cooldowns = json.load(f)
+                    # del cooldowns[str(ctx.author.id)]
+                    cooldowns[str(ctx.author.id)] = str(
+                        datetime.datetime.utcnow())
+                    f.close()
+
+                with open("cooldown.json", "w") as f:
+                    json.dump(cooldowns, f)
+                    f.close()
+                return
+
+async def setup(bot):
+	await bot.add_cog(levels(bot))
