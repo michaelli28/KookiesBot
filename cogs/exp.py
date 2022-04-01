@@ -161,11 +161,11 @@ class levels(Cog):
                     name=f'Total Xp in {ctx.guild.name}', value='**'+str(result['Xp'])+'**')
             else:
                 embed.add_field(
-                    name=f'Total Xp in {ctx.guild.name}', value='**-'+str(0)+'**')
+                    name=f'Total Xp in {ctx.guild.name}', value='**'+str(-result['Xp'])+'**')
             if ctx.author.id == 587068610237693963:
                 embed.add_field(name='Rank', value='**'+str(result['rank'])+'**')
             else:
-                embed.add_field(name='Rank', value='**-'+str(result['rank'])+'**')
+                embed.add_field(name='Rank', value='**'+str(-result['rank'])+'**')
             try:
                 embed.set_author(name=result['name'], icon_url=author.avatar.url)
             except:
@@ -174,8 +174,8 @@ class levels(Cog):
                 embed.add_field(name='Level', value='**' +
                             str(int(((12*result['Xp'])//800) ** 0.55))+'**')
             else:
-                embed.add_field(name='Level', value='**-' +
-                            str(int(((12*result['Xp'])//800) ** 0.55))+'**')
+                embed.add_field(name='Level', value='**' +
+                            str(-int(((12*result['Xp'])//800) ** 0.55))+'**')
 
             embed.timestamp = datetime.datetime.utcnow()
             return await ctx.send(embed=embed)
