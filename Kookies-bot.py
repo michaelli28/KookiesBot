@@ -61,8 +61,9 @@ async def startup():
     # await bot.load_extension('cogs.levels')
     # await bot.load_extension('cogs.xp')
     await bot.load_extension('cogs.exp')
-    # bot.load_extension('cogs.musiclava')
-
+    # await bot.load_extension('cogs.musiclava')
+    # await bot.load_extension('cogs.testm')
+    await bot.load_extension('cogs.mainmusic')
     await bot.load_extension('cogs.fun')
     await bot.load_extension('cogs.moderation')
     await bot.load_extension('cogs.roles')
