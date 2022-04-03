@@ -269,7 +269,8 @@ class misc(commands.Cog):
                 embed.set_author(name=ctx.author.display_name,
                                 icon_url=ctx.author.avatar.url)
             except:
-                pass
+                embed.set_author(name=ctx.author.display_name,
+                                icon_url=ctx.author.default_avatar.url)
             return await ctx.send(embed=embed)
 
 

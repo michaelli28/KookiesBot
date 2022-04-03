@@ -58,9 +58,9 @@ async def startup():
     await bot.load_extension('cogs.helpmenu')
     # await bot.load_extension('cogs.level')
     
-    # await bot.load_extension('cogs.levels')
+    await bot.load_extension('cogs.levels')
     # await bot.load_extension('cogs.xp')
-    await bot.load_extension('cogs.exp')
+    # await bot.load_extension('cogs.exp')
     # await bot.load_extension('cogs.musiclava')
     # await bot.load_extension('cogs.testm')
     await bot.load_extension('cogs.mainmusic')
@@ -72,7 +72,6 @@ async def startup():
     await bot.load_extension('cogs.utility')
     await bot.load_extension('cogs.deten')
 
-    
     # bot.load_extension('cogs.games')
 
     await bot.load_extension('cogs.jisha')
@@ -88,7 +87,6 @@ async def main():
         bot.loop.create_task(startup())
         await bot.start('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.Z0KTtmFUJ3V8EG8Xt8Gwzv7k1-M')
 
-asyncio.run(main())
 # slash = SlashCommand(bot, sync_commands=True, override_type=True)
 # bot.load_extension('cogs.slash')
 
@@ -121,13 +119,14 @@ async def blacklisted(ctx):
 class blacklisterror(commands.CheckFailure):
     pass
 
+
 @bot.event
 async def on_thread_join(thread):
     return await thread.join()
 @bot.event
 async def on_message(message):
     await bot.process_commands(message)
-
+    
     if message.author != bot.user:
         # if message.author.id == 561932891618017312: #alisx255
         #     await message.channel.send(f"{message.author.mention} watch your language.")
@@ -187,6 +186,7 @@ async def on_message(message):
             return
 
 
+asyncio.run(main())
 #TOKEN = os.getenv('TOKEN')
 # bot.run("NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.Z0KTtmFUJ3V8EG8Xt8Gwzv7k1-M")
 

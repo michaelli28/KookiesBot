@@ -120,10 +120,10 @@ class util(commands.Cog):
                     embed = discord.Embed(color=random.randint(
                         0, 0xffffff), description=f'Message sent by {message.author.mention} in {message.channel.mention} in {message.guild.name} [Jump to Message]({message.jump_url})')
                     embed.add_field(name=f'{message.content}', value=f'\u200B')
-                    if message.author.avatar != None:
+                    try:
                         embed.set_author(name=message.author.display_name, icon_url=message.author.avatar.url)
-                    else: 
-                        embed.set_author(name=message.author.display_name)
+                    except: 
+                        embed.set_author(name=message.author.display_name, icon_url=message.author.default_avatar.url)
                     embed.timestamp = datetime.datetime.utcnow()
                     await channel.send(embed=embed)
 
@@ -202,7 +202,8 @@ class util(commands.Cog):
                 embed.set_author(name=ctx.author.display_name,
                                 icon_url=ctx.author.avatar.url)
             except:
-                pass
+                embed.set_author(name=ctx.author.display_name,
+                                icon_url=ctx.author.default_avatar.url)
             return await ctx.send(embed=embed)
 
     @commands.command(aliases=['urbandictionary', 'urbandefine'], brief='Gives the definitions of a word using Urban Dictionary')
@@ -236,7 +237,8 @@ class util(commands.Cog):
                         embed.set_author(name=ctx.author.display_name,
                                         icon_url=ctx.author.avatar.url)
                     except:
-                        pass
+                        embed.set_author(name=ctx.author.display_name,
+                                        icon_url=ctx.author.default_avatar.url)
                     embed.timestamp = datetime.datetime.utcnow()
                     listEmbeds.append(embed)
                 if toolong:
@@ -245,7 +247,8 @@ class util(commands.Cog):
                         embed.set_author(name=ctx.author.display_name,
                                         icon_url=ctx.author.avatar.url)
                     except:
-                        pass
+                        embed.set_author(name=ctx.author.display_name,
+                                        icon_url=ctx.author.default_avatar.url)
                     embed.timestamp = datetime.datetime.utcnow()
                     listEmbeds.append(embed)
                     des = ''
@@ -258,7 +261,8 @@ class util(commands.Cog):
                             embed.set_author(name=ctx.author.display_name,
                                             icon_url=ctx.author.avatar.url)
                         except:
-                            pass
+                            embed.set_author(name=ctx.author.display_name,
+                                        icon_url=ctx.author.default_avatar.url)
                         embed.timestamp = datetime.datetime.utcnow()
                         listEmbeds.append(embed)
                 else:
@@ -269,7 +273,8 @@ class util(commands.Cog):
                     embed.set_author(name=ctx.author.display_name,
                                     icon_url=ctx.author.avatar.url)
                 except:
-                    pass
+                    embed.set_author(name=ctx.author.display_name,
+                                        icon_url=ctx.author.default_avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=embed)
             else:
@@ -285,7 +290,8 @@ class util(commands.Cog):
             embed.set_author(name=ctx.author.display_name,
                             icon_url=ctx.author.avatar.url)
         except:
-            pass
+            embed.set_author(name=ctx.author.display_name,
+                                        icon_url=ctx.author.default_avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         n = 1
         if len(synsets) == 0:
@@ -333,14 +339,19 @@ class util(commands.Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def stealavatar(self, ctx, *, member: discord.Member=None):
         member = member or ctx.author
-        embed = discord.Embed(title=f'{member.name}\'s avatar', color=random.randint(
+        try:
+            embed = discord.Embed(title=f'{member.name}\'s avatar', color=random.randint(
             0, 0xffffff), url=f'{member.avatar.url}')
-        embed.set_image(url=member.avatar.url)
+            embed.set_image(url=member.avatar.url)
+        except:
+            embed = discord.Embed(title=f'{member.name}\'s avatar', color=random.randint(
+            0, 0xffffff), url=f'{member.default_avatar.url}')
+            embed.set_image(url=member.default_avatar.url)
         try:
             embed.set_author(name=ctx.author.display_name,
                          icon_url=ctx.author.avatar.url)
         except:
-            return await ctx.send("This user has no avatar according to Kookies D:")
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.default_avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
         # ext = 'gif' if user.is_avatar_animated() else 'png'
@@ -383,7 +394,7 @@ class util(commands.Cog):
         try:
             em.set_author(name='Server Info:', icon_url=server.owner.avatar.url)
         except:
-            em.set_author(name='Server Info:', icon_url=ctx.guild.me.avatar.url)
+            em.set_author(name='Server Info:', icon_url=server.owner.default_avatar.url)
         em.add_field(name='Name', value=f'{server.name}')
         em.add_field(name='Owner', value=f'{server.owner}', inline=False)
         em.add_field(name='Members', value=f'{server.member_count}')
@@ -402,7 +413,8 @@ class util(commands.Cog):
             em.set_author(name=ctx.author.display_name,
                       icon_url=ctx.author.avatar.url)
         except:
-            pass
+            em.set_author(name=ctx.author.display_name,
+                      icon_url=ctx.author.default_avatar.url)
         em.timestamp = datetime.datetime.utcnow()
 
         return await ctx.send(embed=em)
@@ -520,7 +532,8 @@ class util(commands.Cog):
             em.set_thumbnail(url=user.avatar.url)
             em.set_author(name=user, icon_url=user.avatar.url)
         except:
-            pass
+            em.set_thumbnail(url=user.default_avatar.url)
+            em.set_author(name=user, icon_url=user.default_avatar.url)
         em.timestamp = datetime.datetime.utcnow()
 
         return await ctx.send(embed=em)
@@ -604,7 +617,8 @@ class util(commands.Cog):
                         embed.set_author(name=ctx.author.display_name,
                         icon_url=ctx.author.avatar.url)
                     except:
-                        pass
+                        embed.set_author(name=ctx.author.display_name,
+                        icon_url=ctx.author.default_avatar.url)
                     embed.timestamp = datetime.datetime.utcnow()
                     embed.set_footer(
                         text=f'Translated {LANGUAGES[translation.src]} to {LANGUAGES[translation.dest]}.', icon_url='https://i.ibb.co/1np1s8P/translate.png')

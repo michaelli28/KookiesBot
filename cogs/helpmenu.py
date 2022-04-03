@@ -72,7 +72,7 @@ class HelpMenu(ListPageSource):
         try:
             embed.set_thumbnail(url=self.ctx.author.avatar.url)
         except:
-            pass
+            embed.set_thumbnail(url=self.ctx.author.default_avatar.url)
         embed.set_footer(text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} commands.")
         embed.timestamp = datetime.datetime.utcnow()
         for name, value, cog in fields:
@@ -116,7 +116,7 @@ class help(commands.Cog):
         try:
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
         except:
-            pass
+            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.default_avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         await ctx.send(embed=embed)
 
@@ -152,7 +152,7 @@ class help(commands.Cog):
                 try:
                     embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
                 except:
-                    pass
+                    embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.default_avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=embed)
 

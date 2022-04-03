@@ -121,13 +121,16 @@ class CommandErrorHandler(commands.Cog):
             embed = discord.Embed(color=random.randint(
                 0, 0xffffff), description=f'Message sent by {ctx.message.author.mention} in {ctx.message.channel.mention} in {ctx.message.guild.name} [Jump to Message]({ctx.message.jump_url})')
             embed.add_field(name=f'{ctx.message.content}', value=f'\u200B')
-            embed.set_author(name=ctx.message.author.display_name,
+            try:
+                embed.set_author(name=ctx.message.author.display_name,
                              icon_url=ctx.message.author.avatar.url)
-
+            except:
+                embed.set_author(name=ctx.message.author.display_name,
+                             icon_url=ctx.message.author.default_avatar.url)
             embed.timestamp = datetime.datetime.utcnow()
             await me.send(embed=embed)
         except Exception as e:
-            me.send(e)
+            await me.send(e)
             if ctx.message.attachments:
                 embed = discord.Embed(color=random.randint(
                     0, 0xffffff), description=f'Message sent by {ctx.message.author.mention} in {ctx.message.channel.mention} in {ctx.message.guild.name} [Jump to Message]({ctx.message.jump_url})')
@@ -135,9 +138,12 @@ class CommandErrorHandler(commands.Cog):
                     new = await attachment.to_file()
                     await me.send(file=new)
                     embed.set_image(url=f'{attachment.url}')
-
-                embed.set_author(name=ctx.message.author.display_name,
-                                 icon_url=ctx.message.author.avatar.url)
+                try:
+                    embed.set_author(name=ctx.message.author.display_name,
+                                icon_url=ctx.message.author.avatar.url)
+                except:
+                    embed.set_author(name=ctx.message.author.display_name,
+                                icon_url=ctx.message.author.default_avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 await me.send(embed=embed)
 

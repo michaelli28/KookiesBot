@@ -406,7 +406,8 @@ class roles(commands.Cog):
             embed.set_author(name=ctx.author.display_name,
                             icon_url=ctx.author.avatar.url)
         except:
-            pass
+            embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.default_avatar.url)
         timestamp = datetime.datetime.utcnow()
         embed.timestamp = timestamp
         messagesent = await ctx.send(embed=embed)

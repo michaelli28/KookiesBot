@@ -167,7 +167,7 @@ class levels(Cog):
             try:
                 embed.set_author(name=result['name'], icon_url=author.avatar.url)
             except:
-                pass
+                embed.set_author(name=result['name'], icon_url=author.default_avatar.url)
             embed.add_field(name='Level', value='**' +
                             str(int(((12*result['Xp'])//800) ** 0.55))+'**')
 

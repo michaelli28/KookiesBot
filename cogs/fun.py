@@ -172,23 +172,26 @@ class fun(commands.Cog):
                 return await ctx.send("You gave yourself many cookies! What a smart decision :cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie:")
             else:
                 return await ctx.send(f"{member.mention}, you can thank {ctx.author.mention} for the cookie donation! :cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie::cookie:")
-    @commands.command(brief='Gets a awww image from reddit')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def aww(self, ctx):
-        try:
-            async with ctx.typing():
-                reddit = await self.kclient.images.random_aww()
-        except ksoftapi.NoResults:
-            return await ctx.send('Error getting aww image :cry:')
-        else:
-            embed = discord.Embed(color=random.randint(
-                0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
-            embed.set_image(url=reddit.image_url)
-            embed.set_author(name=ctx.author.display_name,
-                             icon_url=ctx.author.avatar.url)
-
-            embed.timestamp = datetime.datetime.utcnow()
-            return await ctx.send(embed=embed)
+    # @commands.command(brief='Gets a awww image from reddit')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def aww(self, ctx):
+    #     try:
+    #         async with ctx.typing():
+    #             reddit = await self.kclient.images.random_aww()
+    #     except ksoftapi.NoResults:
+    #         return await ctx.send('Error getting aww image :cry:')
+    #     else:
+    #         embed = discord.Embed(color=random.randint(
+    #             0, 0xffffff), title=f'`{reddit.title}` by `{reddit.author}` in the `{reddit.subreddit}` subreddit', description=f'[Click here if image isn\'t loading]({reddit.image_url})')
+    #         embed.set_image(url=reddit.image_url)
+    #         try:
+    #             embed.set_author(name=ctx.author.display_name,
+    #                          icon_url=ctx.author.avatar.url)
+    #         except:
+    #             embed.set_author(name=ctx.author.display_name,
+    #                          icon_url=ctx.author.default_avatar.url)
+    #         embed.timestamp = datetime.datetime.utcnow()
+    #         return await ctx.send(embed=embed)
 
     @commands.command(name='8ball', brief='Answer your yes/no questions')
     @commands.cooldown(1, 10, commands.BucketType.user)
@@ -212,7 +215,8 @@ class fun(commands.Cog):
                     embed.set_author(name=ctx.author.display_name,
                                     icon_url=ctx.author.avatar.url)
                 except:
-                    pass
+                    embed.set_author(name=ctx.author.display_name,
+                             icon_url=ctx.author.default_avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=embed)
 
@@ -229,7 +233,8 @@ class fun(commands.Cog):
             embed.set_author(name=ctx.author.display_name,
                             icon_url=ctx.author.avatar.url)
         except:
-            pass
+            embed.set_author(name=ctx.author.display_name,
+                             icon_url=ctx.author.default_avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         return await ctx.send(embed=embed)
 
@@ -262,7 +267,8 @@ class fun(commands.Cog):
                 embed.set_author(name=ctx.author.display_name,
                                 icon_url=ctx.author.avatar.url)
             except:
-                pass
+                embed.set_author(name=ctx.author.display_name,
+                             icon_url=ctx.author.default_avatar.url)
             embed.timestamp = datetime.datetime.utcnow()
             self.ball = None
             return await ctx.send(embed=embed)
@@ -276,7 +282,8 @@ class fun(commands.Cog):
             embed.set_author(name=ctx.author.display_name,
                             icon_url=ctx.author.avatar.url)
         except:
-            pass
+            embed.set_author(name=ctx.author.display_name,
+                            icon_url=ctx.author.default_avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
         self.ball = False
         return await ctx.send(embed=embed)
@@ -369,7 +376,8 @@ class fun(commands.Cog):
                 embed.set_author(name=ctx.author.display_name,
                                 icon_url=ctx.author.avatar.url)
             except:
-                pass
+                embed.set_author(name=ctx.author.display_name,
+                             icon_url=ctx.author.default_avatar.url)
             embed.timestamp = datetime.datetime.utcnow()
 
             def check(m):
@@ -415,7 +423,10 @@ class fun(commands.Cog):
         except:
             pass
         # await user.avatar.url.save(name)
-        avatar = await member.avatar.url.read()
+        try:
+            avatar = await member.avatar.url.read()
+        except:
+            avatar = await member.default_avatar.url.read()
         try:
             await self.bot.user.edit(avatar = avatar)
         except:

@@ -55,7 +55,8 @@ class server(commands.Cog):
                     embed.set_author(name=message.author.display_name,
                                 icon_url=message.author.avatar.url)
                 except: 
-                    pass
+                    embed.set_author(name=message.author.display_name,
+                                icon_url=message.author.default_avatar.url)
 
                 embed.timestamp = datetime.datetime.utcnow()
                 await channel.send(embed=embed)
@@ -71,7 +72,8 @@ class server(commands.Cog):
                         embed.set_author(name=message.author.display_name,
                                     icon_url=message.author.avatar.url)
                     except:
-                        pass
+                        embed.set_author(name=message.author.display_name,
+                                icon_url=message.author.default_avatar.url)
                     embed.timestamp = datetime.datetime.utcnow()
                     await channel.send(embed=embed)
 
@@ -166,7 +168,7 @@ class server(commands.Cog):
         try:
             embed.set_author(name=member.display_name, icon_url=member.avatar.url)
         except:
-            pass
+            embed.set_author(name=member.display_name, icon_url=member.default_avatar.url)
 
         embed.timestamp = datetime.datetime.utcnow()
 
@@ -189,7 +191,7 @@ class server(commands.Cog):
         try:
             embed.set_author(name=member.display_name, icon_url=member.avatar.url)
         except:
-            pass
+            embed.set_author(name=member.display_name, icon_url=member.default_avatar.url)
         embed.timestamp = datetime.datetime.utcnow()
 
         with open("guild.json", "r") as f:

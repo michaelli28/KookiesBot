@@ -68,8 +68,11 @@ class HelpMenu(ListPageSource):
         embed.set_footer(
             text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} songs")
         embed.timestamp = datetime.datetime.utcnow()
-        embed.set_author(name=self.ctx.author.display_name,
+        try:
+            embed.set_author(name=self.ctx.author.display_name,
                 icon_url=self.ctx.author.avatar.url)
+        except:
+            embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
         
 
         for name, value in fields:
@@ -142,8 +145,12 @@ class Playlist(ListPageSource):
             text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} of {len_data:,} songs")
 
         embed.timestamp = datetime.datetime.utcnow()
-        embed.set_author(name=self.ctx.author.display_name,
+        try:
+            embed.set_author(name=self.ctx.author.display_name,
                 icon_url=self.ctx.author.avatar.url)
+        except:
+            embed.set_author(name=self.ctx.author.display_name,
+                icon_url=self.ctx.author.default_avatar.url)
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
 
@@ -394,8 +401,13 @@ class music(commands.Cog):
             em.set_thumbnail(
                 url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
             requester = guild.get_member(player.current.requester)
-            em.set_footer(
+            try:
+                em.set_footer(
                 text=f"Requested by: {requester}", icon_url=requester.avatar.url)
+            except:
+                em.set_footer(
+                text=f"Requested by: {requester}", icon_url=requester.default_avatar.url)
+            
             em.timestamp = datetime.datetime.utcnow()
             await channel.send(embed=em)
 
@@ -568,7 +580,10 @@ class music(commands.Cog):
                             player.add(requester=ctx.author.id, track=results['tracks'][0])
                     
                     em = discord.Embed(color = random.randint(0,0xffffff))
-                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                    try:
+                        em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                    except:
+                        em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
                     em.timestamp = datetime.datetime.utcnow()
                     em.title = 'Playlist Enqueued!'
                     em.description = f'Spotify Playlist - {len(tracks)} tracks'
@@ -599,7 +614,10 @@ class music(commands.Cog):
                     return await ctx.send('Song not found :x: please try again :mag_right:')
 
                 em = discord.Embed(color = random.randint(0,0xffffff))
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                try:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                except:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
                 em.timestamp = datetime.datetime.utcnow()
 
                 if results['loadType'] == 'PLAYLIST_LOADED':
@@ -705,7 +723,10 @@ class music(commands.Cog):
                     return await ctx.send('Song not found :x: please try again :mag_right:')
 
                 em = discord.Embed(color = random.randint(0,0xffffff))
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                try:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                except:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
                 em.timestamp = datetime.datetime.utcnow()
 
                 if results['loadType'] == 'PLAYLIST_LOADED':
@@ -788,8 +809,10 @@ class music(commands.Cog):
                 i = 0
                 query_result = ''
                 embed = discord.Embed(title=f'Search results for: {query}')
-                
-                embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                try:
+                    embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                except:
+                    embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 for track in tracks:
                     i = i + 1
@@ -826,7 +849,10 @@ class music(commands.Cog):
                         track['info']['length']).lstrip('00:')
 
                 em.add_field(name='Duration', value=duration)
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                try:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                except:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
                 em.timestamp = datetime.datetime.utcnow()
                 msg = await ctx.send(embed=em)
                 await player.set_volume(self.volume)
@@ -863,8 +889,10 @@ class music(commands.Cog):
                 i = 0
                 query_result = ''
                 embed = discord.Embed()
-                
-                embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                try:
+                    embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                except:
+                    embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
                 embed.timestamp = datetime.datetime.utcnow()
                 for track in tracks:
                     i = i + 1
@@ -901,7 +929,10 @@ class music(commands.Cog):
                         track['info']['length']).lstrip('00:')
 
                 em.add_field(name='Duration', value=duration)
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                try:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                except:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
                 em.timestamp = datetime.datetime.utcnow()
                 msg = await ctx.send(embed=em)
                 await player.set_volume(self.volume)
@@ -956,7 +987,11 @@ class music(commands.Cog):
                         string += '\n'
                     string += '**'
                     embed = discord.Embed(title=f'Playlists for {ctx.author.display_name}', color=random.randint(0,0xffffff), description=string)
-                    embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                    try:
+                        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                    except:
+                        embed.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
+                    
                     embed.timestamp = datetime.datetime.utcnow()
                     return await ctx.send(embed=embed)
                 else:
@@ -990,7 +1025,11 @@ class music(commands.Cog):
                 for song in playlist['songs']:
                     player.add(requester=song['requester'], track=song)
                 em = discord.Embed(color = random.randint(0,0xffffff))
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                try:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                except:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
+                
                 em.timestamp = datetime.datetime.utcnow()
                 em.title = 'Playlist Enqueued!'
                 em.description = f"{playlist['name']} - {len(playlist['songs'])} tracks"
@@ -1160,8 +1199,12 @@ class music(commands.Cog):
             em.set_thumbnail(
                 url=f"http://i.ytimg.com/vi/{player.current.identifier}/hqdefault.jpg")
             requester = ctx.guild.get_member(player.current.requester)
-            em.set_footer(
+            try:
+                em.set_footer(
                 text=f"Requested by: {requester}", icon_url=requester.avatar.url)
+            except:
+                em.set_footer(
+                text=f"Requested by: {requester}", icon_url=requester.default_avatar.url)
             em.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=em)
             # return await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
@@ -1346,99 +1389,102 @@ class music(commands.Cog):
         player.queue.clear()
         return await ctx.send(f'Cleared {num} songs from the queue')
 
-    @commands.command(name='lyrics', aliases=['ly'], brief='Get the lyrics of a song, if the lyrics given are incorrect, use the searchlyrics command')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def get_lyrics(self, ctx, *, query: str = ""):
-        if not query:
-            player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+    # @commands.command(name='lyrics', aliases=['ly'], brief='Get the lyrics of a song, if the lyrics given are incorrect, use the searchlyrics command')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def get_lyrics(self, ctx, *, query: str = ""):
+    #     if not query:
+    #         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
-            if not player.is_playing:
-                return await ctx.send('I\'m not currently playing anything :warning:')
-            query = player.current.title
+    #         if not player.is_playing:
+    #             return await ctx.send('I\'m not currently playing anything :warning:')
+    #         query = player.current.title
 
-        try:
-            async with ctx.typing():
-                results = await self.kclient.music.lyrics(query, limit=1)
-        except ksoftapi.NoResults:
-            await ctx.send(f'No lyrics found for `{query}`')
-        else:
-            lyrics = results[0].lyrics
-            result = results[0]
-            embed = discord.Embed(title=f'{result.name} - {result.artist}',
-                                  color=random.randint(0,0xffffff), description=lyrics[:2048])
-            embed.set_thumbnail(url=result.album_art)
-            embed.set_author(name="Lyrics:")
-            embed.timestamp = datetime.datetime.utcnow()
-            lyrics = lyrics[2048:]
-            embeds = [embed]  # create embeds' list for long lyrics
-            while len(lyrics) > 0 and len(embeds) < 10:  # limiting embeds to 10
-                embed = discord.Embed(color=random.randint(0,0xffffff), description=lyrics[:2048])
-                lyrics = lyrics[len(embeds)*2048:]
-                embed.timestamp = datetime.datetime.utcnow()
-                embeds.append(embed)
-            # set footer for last embed
-            embeds[-1].set_footer(text="Source: KSoft.Si")
-            for embed in embeds:
-                await ctx.send(embed=embed)
+    #     try:
+    #         async with ctx.typing():
+    #             results = await self.kclient.music.lyrics(query, limit=1)
+    #     except ksoftapi.NoResults:
+    #         await ctx.send(f'No lyrics found for `{query}`')
+    #     else:
+    #         lyrics = results[0].lyrics
+    #         result = results[0]
+    #         embed = discord.Embed(title=f'{result.name} - {result.artist}',
+    #                               color=random.randint(0,0xffffff), description=lyrics[:2048])
+    #         embed.set_thumbnail(url=result.album_art)
+    #         embed.set_author(name="Lyrics:")
+    #         embed.timestamp = datetime.datetime.utcnow()
+    #         lyrics = lyrics[2048:]
+    #         embeds = [embed]  # create embeds' list for long lyrics
+    #         while len(lyrics) > 0 and len(embeds) < 10:  # limiting embeds to 10
+    #             embed = discord.Embed(color=random.randint(0,0xffffff), description=lyrics[:2048])
+    #             lyrics = lyrics[len(embeds)*2048:]
+    #             embed.timestamp = datetime.datetime.utcnow()
+    #             embeds.append(embed)
+    #         # set footer for last embed
+    #         embeds[-1].set_footer(text="Source: KSoft.Si")
+    #         for embed in embeds:
+    #             await ctx.send(embed=embed)
             
-            return
+    #         return
 
-    @commands.command(name='searchlyrics', aliases=['sly'], brief='Get the lyrics of a song, but with multiple options given')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def searchly(self, ctx, number: Optional[int]=3, *, query: str = ""):
-        if number > 10:
-            return await ctx.send('The amount of lyrics cannot exceed 10')
-        if not query:
-            player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+    # @commands.command(name='searchlyrics', aliases=['sly'], brief='Get the lyrics of a song, but with multiple options given')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def searchly(self, ctx, number: Optional[int]=3, *, query: str = ""):
+    #     if number > 10:
+    #         return await ctx.send('The amount of lyrics cannot exceed 10')
+    #     if not query:
+    #         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
 
-            if not player.is_playing:
-                return await ctx.send('I\'m not currently playing anything :warning:')
-            query = player.current.title
+    #         if not player.is_playing:
+    #             return await ctx.send('I\'m not currently playing anything :warning:')
+    #         query = player.current.title
 
-        try:
-            async with ctx.typing():
-                Results = await self.kclient.music.lyrics(query, limit=number)
-        except ksoftapi.NoResults:
-            await ctx.send(f'No lyrics found for `{query}`')
-        else:
-            embed = discord.Embed(title=f'Lyrics for the Song `{query}`', description='React with the number to get the lyrics for that song', color=random.randint(0,0xffffff))
-            embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
-            timestamp = datetime.datetime.utcnow()
-            embed.timestamp = timestamp
-            for i in range(len(Results)):
-                embed.add_field(name=f'{i+1})', value=f'{Results[i].name}-{Results[i].artist}', inline=False)
-            msg = await ctx.send(embed=embed)
-            reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣',
-                    '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
-            for i in range(len(Results)):
-                await msg.add_reaction(reactions[i])
-            def check(reaction,user):
-                return user == ctx.author and reaction.emoji in reactions and reaction.message == msg
-            try:
-                reaction,user = await self.bot.wait_for('reaction_add', check=check, timeout=20)
-            except asyncio.TimeoutError:
-                return await ctx.send("Timed out please try again")
-            em = reactions.index(reaction.emoji)
-            lyrics = Results[em].lyrics
-            result = Results[em]
-            embed = discord.Embed(title=f'{result.name} - {result.artist}',
-                                color=random.randint(0,0xffffff), description=lyrics[:2048])
-            embed.set_thumbnail(url=result.album_art)
-            embed.set_author(name="Lyrics:")
-            embed.timestamp = datetime.datetime.utcnow()
-            lyrics = lyrics[2048:]
-            embeds = [embed]  # create embeds' list for long lyrics
-            while len(lyrics) > 0 and len(embeds) < 10:  # limiting embeds to 10
-                embed = discord.Embed(color=random.randint(0,0xffffff), description=lyrics[:2048])
-                lyrics = lyrics[len(embeds)*2048:]
-                embed.timestamp = datetime.datetime.utcnow()
-                embeds.append(embed)
-            # set footer for last embed
-            embeds[-1].set_footer(text="Source: KSoft.Si")
-            for embed in embeds:
-                await ctx.send(embed=embed)
+    #     try:
+    #         async with ctx.typing():
+    #             Results = await self.kclient.music.lyrics(query, limit=number)
+    #     except ksoftapi.NoResults:
+    #         await ctx.send(f'No lyrics found for `{query}`')
+    #     else:
+    #         embed = discord.Embed(title=f'Lyrics for the Song `{query}`', description='React with the number to get the lyrics for that song', color=random.randint(0,0xffffff))
+    #         try:
+    #             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar.url)
+    #         except:
+    #             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.default_avatar.url)
+    #         timestamp = datetime.datetime.utcnow()
+    #         embed.timestamp = timestamp
+    #         for i in range(len(Results)):
+    #             embed.add_field(name=f'{i+1})', value=f'{Results[i].name}-{Results[i].artist}', inline=False)
+    #         msg = await ctx.send(embed=embed)
+    #         reactions = ['1️⃣', '2️⃣', '3️⃣', '4️⃣',
+    #                 '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+    #         for i in range(len(Results)):
+    #             await msg.add_reaction(reactions[i])
+    #         def check(reaction,user):
+    #             return user == ctx.author and reaction.emoji in reactions and reaction.message == msg
+    #         try:
+    #             reaction,user = await self.bot.wait_for('reaction_add', check=check, timeout=20)
+    #         except asyncio.TimeoutError:
+    #             return await ctx.send("Timed out please try again")
+    #         em = reactions.index(reaction.emoji)
+    #         lyrics = Results[em].lyrics
+    #         result = Results[em]
+    #         embed = discord.Embed(title=f'{result.name} - {result.artist}',
+    #                             color=random.randint(0,0xffffff), description=lyrics[:2048])
+    #         embed.set_thumbnail(url=result.album_art)
+    #         embed.set_author(name="Lyrics:")
+    #         embed.timestamp = datetime.datetime.utcnow()
+    #         lyrics = lyrics[2048:]
+    #         embeds = [embed]  # create embeds' list for long lyrics
+    #         while len(lyrics) > 0 and len(embeds) < 10:  # limiting embeds to 10
+    #             embed = discord.Embed(color=random.randint(0,0xffffff), description=lyrics[:2048])
+    #             lyrics = lyrics[len(embeds)*2048:]
+    #             embed.timestamp = datetime.datetime.utcnow()
+    #             embeds.append(embed)
+    #         # set footer for last embed
+    #         embeds[-1].set_footer(text="Source: KSoft.Si")
+    #         for embed in embeds:
+    #             await ctx.send(embed=embed)
             
-            return
+    #         return
 
     @commands.command(name='equalizer', aliases=['eq'], brief='Change frequencies')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
@@ -1466,7 +1512,10 @@ class music(commands.Cog):
 
             elif preset == 'list':
                 em = discord.Embed(title=':control_knobs: EQ presets:', color=random.randint(0,0xffffff), description='\n'.join(presets.keys()))
-                em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                try:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
+                except:
+                    em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
                 em.timestamp = datetime.datetime.utcnow()
                 return await ctx.send(embed=em)
             else:
