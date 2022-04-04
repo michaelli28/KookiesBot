@@ -1,12 +1,12 @@
 
-import discord
-from discord.ext import commands
-from time import sleep
-import pyprog
-from discord.ext import tasks, commands
-import datetime
-import pytz
-
+# import discord
+# from discord.ext import commands
+# from time import sleep
+# import pyprog
+# from discord.ext import tasks, commands
+# import datetime
+# import pytz
+# import random
 
 # def day(y, m, d):
 #     t = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4]
@@ -28,7 +28,7 @@ import pytz
 
 # list = [1,2,3,4,5]
 # print(list[2:])
-import yaml
+# import yaml
 import asyncio
 import random
 import re
@@ -125,17 +125,21 @@ def searchYoutube(songName):
         print(songName+' isn\'t available')
         searchYoutubeAlternative(songName)
 
-if (__name__ == "__main__"):
-    tracks = getTracks(str(input("Insert Spotify playlist URL: ")))
-    print("Searching songs...")
-    songs = []
-    for i in tracks:
-        songs.append(searchYoutube(i))
-    print("Search finished!")
+# if (__name__ == "__main__"):
+#     tracks = getTracks(str(input("Insert Spotify playlist URL: ")))
+#     print("Searching songs...")
+#     songs = []
+#     for i in tracks:
+#         songs.append(searchYoutube(i))
+#     print("Search finished!")
 
-    print("URL LIST: ")
-    for i in songs:
-        print(i)
+#     print("URL LIST: ")
+#     for i in songs:
+#         print(i)
 
 
 
+list = [0] * 10
+for _ in range(1000000):
+    list[random.randint(1,10)-1] += 1
+print(list)

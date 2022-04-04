@@ -183,7 +183,8 @@ class LavalinkVoiceClient(discord.VoiceClient):
             self.lavalink = self.client.lavalink
         else:
             self.client.lavalink = lavalink.Client(client.user.id)
-            self.client.lavalink.add_node('kookiesllnew.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
+            self.client.lavalink.add_node('lava.link', 80, 'yo', 'us', 'default-node')
+            # self.client.lavalink.add_node('kookiesllnew.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
 
 
             self.lavalink = self.client.lavalink
@@ -254,7 +255,8 @@ class music(commands.Cog):
             # bot.lavalink.add_node('kookiesll2.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
             
             # bot.lavalink.add_node('kookiesll3.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node')
-            bot.lavalink.add_node('kookiesllnew.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node') #on first acct
+            # bot.lavalink.add_node('kookiesllnew.herokuapp.com', 80, 'youshallnotpass', 'us', 'default-node') #on first acct
+            bot.lavalink.add_node('lava.link', 80, 'yo', 'us', 'default-node')
             bot.add_listener(bot.lavalink.voice_update_handler,
                             'on_socket_response')
 
