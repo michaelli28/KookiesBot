@@ -411,7 +411,7 @@ class music(commands.Cog):
                 text=f"Requested by: {requester}", icon_url=requester.default_avatar.url)
             
             em.timestamp = datetime.datetime.utcnow()
-            await channel.send(embed=em)
+            await channel.send(embed=em, delete_after=10)
 
             # await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
             return 
@@ -481,60 +481,60 @@ class music(commands.Cog):
         return await ctx.send(f'{ctx.author.mention}, connected to: **{destination.name}**, type **;leave** to leave the channel')
 
 
-    @commands.command()
-    async def ptest(self, ctx, *, query: str):
-        """ Searches and plays a song from a given query. """
-        # Get the player for this guild from cache.
-        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-        # Remove leading and trailing <>. <> may be used to suppress embedding links in Discord.
-        query = query.strip('<>')
+    # @commands.command()
+    # async def ptest(self, ctx, *, query: str):
+    #     """ Searches and plays a song from a given query. """
+    #     # Get the player for this guild from cache.
+    #     player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+    #     # Remove leading and trailing <>. <> may be used to suppress embedding links in Discord.
+    #     query = query.strip('<>')
 
-        # Check if the user input might be a URL. If it isn't, we can Lavalink do a YouTube search for it instead.
-        # SoundCloud searching is possible by prefixing "scsearch:" instead.
-        if not url_rx.match(query):
-            query = f'ytsearch:{query}'
+    #     # Check if the user input might be a URL. If it isn't, we can Lavalink do a YouTube search for it instead.
+    #     # SoundCloud searching is possible by prefixing "scsearch:" instead.
+    #     if not url_rx.match(query):
+    #         query = f'ytsearch:{query}'
 
-        # Get the results for the query from Lavalink.
-        results = await player.node.get_tracks(query)
+    #     # Get the results for the query from Lavalink.
+    #     results = await player.node.get_tracks(query)
 
-        # Results could be None if Lavalink returns an invalid response (non-JSON/non-200 (OK)).
-        # ALternatively, resullts['tracks'] could be an empty array if the query yielded no tracks.
-        if not results or not results['tracks']:
-            return await ctx.send('Nothing found!')
+    #     # Results could be None if Lavalink returns an invalid response (non-JSON/non-200 (OK)).
+    #     # ALternatively, resullts['tracks'] could be an empty array if the query yielded no tracks.
+    #     if not results or not results['tracks']:
+    #         return await ctx.send('Nothing found!')
 
-        embed = discord.Embed(color=discord.Color.blurple())
+    #     embed = discord.Embed(color=discord.Color.blurple())
 
-        # Valid loadTypes are:
-        #   TRACK_LOADED    - single video/direct URL)
-        #   PLAYLIST_LOADED - direct URL to playlist)
-        #   SEARCH_RESULT   - query prefixed with either ytsearch: or scsearch:.
-        #   NO_MATCHES      - query yielded no results
-        #   LOAD_FAILED     - most likely, the video encountered an exception during loading.
-        if results['loadType'] == 'PLAYLIST_LOADED':
-            tracks = results['tracks']
+    #     # Valid loadTypes are:
+    #     #   TRACK_LOADED    - single video/direct URL)
+    #     #   PLAYLIST_LOADED - direct URL to playlist)
+    #     #   SEARCH_RESULT   - query prefixed with either ytsearch: or scsearch:.
+    #     #   NO_MATCHES      - query yielded no results
+    #     #   LOAD_FAILED     - most likely, the video encountered an exception during loading.
+    #     if results['loadType'] == 'PLAYLIST_LOADED':
+    #         tracks = results['tracks']
 
-            for track in tracks:
-                # Add all of the tracks from the playlist to the queue.
-                player.add(requester=ctx.author.id, track=track)
+    #         for track in tracks:
+    #             # Add all of the tracks from the playlist to the queue.
+    #             player.add(requester=ctx.author.id, track=track)
 
-            embed.title = 'Playlist Enqueued!'
-            embed.description = f'{results["playlistInfo"]["name"]} - {len(tracks)} tracks'
-        else:
-            track = results['tracks'][0]
-            embed.title = 'Track Enqueued'
-            embed.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
+    #         embed.title = 'Playlist Enqueued!'
+    #         embed.description = f'{results["playlistInfo"]["name"]} - {len(tracks)} tracks'
+    #     else:
+    #         track = results['tracks'][0]
+    #         embed.title = 'Track Enqueued'
+    #         embed.description = f'[{track["info"]["title"]}]({track["info"]["uri"]})'
 
-            # You can attach additional information to audiotracks through kwargs, however this involves
-            # constructing the AudioTrack class yourself.
-            track = lavalink.models.AudioTrack(track, ctx.author.id, recommended=True)
-            player.add(requester=ctx.author.id, track=track)
+    #         # You can attach additional information to audiotracks through kwargs, however this involves
+    #         # constructing the AudioTrack class yourself.
+    #         track = lavalink.models.AudioTrack(track, ctx.author.id, recommended=True)
+    #         player.add(requester=ctx.author.id, track=track)
 
-        await ctx.send(embed=embed)
+    #     await ctx.send(embed=embed)
 
-        # We don't want to call .play() if the player is playing as that will effectively skip
-        # the current track.
-        if not player.is_playing:
-            await player.play()
+    #     # We don't want to call .play() if the player is playing as that will effectively skip
+    #     # the current track.
+    #     if not player.is_playing:
+    #         await player.play()
     @commands.command(name='play', aliases=['p', 'yt', 'youtube'], brief='Plays or queues a song or playlist by link or by search (youtube), to insert song at an index, search using # as a separator, songnamehere#3 will search for songnamehere and will insert at the 3rd position in the queue')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def play(self, ctx, *, query: str=None):
@@ -662,7 +662,7 @@ class music(commands.Cog):
                         player.add(requester=ctx.author.id, track=track)
                         
 
-                msg = await ctx.send(embed=em)
+                msg = await ctx.send(embed=em,delete_after=10)
                 await player.set_volume(self.volume)
 
                 if player.fetch(ctx.message.guild.id) != None:
