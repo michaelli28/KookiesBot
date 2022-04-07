@@ -1313,13 +1313,22 @@ class music(commands.Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def shuffle(self, ctx):
         player = self.bot.lavalink.player_manager.get(ctx.guild.id)
-
         if not player.is_playing:
             return await ctx.send('Not playing anything :mute:')
+        random.shuffle(player.queue)
 
-        player.shuffle = not player.shuffle
+        return await ctx.send('🔀 Shuffled the queue')
 
-        return await ctx.send('🔀 Shuffle ' + ('enabled' if player.shuffle else 'disabled'))
+
+
+        # player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+
+        # if not player.is_playing:
+        #     return await ctx.send('Not playing anything :mute:')
+
+        # player.shuffle = not player.shuffle
+
+        # return await ctx.send('🔀 Shuffle ' + ('enabled' if player.shuffle else 'disabled'))
 
     @commands.command(name='loop', brief='Loops/repeats the current queue')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
