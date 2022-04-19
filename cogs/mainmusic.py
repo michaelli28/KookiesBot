@@ -411,7 +411,7 @@ class music(commands.Cog):
                 text=f"Requested by: {requester}", icon_url=requester.default_avatar.url)
             
             em.timestamp = datetime.datetime.utcnow()
-            await channel.send(embed=em, delete_after=10)
+            await channel.send(embed=em)
 
             # await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=player.current.title))
             return 
@@ -662,7 +662,7 @@ class music(commands.Cog):
                         player.add(requester=ctx.author.id, track=track)
                         
 
-                msg = await ctx.send(embed=em,delete_after=10)
+                msg = await ctx.send(embed=em)
                 await player.set_volume(self.volume)
 
                 if player.fetch(ctx.message.guild.id) != None:
