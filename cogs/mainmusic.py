@@ -452,7 +452,8 @@ class music(commands.Cog):
             player.store('channel', ctx.channel.id)
             try:
                 await ctx.author.voice.channel.connect(cls=LavalinkVoiceClient)
-            except:
+            except Exception as e:
+                print(e)
                 raise commands.CommandInvokeError('Try joining a voice channel, by the looks of it, you aren\'t in one')
         else:
             pass
