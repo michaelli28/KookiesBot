@@ -855,6 +855,7 @@ class music(commands.Cog):
                     em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.avatar.url)
                 except:
                     em.set_author(name=self.ctx.author.display_name, icon_url=self.ctx.author.default_avatar.url)
+                em.add_field(name='Position in queue', value=len(player.queue)+1)
                 em.timestamp = datetime.datetime.utcnow()
                 msg = await ctx.send(embed=em)
                 await player.set_volume(self.volume)
