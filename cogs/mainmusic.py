@@ -34,9 +34,9 @@ url_rx = re.compile(r'https?://(?:www\.)?.+')
 #TODO make move song to cmd
 #TODO make soundcloud search using scsearch:blahblahblah
 
-host = "weez-node.cf"
-port = 2333
-password = "FreeLava"
+host = "lava.link"
+port = 80
+password = "anything as password"
 
 with open('config.json', 'r') as config:
         configfile = json.load(config)
