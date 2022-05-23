@@ -34,9 +34,9 @@ url_rx = re.compile(r'https?://(?:www\.)?.+')
 #TODO make move song to cmd
 #TODO make soundcloud search using scsearch:blahblahblah
 
-host = "lava.link"
-port = 80
-password = "anything as password"
+host = "lavalink.oops.wtf"
+port = 2000
+password = "www.freelavalink.ga"
 
 with open('config.json', 'r') as config:
         configfile = json.load(config)
