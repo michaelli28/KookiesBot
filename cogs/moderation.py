@@ -789,9 +789,8 @@ class moderation(commands.Cog):
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, *, member: Union[int, str]):
         if isinstance(member, str):
-            banned_users = await ctx.guild.bans()
             member_name, member_discriminator = member.split("#")
-            for ban_entry in banned_users:
+            async for ban_entry in ctx.guild.bans():
                 user = ban_entry.user
 
                 if (user.name, user.discriminator) == (
