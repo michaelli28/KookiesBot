@@ -63,9 +63,10 @@ class roles(commands.Cog):
 
         # r = role.replace('_', " ", rindex)
         r = role
-        if ctx.author.top_role.position <= r.position:
-            if str(ctx.author.id) != '587068610237693963':
-                return await ctx.send(f'Your role position isn\'t high enough to add role **{r.name}** to members')
+        if ctx.author.id != ctx.guild.owner.id:
+            if ctx.author.top_role.position <= r.position:
+                if str(ctx.author.id) != '587068610237693963':
+                    return await ctx.send(f'Your role position isn\'t high enough to add role **{r.name}** to members')
 
         if user == 'everyone':
             async with ctx.typing():
@@ -126,10 +127,10 @@ class roles(commands.Cog):
 
         # r = role.replace('_', " ", rindex)
         r = role
-
-        if ctx.author.top_role.position <= r.position:
-            if str(ctx.author.id) != '587068610237693963':
-                return await ctx.send(f'Your role position isn\'t high enough to remove role **{r.name}** from members')
+        if ctx.author.id != ctx.guild.owner.id:
+            if ctx.author.top_role.position <= r.position:
+                if str(ctx.author.id) != '587068610237693963':
+                    return await ctx.send(f'Your role position isn\'t high enough to remove role **{r.name}** from members')
         if user == 'everyone':
             async with ctx.typing():
                 try:
@@ -209,9 +210,10 @@ class roles(commands.Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_roles=True)
     async def deleterole(self, ctx, role: discord.Role):
-        if ctx.author.top_role.position <= role.position:
-            if str(ctx.author.id) != '587068610237693963':
-                return await ctx.send(f'Your role position isn\'t high enough to delete role **{role.name}**')
+        if ctx.author.id != ctx.guild.owner.id:
+            if ctx.author.top_role.position <= role.position:
+                if str(ctx.author.id) != '587068610237693963':
+                    return await ctx.send(f'Your role position isn\'t high enough to delete role **{role.name}**')
         try:
             await role.delete()
             return await ctx.send(f'Deleted the role `{role.name}`')
@@ -249,9 +251,10 @@ class roles(commands.Cog):
         
         r = role
         pname = r.name
-        if ctx.author.top_role.position <= r.position:
-            if str(ctx.author.id) != '587068610237693963':
-                return await ctx.send(f'Your role position isn\'t high enough to rename role **{r.name}**')
+        if ctx.author.id != ctx.guild.owner.id:
+            if ctx.author.top_role.position <= r.position:
+                if str(ctx.author.id) != '587068610237693963':
+                    return await ctx.send(f'Your role position isn\'t high enough to rename role **{r.name}**')
         try:
             await r.edit(name = newname)
             if newname != None:
@@ -279,8 +282,9 @@ class roles(commands.Cog):
         # r = get(ctx.message.guild.roles, name=r)
         r=role
         ppos = r.position
-        if ctx.author.top_role.position <= r.position or ctx.author.top_role.position <= position:
-            return await ctx.send(f'You do not have permissions to change this role. Your top role position **{ctx.author.top_role.position}** is less than or equal to {r.name}\'s (**{r.position}**) or the position you are trying to change {r.name} to is more than or equal to your role position ')
+        if ctx.author.id != ctx.guild.owner.id:
+            if ctx.author.top_role.position <= r.position or ctx.author.top_role.position <= position:
+                return await ctx.send(f'You do not have permissions to change this role. Your top role position **{ctx.author.top_role.position}** is less than or equal to {r.name}\'s (**{r.position}**) or the position you are trying to change {r.name} to is more than or equal to your role position ')
         # if r == None:
         #     return await ctx.send(f'{name} is not a role')
         try:
@@ -311,9 +315,10 @@ class roles(commands.Cog):
         # if r == None:
         #     return await ctx.send(f'{name} is not a role')
         r = role
-        if ctx.author.top_role.position <= r.position:
-            if str(ctx.author.id) != '587068610237693963':
-                return await ctx.send(f'Your role position isn\'t high enough to change role mentionability of role **{r.name}**')
+        if ctx.author.id != ctx.guild.owner.id:
+            if ctx.author.top_role.position <= r.position:
+                if str(ctx.author.id) != '587068610237693963':
+                    return await ctx.send(f'Your role position isn\'t high enough to change role mentionability of role **{r.name}**')
         try:
             await r.edit(mentionable = mentionable)
             if mentionable != None:
@@ -342,9 +347,10 @@ class roles(commands.Cog):
         # if r == None:
         #     return await ctx.send(f'{name} is not a role')
         r=role
-        if ctx.author.top_role.position <= r.position:
-            if str(ctx.author.id) != '587068610237693963':
-                return await ctx.send(f'Your role position isn\'t high enough to change role hoist of role **{r.name}**')
+        if ctx.author.id != ctx.guild.owner.id:
+            if ctx.author.top_role.position <= r.position:
+                if str(ctx.author.id) != '587068610237693963':
+                    return await ctx.send(f'Your role position isn\'t high enough to change role hoist of role **{r.name}**')
         try:
             await r.edit(hoist=hoist)
             if hoist != None:
@@ -391,9 +397,11 @@ class roles(commands.Cog):
             
         #     if role == None:
         #         return await ctx.send(f'`{r}` is not a valid role')
+        
         for role in rolesR:
-            if ctx.author.top_role.position <= role.position:
-                return await ctx.send(f'Your role position isn\'t high enough to make a role claim for role **{role.name}**')
+            if ctx.author.id != ctx.guild.owner.id:
+                if ctx.author.top_role.position <= role.position:
+                    return await ctx.send(f'Your role position isn\'t high enough to make a role claim for role **{role.name}**')
                     
             rolesR[index] = role.id
             message += f'React with {reactions[index]} to receive the `{role.name}` role!\n'
