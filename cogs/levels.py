@@ -171,8 +171,8 @@ class levels(Cog):
             embed.add_field(name='Level', value='**' +
                             str(int(((12*result['Xp'])//800) ** 0.55))+'**')
 
-            embed.add_field(name='Xp', value=printProgressBar(
-                result['Xp'], 100000, prefix='**'+str(result['Xp'])+"**", suffix='**100,000**'))
+            # embed.add_field(name='Xp', value=printProgressBar(
+            #     result['Xp'], 100000, prefix='**'+str(result['Xp'])+"**", suffix='**100,000**'))
             embed.timestamp = datetime.datetime.utcnow()
             return await ctx.send(embed=embed)
 
