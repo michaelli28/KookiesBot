@@ -466,7 +466,7 @@ class roles(commands.Cog):
                         pass
                 else:
                     try:
-                        if (not payload.member.bot) and ((message.author.bot == True) or (payload.member.id == 675158744610373651)): #mikhails id
+                        if (not payload.member.bot) and (message.author.bot == True): #or (payload.member.id == 675158744610373651)): #mikhails id
                             try:
                                 await message.delete()
                             except:

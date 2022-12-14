@@ -142,7 +142,7 @@ class moderation(commands.Cog):
     @commands.command(brief='Clears messages')
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     @commands.has_permissions(manage_messages=True)
-    async def klear(self, ctx, amount=1):
+    async def klear(self, ctx, amount: int = 1):
         if amount == 0:
             ctx.send("Must delete at least 1 message")
         # try:

@@ -29,6 +29,12 @@ from aiohttp import ClientSession
 import io
 import logging
 
+import discord
+
+discord.utils.setup_logging()
+
+# or, for example
+discord.utils.setup_logging(level=logging.INFO, root=False)
 # from discord_slash import SlashCommand
 # from discord_slash.utils.manage_commands import create_option, create_choice
 
@@ -36,6 +42,7 @@ import logging
 #import jishaku
 # from dotenv import load_dotenv
 # load_dotenv()
+
 
 
 
