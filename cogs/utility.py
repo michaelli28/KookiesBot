@@ -22,7 +22,7 @@ from operator import itemgetter
 from discord.ext.commands.errors import BadArgument
 import nltk
 import io
-from googletrans import Translator, LANGUAGES
+# from googletrans import Translator, LANGUAGES
 from pathlib import Path
 from subprocess import Popen
 # nltk.download('wordnet')
@@ -103,7 +103,7 @@ class util(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.client = bot.client
-        self.trans = Translator()
+        # self.trans = Translator()
         self.kclient = kclient
 
     @commands.Cog.listener()
@@ -590,45 +590,45 @@ class util(commands.Cog):
     #         embed.timestamp = datetime.datetime.utcnow()
     #         return await ctx.send(embed=embed)
 
-    @commands.command(name='translate', brief='Translates text, use --list to see list of languages')
-    @commands.cooldown(times, cooldown, commands.BucketType.user)
-    async def translate(self, ctx, *args):
-        """Translator"""
-        if len(args) > 0:
-            if args[0] == '--list':
-                lang = ''
-                for l in LANGUAGES:
-                    lang = lang+str(l)+' ('+str(LANGUAGES[l]).title()+')\n'
-                embed = discord.Embed(title='List of supported languages', description=str(
-                    lang), color=discord.Color(0x5DADEC))
-                await ctx.send(embed=embed)
-            elif len(args) > 1:
-                destination = args[0]
-                try:
-                    toTrans = ' '.join(args[1:len(args)])
-                except IndexError:
-                    await ctx.send('Input text to translate')
-                try:
-                    async with ctx.typing():
-                        translation = self.trans.translate(toTrans, dest=destination)
-                    embed = discord.Embed(description=translation.text,
-                                            color=random.randint(0,0xffffff))
-                    try:
-                        embed.set_author(name=ctx.author.display_name,
-                        icon_url=ctx.author.avatar.url)
-                    except:
-                        embed.set_author(name=ctx.author.display_name,
-                        icon_url=ctx.author.default_avatar.url)
-                    embed.timestamp = datetime.datetime.utcnow()
-                    embed.set_footer(
-                        text=f'Translated {LANGUAGES[translation.src]} to {LANGUAGES[translation.dest]}.', icon_url='https://i.ibb.co/1np1s8P/translate.png')
-                    await ctx.send(embed=embed)
-                except: #Exception as e:
-                    return await ctx.send('Unable to translate :x:\nMaybe language id was wrong')
-            else:
-                return await ctx.send(content='Please add a language id\nType `;translate --list` for the list')
-        else:
-            return await ctx.send(content='Please add translations\neg.`;translate en Hola`\nType `;translate --list` for supported languages')
+    # @commands.command(name='translate', brief='Translates text, use --list to see list of languages')
+    # @commands.cooldown(times, cooldown, commands.BucketType.user)
+    # async def translate(self, ctx, *args):
+    #     """Translator"""
+    #     if len(args) > 0:
+    #         if args[0] == '--list':
+    #             lang = ''
+    #             for l in LANGUAGES:
+    #                 lang = lang+str(l)+' ('+str(LANGUAGES[l]).title()+')\n'
+    #             embed = discord.Embed(title='List of supported languages', description=str(
+    #                 lang), color=discord.Color(0x5DADEC))
+    #             await ctx.send(embed=embed)
+    #         elif len(args) > 1:
+    #             destination = args[0]
+    #             try:
+    #                 toTrans = ' '.join(args[1:len(args)])
+    #             except IndexError:
+    #                 await ctx.send('Input text to translate')
+    #             try:
+    #                 async with ctx.typing():
+    #                     translation = self.trans.translate(toTrans, dest=destination)
+    #                 embed = discord.Embed(description=translation.text,
+    #                                         color=random.randint(0,0xffffff))
+    #                 try:
+    #                     embed.set_author(name=ctx.author.display_name,
+    #                     icon_url=ctx.author.avatar.url)
+    #                 except:
+    #                     embed.set_author(name=ctx.author.display_name,
+    #                     icon_url=ctx.author.default_avatar.url)
+    #                 embed.timestamp = datetime.datetime.utcnow()
+    #                 embed.set_footer(
+    #                     text=f'Translated {LANGUAGES[translation.src]} to {LANGUAGES[translation.dest]}.', icon_url='https://i.ibb.co/1np1s8P/translate.png')
+    #                 await ctx.send(embed=embed)
+    #             except: #Exception as e:
+    #                 return await ctx.send('Unable to translate :x:\nMaybe language id was wrong')
+    #         else:
+    #             return await ctx.send(content='Please add a language id\nType `;translate --list` for the list')
+    #     else:
+    #         return await ctx.send(content='Please add translations\neg.`;translate en Hola`\nType `;translate --list` for supported languages')
 
 async def setup(bot):
 	await bot.add_cog(util(bot))
