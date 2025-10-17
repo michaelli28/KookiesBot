@@ -93,7 +93,7 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or(PREFIX), case_insen
 async def main():
     async with bot:
         bot.loop.create_task(startup())
-        await bot.start('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.Z0KTtmFUJ3V8EG8Xt8Gwzv7k1-M')
+        await bot.start('token here')
 
 # slash = SlashCommand(bot, sync_commands=True, override_type=True)
 # bot.load_extension('cogs.slash')
@@ -196,7 +196,6 @@ async def on_message(message):
 
 asyncio.run(main())
 #TOKEN = os.getenv('TOKEN')
-# bot.run("NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.Z0KTtmFUJ3V8EG8Xt8Gwzv7k1-M")
 
 
 
