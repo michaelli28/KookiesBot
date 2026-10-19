@@ -87,7 +87,7 @@ class misc(commands.Cog):
                 total = (datetime.datetime.utcnow() - self.start_time).total_seconds()
                 # print(total)
                 self.start_time = None
-                cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+                cluster = MongoClient(os.getenv("MONGO_URI_2"))
                 db = cluster.VcTime
                 TimeCol = db["Time"]
                 res = TimeCol.find_one({'_id': 1})
@@ -103,7 +103,7 @@ class misc(commands.Cog):
         if ctx.author.id != 587068610237693963 and ctx.author.id != 630499390938808379:
             return await ctx.send("Sorry but you are not allowed to use this command")
         else:
-            cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+            cluster = MongoClient(os.getenv("MONGO_URI_2"))
             db = cluster.VcTime
             TimeCol = db["Time"]
             res = TimeCol.find_one({'_id': 1})

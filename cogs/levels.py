@@ -1,3 +1,4 @@
+import os
 from discord.ext.commands import command
 from discord.ext.commands import Cog
 from discord.ext.menus import MenuPages, ListPageSource
@@ -98,7 +99,7 @@ class levels(Cog):
     async def show_leaderboard(self, ctx):
         #ang is at 189147
         async with ctx.typing():
-            cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+            cluster = MongoClient(os.getenv("MONGO_URI_2"))
 
         db = cluster.KookiesBot
 
@@ -127,7 +128,7 @@ class levels(Cog):
         async with ctx.typing():
 
             cluster = MongoClient(
-                'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+                os.getenv("MONGO_URI_2"))
 
             db = cluster.KookiesBot
             global collection
@@ -200,7 +201,7 @@ class levels(Cog):
 
             else:
                 cluster = MongoClient(
-                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+                    os.getenv("MONGO_URI_2"))
                 db = cluster.KookiesBot
 
                 global collection

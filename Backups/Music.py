@@ -1,3 +1,4 @@
+import os
 import discord
 from discord.ext import commands
 
@@ -13,7 +14,7 @@ from googleapiclient.discovery import build
 import urllib.request
 import urllib.parse
 
-api_key = 'AIzaSyB1cW7goiUiwUaC044lec_0hHC6ba2N-HI'
+api_key = os.getenv("YOUTUBE_API_KEY")
 ytdlopts = {
     'format': 'bestaudio/best',
     'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',

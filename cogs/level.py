@@ -1,3 +1,4 @@
+import os
 from discord.ext.commands import command
 from discord.ext.commands import Cog
 from discord.ext.menus import MenuPages, ListPageSource
@@ -118,7 +119,7 @@ class daily(Cog):
 
             else:
                 cluster = MongoClient(
-                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+                    os.getenv("MONGO_URI_2"))
                 db = cluster.KookiesBot
                 dbDaily = cluster.DailyXP
 
@@ -228,7 +229,7 @@ class daily(Cog):
     async def dailyleaderboard(self, ctx):
 
         async with ctx.typing():
-            cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+            cluster = MongoClient(os.getenv("MONGO_URI_2"))
 
         db = cluster.DailyXP
         timestring = str(datetime.datetime.today().month)
@@ -256,7 +257,7 @@ class daily(Cog):
         async with ctx.typing():
 
             cluster = MongoClient(
-                'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+                os.getenv("MONGO_URI_2"))
 
             db = cluster.DailyXP
             timestring = str(datetime.datetime.today().month)
@@ -312,7 +313,7 @@ class daily(Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def show_leaderboard(self, ctx):
         async with ctx.typing():
-            cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+            cluster = MongoClient(os.getenv("MONGO_URI_2"))
 
         db = cluster.KookiesBot
 
@@ -341,7 +342,7 @@ class daily(Cog):
     #     async with ctx.typing():
 
     #         cluster = MongoClient(
-    #             'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+    #             os.getenv("MONGO_URI_2"))
 
     #         db = cluster.KookiesBot
     #         global collection

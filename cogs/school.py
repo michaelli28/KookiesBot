@@ -1,3 +1,4 @@
+import os
 from discord.ext.commands import command
 from discord.ext.commands import Cog
 from discord.ext.menus import MenuPages, ListPageSource
@@ -112,7 +113,7 @@ class school(commands.Cog):
     # @commands.cooldown(1, 5, commands.BucketType.user)
     # async def leaderboard(self, ctx):
     #   cluster = MongoClient(
-    #       'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+    #       os.getenv("MONGO_URI_2"))
     #   db = cluster['KookiesBot']
     #   global collection
     #   collection = db['Xp']

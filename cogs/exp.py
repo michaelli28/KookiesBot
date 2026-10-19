@@ -1,3 +1,4 @@
+import os
 from discord.ext.commands import command
 from discord.ext.commands import Cog
 from discord.ext.menus import MenuPages, ListPageSource
@@ -102,7 +103,7 @@ class levels(Cog):
         if ctx.guild.id != 751137949420224642:
             return await ctx.send("This command is now discontinued D:")
         async with ctx.typing():
-            cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+            cluster = MongoClient(os.getenv("MONGO_URI_2"))
 
         db = cluster.KookiesBot
 
@@ -130,7 +131,7 @@ class levels(Cog):
         async with ctx.typing():
 
             cluster = MongoClient(
-                'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+                os.getenv("MONGO_URI_2"))
 
             db = cluster.KookiesBot
             global collection
@@ -207,7 +208,7 @@ class levels(Cog):
 
             else:
                 cluster = MongoClient(
-                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/KookiesBot?retryWrites=true&w=majority')
+                    os.getenv("MONGO_URI_2"))
                 db = cluster.KookiesBot
 
                 global collection

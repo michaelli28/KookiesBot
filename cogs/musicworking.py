@@ -1,3 +1,4 @@
+import os
 import asyncio
 import random
 import re
@@ -26,7 +27,7 @@ youtube_dl.utils.bug_reports_message = lambda: ''
 ydl = youtube_dl.YoutubeDL({"format": "bestaudio/best", "restrictfilenames": True, "noplaylist": True, "nocheckcertificate": True,
                             "ignoreerrors": True, "logtostderr": False, "quiet": True, "no_warnings": True, "source_address": "0.0.0.0"})
 
-APIKEY = 'AIzaSyB1cW7goiUiwUaC044lec_0hHC6ba2N-HI'
+APIKEY = os.getenv("YOUTUBE_API_KEY")
 
 class EmptyQueue(Exception):
     """Cannot skip because queue is empty"""

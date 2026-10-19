@@ -20,7 +20,7 @@ from googleapiclient.discovery import build
 
 client = commands.Bot(command_prefix=';', caseInsensitive=True)
 
-api_key = 'AIzaSyB1cW7goiUiwUaC044lec_0hHC6ba2N-HI'
+api_key = os.getenv("YOUTUBE_API_KEY")
 
 @client.event
 async def on_message(message):
@@ -566,6 +566,6 @@ async def check(ctx):
 async def on_disconnect():
 	print("Bot disconnected")
 
-client.run('NzQzODU5NDIwNzk4MTI0MDQz.XzazEg.H8jmotH113mVSyRdNnU76aZ1P74')
+client.run(os.getenv("DISCORD_TOKEN"))
 
 

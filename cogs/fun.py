@@ -1,3 +1,4 @@
+import os
 import urllib
 import json
 import datetime
@@ -42,9 +43,9 @@ cooldown = int(configfile['cooldown'])
 times = int(configfile['numberoftimes'])
 
 
-client_secret = '5E8IY8h100TBQjMuU2OMHfum5v4'
+client_secret = os.getenv("REDDIT_CLIENT_SECRET")
 
-client_id = 'Vca7Chk3l3eAuQ'
+client_id = os.getenv("REDDIT_CLIENT_ID")
 user_agent = 'windows:dunnowhattoputhere:v1.5 (by /u/Zealousideal-Cap5217)'
 
 

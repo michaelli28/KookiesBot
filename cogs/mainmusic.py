@@ -1,3 +1,4 @@
+import os
 import math
 import lavalink
 import ksoftapi
@@ -966,7 +967,7 @@ class music(commands.Cog):
     @commands.cooldown(times, cooldown, commands.BucketType.user)
     async def playlist(self, ctx, operation, *, name=None):
         async with ctx.typing():
-            cluster = MongoClient('mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+            cluster = MongoClient(os.getenv("MONGO_URI"))
             db = cluster.Other
             collection = db['Playlists']
             help_message = 'Play a saved playlist with ;playlist play playlist_name\nSave a playlist by queuing songs and using **;playlist add name**\nShow your playlists with **;playlist show**\nShow the contents of a playlist with **;playlist show name**\nDelete saved playlists with **;playlist remove name**\n(Note: Playlist names are case sensitive)'

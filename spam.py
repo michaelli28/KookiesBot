@@ -1,3 +1,4 @@
+import os
 
 # import discord
 # from discord.ext import commands
@@ -115,9 +116,9 @@ def searchYoutubeAlternative(songName):
         print('https://www.youtube.com' + vid['href'])
 
 def searchYoutube(songName):
-    api = youtube.API(client_id='899089220643-mav9nl4n7ikmd8t5bm29g9224anh7muh.apps.googleusercontent.com',
-              client_secret='xfDglmg4Rpx4-krNKy5PYF5u',
-              api_key='AIzaSyB1cW7goiUiwUaC044lec_0hHC6ba2N-HI')
+    api = youtube.API(client_id=os.getenv("YOUTUBE_CLIENT_ID"),
+              client_secret=os.getenv("YOUTUBE_CLIENT_SECRET"),
+              api_key=os.getenv("YOUTUBE_API_KEY"))
     video = api.get('search', q=songName, maxResults=1, type='video', order='relevance')
     try:
         return ("https://www.youtube.com/watch?v="+video["items"][0]["id"]["videoId"])

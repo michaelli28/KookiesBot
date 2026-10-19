@@ -1,3 +1,4 @@
+import os
 import markovify
 from discord.ext.commands import command
 from discord.ext.commands import Cog
@@ -20,7 +21,7 @@ from discord.ext import tasks
 
 from discord.ext.commands.errors import BadArgument
 cluster = MongoClient(
-                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                    os.getenv("MONGO_URI"))
 db = cluster.Other
 global collection
 collection = db['Roles']

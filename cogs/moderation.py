@@ -1,3 +1,4 @@
+import os
 import markovify
 from discord.ext.commands import command
 from discord.ext.commands import Cog
@@ -289,7 +290,7 @@ class moderation(commands.Cog):
                         await ctx.send(f'Unable to remove role `{r.name}`')
 
             cluster = MongoClient(
-                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                    os.getenv("MONGO_URI"))
             db = cluster.Other
             collection = db['Muted']
             id = str(ctx.guild.id)
@@ -358,7 +359,7 @@ class moderation(commands.Cog):
             #     if dict['id'] == user.id:
             #         rolesd = dict
             cluster = MongoClient(
-                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                    os.getenv("MONGO_URI"))
             db = cluster.Other
             collection = db['Muted']
             id = str(ctx.guild.id)
@@ -390,7 +391,7 @@ class moderation(commands.Cog):
                 #     json.dump(stuff, file)
                 #     file.close()
                 cluster = MongoClient(
-                        'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                        os.getenv("MONGO_URI"))
                 db = cluster.Other
 
                 try:
@@ -686,7 +687,7 @@ class moderation(commands.Cog):
 
                 await ctx.author.add_roles(muted)
                 cluster = MongoClient(
-                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                    os.getenv("MONGO_URI"))
                 db = cluster.Other
                 collection = db['Muted']
                 id = str(ctx.guild.id)
@@ -730,7 +731,7 @@ class moderation(commands.Cog):
                 #             rolesd = dict
                 #             selfm = True
                 cluster = MongoClient(
-                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                    os.getenv("MONGO_URI"))
                 db = cluster.Other
                 collection = db['Muted']
                 id = str(ctx.guild.id)
@@ -915,7 +916,7 @@ class moderation(commands.Cog):
     async def dprogress(self, ctx, *, user: discord.Member=None):
         async with ctx.typing():
             cluster = MongoClient(
-                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                    os.getenv("MONGO_URI"))
             db = cluster.Other
             collection = db['Detention']
             if user == None:
@@ -944,7 +945,7 @@ class moderation(commands.Cog):
                 await user.remove_roles(role)
 
                 cluster = MongoClient(
-                        'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                        os.getenv("MONGO_URI"))
                 db = cluster.Other
                 collection = db['Detention']
                 id = str(ctx.guild.id)
@@ -992,7 +993,7 @@ class moderation(commands.Cog):
                 return await ctx.send("I\'m not THAT stupid")
             if user != None:
                 cluster = MongoClient(
-                    'mongodb+srv://Kookies:Kookies@kookiesxp.b3brr.mongodb.net/Other?retryWrites=true&w=majority')
+                    os.getenv("MONGO_URI"))
                 db = cluster.Other
                 collection = db['Detention']
                 id = str(ctx.guild.id)
