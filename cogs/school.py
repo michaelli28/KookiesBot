@@ -64,7 +64,7 @@ class school(commands.Cog):
     # @commands.cooldown(1, 5, commands.BucketType.user)
     # @commands.is_owner()
     # async def events(self, ctx):
-    #   sc = schoolopy.Schoology(schoolopy.Auth('254b46a2ce719be6b891fbf217028a5105f4f9215', 'd489775f4a578c226a7fc4476c7df9a5'))
+    #   sc = schoolopy.Schoology(schoolopy.Auth(os.getenv("SCHOOLOGY_KEY"), os.getenv("SCHOOLOGY_SECRET")))
 
     #   response = sc.get_events(section_id=2908224243)
     #   for i in range(len(response)):
@@ -75,7 +75,7 @@ class school(commands.Cog):
     # @commands.is_owner()
     # async def courses(self, ctx):
     #   sc = schoolopy.Schoology(schoolopy.Auth(
-    #       '254b46a2ce719be6b891fbf217028a5105f4f9215', 'd489775f4a578c226a7fc4476c7df9a5'))
+    #       os.getenv("SCHOOLOGY_KEY"), os.getenv("SCHOOLOGY_SECRET")))
     #   response = sc.get_courses()
 
     #   await ctx.send(response)
@@ -104,7 +104,7 @@ class school(commands.Cog):
     # @commands.is_owner()
     # async def grades(self, ctx):
     #   sc = schoolopy.Schoology(schoolopy.Auth(
-    #       '254b46a2ce719be6b891fbf217028a5105f4f9215', 'd489775f4a578c226a7fc4476c7df9a5'))
+    #       os.getenv("SCHOOLOGY_KEY"), os.getenv("SCHOOLOGY_SECRET")))
     #   response = sc.get_user_grades(user_id=59969976)
     #   print(response)
     

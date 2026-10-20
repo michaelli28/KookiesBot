@@ -73,7 +73,7 @@ import youtube
 def getTracks(playlistURL):
     # Creating and authenticating our Spotify app.
     # client_credentials_manager = SpotifyClientCredentials(APIs["spotify"]["client_id"], APIs["spotify"]["client_secret"])
-    client_credentials_manager = SpotifyClientCredentials('2c0c71f3b5dc43a2a26e6862135b7b68','2419402a673e4774b323f9160aca088d')
+    client_credentials_manager = SpotifyClientCredentials(os.getenv("SPOTIFY_CLIENT_ID"), os.getenv("SPOTIFY_CLIENT_SECRET"))
     spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
     # Getting a playlist.

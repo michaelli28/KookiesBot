@@ -25,7 +25,7 @@ import bs4
 import youtube
 import re
 from pymongo import MongoClient
-kclient = ksoftapi.Client('1931343e09f8c6434c51af90c3a602ac06c29211')
+kclient = ksoftapi.Client(os.getenv("KSOFT_API_KEY"))
 url_rx = re.compile(r'https?://(?:www\.)?.+')
 #TODO skipto cmd
 #TODO lavalink errors
@@ -35,9 +35,9 @@ url_rx = re.compile(r'https?://(?:www\.)?.+')
 #TODO make move song to cmd
 #TODO make soundcloud search using scsearch:blahblahblah
 
-host = "node1.lewdhutao.tech"
-port = 1183
-password = "lewdhutao"
+host = os.getenv("LAVALINK_HOST")
+port = int(os.getenv("LAVALINK_PORT", "2333"))
+password = os.getenv("LAVALINK_PASSWORD")
 
 with open('config.json', 'r') as config:
         configfile = json.load(config)
@@ -99,7 +99,7 @@ class HelpMenu(ListPageSource):
 def getTracks(playlistURL):
     # Creating and authenticating our Spotify app.
     # client_credentials_manager = SpotifyClientCredentials(APIs["spotify"]["client_id"], APIs["spotify"]["client_secret"])
-    client_credentials_manager = SpotifyClientCredentials('2c0c71f3b5dc43a2a26e6862135b7b68','2419402a673e4774b323f9160aca088d')
+    client_credentials_manager = SpotifyClientCredentials(os.getenv("SPOTIFY_CLIENT_ID"), os.getenv("SPOTIFY_CLIENT_SECRET"))
     spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
     # Getting a playlist.

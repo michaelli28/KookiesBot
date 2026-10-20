@@ -33,7 +33,7 @@ import nltk
 from nltk.corpus import wordnet
 import ksoftapi
 
-kclient = ksoftapi.Client('1931343e09f8c6434c51af90c3a602ac06c29211')
+kclient = ksoftapi.Client(os.getenv("KSOFT_API_KEY"))
 
 
 with open('config.json', 'r') as config:
